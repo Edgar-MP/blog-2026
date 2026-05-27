@@ -1,0 +1,361 @@
+---
+import '../styles/global.css';
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ParticlesBg from '../components/ParticlesBg.astro';
+import TableOfContents from '../components/TableOfContents.astro';
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+
+interface Props {
+  title: string;
+  description: string;
+  date: Date;
+  category: string;
+  tags: string[];
+  minutesRead: number;
+  cover?: ImageMetadata;
+  coverAlt?: string;
+  headings: { depth: number; slug: string; text: string }[];
+  slug: string;
+}
+
+const { title, description, date, category, tags, minutesRead, cover, coverAlt = '', headings, slug } = Astro.props;
+
+const formattedDate = date.toLocaleDateString('es-ES', {
+  day: '2-digit', month: 'long', year: 'numeric',
+});
+
+const catSlug = category.toLowerCase().replace(/\s+/g, '-');
+
+// Artículos relacionados por categoría o tags
+const allPosts = await getCollection('blog', p => !p.data.draft && p.id !== slug);
+const related = allPosts
+  .filter(p => p.data.category === category || p.data.tags.some(t => tags.includes(t)))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <BaseHead title={title} description={description} />
+  </head>
+  <body>
+    <ParticlesBg />
+    <Header />
+
+    <!-- Barra de progreso de lectura -->
+    <div class="progress-bar" id="reading-progress" aria-hidden="true"></div>
+
+    <main style="position:relative;z-index:1">
+
+      <!-- ← Volver -->
+      <div class="back-row em-container">
+        <a href="/articulos" class="back-link">
+          <span class="arr-back">←</span> Artículos
+        </a>
+        <a href={`/articulos?cat=${catSlug}`} class="back-cat">{category}</a>
+      </div>
+
+      <!-- Cover 21:9 -->
+      {cover && (
+        <div class="cover-wrap">
+          <Image src={cover} alt={coverAlt} width={1440} height={620} class="cover-img" />
+          <div class="cover-overlay"></div>
+        </div>
+      )}
+
+      <!-- Hero content (título centrado, debajo del cover) -->
+      <div class={`hero-content em-container${!cover ? ' no-cover' : ''}`}>
+        <div class="em-meta" style="justify-content:center;margin-bottom:16px">
+          <a href={`/articulos?cat=${catSlug}`} class="cat">{category}</a>
+          <span class="dot"></span>
+          <span>{formattedDate}</span>
+          <span class="dot"></span>
+          <span>{minutesRead} min lectura</span>
+        </div>
+        <h1>{title}</h1>
+        <p class="desc">{description}</p>
+        <div class="tags-row">
+          {tags.map(tag => <span class="pill">{tag}</span>)}
+        </div>
+      </div>
+
+      <hr class="article-divider" />
+
+      <!-- Cuerpo: TOC + contenido -->
+      <div class="em-container article-body">
+        <aside class="toc-col">
+          <TableOfContents headings={headings} />
+        </aside>
+        <article class="prose-em">
+          <slot />
+
+          <!-- CTA autor al final del artículo -->
+          <div class="author-cta">
+            <span class="author-cta-label">— escrito por —</span>
+            <div class="author-cta-inner">
+              <div class="author-info">
+                <strong>Edgar Martínez</strong>
+                <span>Frontend Developer & Designer · Vitoria-Gasteiz</span>
+              </div>
+              <div class="author-links">
+                <a href="https://edgarmartinez.dev" target="_blank" rel="noopener noreferrer" class="btn btn-sm">
+                  Portfolio ↗
+                </a>
+                <a href="/rss.xml" class="btn btn-sm">RSS</a>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Seguir leyendo -->
+      {related.length > 0 && (
+        <section class="em-container related-section">
+          <div class="section-eyebrow">Seguir leyendo</div>
+          <div class="related-grid" style={`grid-template-columns: repeat(${Math.min(related.length, 3)}, 1fr)`}>
+            {related.map(post => (
+              <a class="em-glass em-glass-hover related-card" href={`/articulos/${post.id}`} data-glass>
+                <div class="related-body">
+                  <div class="em-meta">
+                    <span class="cat">{post.data.category}</span>
+                    <span class="dot"></span>
+                    <span>{post.data.date.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+                  </div>
+                  <h4>{post.data.title}</h4>
+                  <p>{post.data.description}</p>
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+    </main>
+
+    <Footer />
+  </body>
+</html>
+
+<style>
+  /* Barra de progreso */
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2px;
+    width: 0%;
+    background: var(--color-em-brand);
+    z-index: 200;
+    transition: width 0.1s linear;
+    box-shadow: 0 0 8px var(--color-em-brand-soft);
+  }
+
+  /* Volver */
+  .back-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-top: 100px;
+    padding-bottom: 32px;
+  }
+  .back-link {
+    font-size: 13px;
+    font-family: var(--font-mono);
+    color: var(--color-em-fg-4);
+    text-decoration: none;
+    transition: color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .back-link:hover { color: var(--color-em-fg-1); }
+  .arr-back { transition: transform 0.2s; display: inline-block; }
+  .back-link:hover .arr-back { transform: translateX(-4px); }
+  .back-cat {
+    font-size: 11px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-em-brand);
+    text-decoration: none;
+    border: 1px solid rgba(220,240,93,0.3);
+    padding: 3px 10px;
+    border-radius: var(--radius-pill);
+    transition: background 0.2s;
+  }
+  .back-cat:hover { background: rgba(220,240,93,0.08); }
+
+  /* Cover 21:9 */
+  .cover-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 21 / 9;
+    overflow: hidden;
+    max-height: 560px;
+  }
+  .cover-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    filter: brightness(0.65) saturate(0.85);
+  }
+  .cover-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 0%, rgba(10, 8, 29, 0.5) 60%, var(--color-em-bg) 100%);
+  }
+
+  /* Hero content centrado */
+  .hero-content {
+    text-align: center;
+    padding-top: 40px;
+    padding-bottom: 8px;
+  }
+  .hero-content.no-cover { padding-top: 0; }
+  .hero-content h1 {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: clamp(28px, 4vw, 58px);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    color: var(--color-em-fg-1);
+    text-wrap: balance;
+    margin-bottom: 20px;
+    max-width: 22ch;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .hero-content .desc {
+    font-size: clamp(14px, 1.1vw, 17px);
+    color: var(--color-em-fg-3);
+    max-width: 58ch;
+    margin: 0 auto 20px;
+    line-height: 1.55;
+  }
+  .tags-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+
+  /* Divisor */
+  .article-divider {
+    border: none;
+    border-top: 1px solid var(--color-em-border-1);
+    margin: 40px auto;
+    max-width: var(--width-em-max);
+    padding: 0 32px;
+  }
+
+  /* Layout TOC + prose */
+  .article-body {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 56px;
+    align-items: start;
+    padding-bottom: 80px;
+  }
+  .toc-col { display: block; }
+
+  /* Author CTA */
+  .author-cta {
+    margin-top: 64px;
+    padding: 28px 32px;
+    border: 1px solid var(--color-em-border-2);
+    border-radius: var(--radius-xl);
+    background: rgba(255,255,255,0.02);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 680px;
+  }
+  .author-cta-label {
+    font-family: var(--font-hand);
+    font-size: 16px;
+    color: var(--color-em-fg-5);
+  }
+  .author-cta-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .author-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .author-info strong {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--color-em-fg-1);
+  }
+  .author-info span {
+    font-size: 13px;
+    color: var(--color-em-fg-4);
+  }
+  .author-links { display: flex; gap: 8px; }
+
+  /* Related */
+  .related-section {
+    margin-top: 64px;
+    margin-bottom: 0;
+    padding-bottom: 80px;
+  }
+  .related-grid {
+    display: grid;
+    gap: 16px;
+    margin-top: 24px;
+  }
+  .related-card { border-radius: var(--radius-xl) !important; }
+  .related-body { padding: 24px; display: flex; flex-direction: column; gap: 10px; }
+  .related-card h4 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 17px;
+    line-height: 1.3;
+    color: var(--color-em-fg-1);
+    transition: color 0.2s;
+  }
+  .related-card:hover h4 { color: var(--color-em-brand); }
+  .related-card p { font-size: 13px; color: var(--color-em-fg-3); line-height: 1.5; }
+
+  @media (max-width: 960px) {
+    .article-body { grid-template-columns: 1fr; }
+    .toc-col { display: none; }
+    .cover-wrap { aspect-ratio: 16 / 9; max-height: 360px; }
+  }
+  @media (max-width: 640px) {
+    .back-row { padding-top: 80px; }
+    .author-cta { padding: 20px; }
+  }
+</style>
+
+<script>
+  // Glass border effect
+  document.querySelectorAll<HTMLElement>('[data-glass]').forEach(el => {
+    el.addEventListener('mousemove', (e: MouseEvent) => {
+      const r = el.getBoundingClientRect();
+      el.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+      el.style.setProperty('--my', (e.clientY - r.top) + 'px');
+    });
+  });
+
+  // Reading progress bar
+  const bar = document.getElementById('reading-progress') as HTMLElement | null;
+  if (bar) {
+    function updateProgress() {
+      const article = document.querySelector('.prose-em') as HTMLElement | null;
+      if (!article) return;
+      const rect = article.getBoundingClientRect();
+      const total = article.offsetHeight;
+      const scrolled = Math.max(0, -rect.top);
+      const pct = Math.min(100, (scrolled / total) * 100);
+      bar.style.width = pct + '%';
+    }
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    updateProgress();
+  }
+</script>
