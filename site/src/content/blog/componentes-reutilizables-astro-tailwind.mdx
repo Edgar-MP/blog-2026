@@ -1,0 +1,86 @@
+---
+title: "Cómo organizo componentes reutilizables en Astro + Tailwind"
+description: "Patrones para componer interfaces sin acoplarte al CMS de turno, y cuándo extraer cada cosa a su propio archivo."
+date: 2026-05-21
+category: Astro
+tags: [Astro, Tailwind, Frontend]
+cover: ../../assets/lachata.webp
+coverAlt: "Proyecto La Chata"
+---
+
+Una de las primeras preguntas cuando empiezas con Astro es: ¿cuándo creo un componente nuevo? ¿Y dónde lo pongo?
+
+Después de varios proyectos, he llegado a un sistema que funciona bien para mí. No es dogmático — es pragmático.
+
+## La regla del tres
+
+Mi heurística principal: **si algo aparece tres veces, merece ser un componente**. Una vez es código específico. Dos veces puede ser coincidencia. Tres veces es un patrón.
+
+Esto te evita la parálisis de diseñar componentes abstractos antes de saber cómo los vas a usar.
+
+## Estructura de carpetas
+
+```
+src/
+  components/
+    ui/           # Primitivos: Button, Pill, Badge, Input
+    layout/       # Contenedores: Container, Section, Grid
+    blog/         # Específicos del blog: ArticleCard, FeaturedCard, TOC
+    shared/       # Los que cruzan dominios: Header, Footer, BaseHead
+```
+
+La separación entre `ui/` y `blog/` es importante. Los primitivos de `ui/` no deben saber nada del dominio (ni de artículos, ni de categorías). Los de `blog/` pueden importar tipos de Content Collections.
+
+## Pasar datos vs. slots
+
+Dos formas de componer en Astro:
+
+**Props tipadas** — para datos simples y bien definidos:
+```astro
+---
+interface Props {
+  title: string;
+  href: string;
+  variant?: 'primary' | 'ghost';
+}
+---
+```
+
+**Slots** — para contenido arbitrario o cuando el padre decide el layout:
+```astro
+<Card>
+  <img slot="cover" src={cover} alt={alt} />
+  <h2 slot="title">{title}</h2>
+  <slot /> <!-- cuerpo libre -->
+</Card>
+```
+
+Mi preferencia: props para datos, slots para estructura. Mezclar los dos es válido pero hay que ser consistente.
+
+## Tailwind v4 y los componentes
+
+Con Tailwind v4, los tokens viven en `@theme` y los consumes como `var(--color-brand)` o como utilidades generadas. Para patrones que se repiten mucho (glassmorphism, por ejemplo), prefiero definir una clase en CSS en lugar de repetir 8 utilidades de Tailwind:
+
+```css
+/* global.css */
+.em-glass {
+  background: rgba(18, 18, 21, 0.4);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--color-em-border-2);
+  border-radius: var(--radius-2xl);
+}
+```
+
+Esto no está en conflicto con Tailwind — es complementario. Las utilidades son para ajustes específicos, las clases con nombre son para patrones con identidad propia.
+
+## Cuándo NO extraer un componente
+
+- Si es un bloque que solo existe en una página y tiene poca probabilidad de moverse.
+- Si el componente resultante necesita 10 props para ser útil — probablemente estás abstrayendo demasiado pronto.
+- Si el JSX/Astro "inline" es más legible que la capa extra de indirección.
+
+El objetivo es claridad, no cantidad de archivos.
+
+## Conclusión
+
+La mejor arquitectura de componentes es la que tu equipo (o tú en el futuro) puede leer y entender sin buscar la definición. Empieza plano, extrae cuando notes la repetición, y no te preocupes por "hacerlo bien" antes de haber escrito el primer componente real.

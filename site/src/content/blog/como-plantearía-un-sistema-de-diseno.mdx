@@ -1,0 +1,85 @@
+---
+title: "Cómo plantearía un sistema de diseño para una web pequeña"
+description: "Una guía práctica para definir componentes, patrones y decisiones visuales sin sobredimensionar el proyecto."
+date: 2026-05-27
+category: Design Systems
+tags: [Design Systems, Frontend, UI]
+cover: ../../assets/portfolio.webp
+coverAlt: "Captura del portfolio de Edgar Martínez"
+featured: true
+---
+
+Un sistema de diseño no tiene que ser Figma con 500 componentes ni una librería npm con changelog semántico. Para la mayoría de webs pequeñas o medianas, un sistema de diseño es simplemente un **acuerdo explícito** sobre cómo se ven y se comportan las cosas.
+
+## Por qué merece la pena
+
+Antes de listar herramientas, vale la pena justificar el esfuerzo:
+
+- **Consistencia visual** sin tener que recordar cada hex o cada shadow.
+- **Velocidad** cuando añades nuevas páginas o secciones — ya tienes los ladrillos.
+- **Comunicación** si trabajas con un diseñador o un cliente: habláis de "el botón primario" no de "ese botón verde".
+
+El problema viene cuando equipamos "sistema de diseño" con "atomic design + storybook + tokens automáticos". Eso escala con el equipo, no con el proyecto.
+
+## Los tres pilares mínimos
+
+### 1. Tokens
+
+Los tokens son las variables más básicas: colores, tipografía, espaciado, radios, sombras, duraciones de transición. En CSS, son custom properties:
+
+```css
+:root {
+  --color-brand: #dcf05d;
+  --font-display: "Montserrat", system-ui;
+  --radius-pill: 9999px;
+  --transition-fast: 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+```
+
+Si usas Tailwind v4, los defines en `@theme` y los consumes como utilidades. Si usas SCSS, pueden ser variables. Lo importante es que **vivan en un único sitio**.
+
+### 2. Componentes primitivos
+
+Botones, pills/tags, inputs, badges. Estas piezas se repiten en toda la interfaz — merece la pena definirlas una vez. Con Astro, cada componente es un `.astro` que recibe props y aplica los tokens:
+
+```astro
+---
+interface Props {
+  variant?: 'primary' | 'ghost';
+  size?: 'sm' | 'md';
+  href?: string;
+}
+const { variant = 'md', size = 'md', href } = Astro.props;
+const Tag = href ? 'a' : 'button';
+---
+<Tag class={`btn btn-${variant} btn-${size}`} {href ? { href } : {}}>
+  <slot />
+</Tag>
+```
+
+### 3. Patrones de layout
+
+¿Cómo se organiza una sección? ¿Qué max-width tiene el contenido? ¿Cuánto espacio vertical hay entre secciones? Definir esto como clases o componentes de layout (`Container`, `Section`, `Grid`) elimina el 80% de las decisiones ad-hoc.
+
+## La trampa del sobrediseño
+
+El error más común es intentar anticipar demasiado. Diseñar todos los estados posibles antes de tener ni una página real. Lo que funciona mejor:
+
+1. **Diseñar la primera pantalla real** con lo que necesites.
+2. **Extraer** las piezas que se repiten o que claramente van a repetirse.
+3. **Documentar** solo lo que ya existe, no lo que crees que existirá.
+
+El sistema crece orgánicamente con el producto, no a la inversa.
+
+## Herramientas que uso
+
+- **Figma** para las decisiones visuales iniciales (colores, tipografía, estados hover).
+- **CSS custom properties** para los tokens — funcionan en cualquier stack.
+- **Astro** para los componentes de UI cuando el proyecto es principalmente estático.
+- **Storybook** solo si el equipo tiene más de 2-3 personas que tocan el mismo sistema.
+
+## Conclusión
+
+Para una web pequeña, un sistema de diseño efectivo puede ser tan simple como: un archivo de tokens, un puñado de componentes bien definidos y la disciplina de usarlos. No necesitas más para tener consistencia y velocidad.
+
+Lo importante es empezar pequeño y crecer según lo pida el proyecto — no según lo que te diga el próximo artículo de Medium.

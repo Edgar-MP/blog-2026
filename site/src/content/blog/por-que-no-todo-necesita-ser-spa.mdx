@@ -1,0 +1,69 @@
+---
+title: "Por qué no todo necesita ser una SPA"
+description: "Cuándo elegir HTML + un poco de JS y por qué importa para los usuarios y para tu cordura."
+date: 2026-05-06
+category: Frontend
+tags: [SSR, Astro, Frontend]
+cover: ../../assets/portfolio.webp
+coverAlt: "Ilustración de arquitecturas web"
+---
+
+Durante años, el default del frontend fue: "¿Nueva web? React. ¿Nuevo proyecto? Next.js". Y tiene sentido — esas herramientas son excelentes. Pero hay una confusión de fondo que vale la pena nombrar.
+
+**SPA** (Single Page Application) no es sinónimo de "app moderna". Es una decisión de arquitectura con trade-offs concretos.
+
+## Qué ganas con una SPA
+
+- Navegación instantánea entre páginas (si el bundle ya está cargado).
+- Estado compartido entre rutas sin pasar por el servidor.
+- Experiencias altamente interactivas (dashboards, editores, juegos).
+
+Son ventajas reales. Para una app de gestión, un editor de código online o una app de productividad, una SPA tiene todo el sentido.
+
+## Qué pierdes
+
+- **Bundle inicial grande**: el usuario espera antes de ver nada útil.
+- **SEO más complicado**: aunque mejoró con SSR/SSG, sigue siendo más frágil que HTML estático.
+- **Complejidad de routing**: gestionar navegación, `popstate`, scroll restoration, meta tags dinámicos...
+- **Flash of unstyled content** y problemas de hidratación que nadie quiere debuggear.
+- **Dependencia total de JavaScript**: si el bundle falla o tarda, el usuario ve una página en blanco.
+
+## El argumento del blog o la landing
+
+Un blog como este, una landing de producto, un portfolio, una documentación técnica — tienen algo en común: el contenido es **principalmente estático**. El servidor sabe todo lo que va a mostrar antes de que el usuario llegue.
+
+Para eso, HTML + CSS + un poco de JS selectivo es objetivamente mejor:
+
+- **Tiempo hasta primer byte** más rápido.
+- **Sin JavaScript = página funcional** (degradación elegante).
+- **SEO de primera clase** sin configurar hydration strategies.
+- **Menor coste de mantenimiento** a largo plazo.
+
+## Astro y el modelo de "islas"
+
+Astro resuelve este problema con elegancia: por defecto, todo es HTML estático. Si necesitas interactividad en un componente específico (un carrusel, un formulario, un buscador), lo marcas como isla:
+
+```astro
+<!-- Estático — cero JS -->
+<ArticleCard title="..." />
+
+<!-- Isla interactiva — hidrata solo este componente -->
+<SearchBar client:load />
+<Newsletter client:visible />
+```
+
+El resultado: páginas que cargan como HTML estático pero con interactividad quirúrgica donde hace falta.
+
+## La pregunta correcta
+
+En lugar de "¿uso React o no?", la pregunta es: **¿cuánto del contenido cambia en tiempo real con la interacción del usuario?**
+
+- Mucho (dashboard, editor, app) → SPA o SSR completo.
+- Poco (blog, landing, docs) → SSG con islas selectivas.
+- En medio → híbrido, con rutas estáticas para las partes que no cambian.
+
+## Conclusión
+
+No es un argumento en contra de React o los frameworks de SPA. Es un argumento en favor de elegir la herramienta adecuada para el problema correcto.
+
+La próxima vez que empieces un proyecto, pregúntate: ¿realmente necesito navegación sin recarga y estado global entre rutas? Si la respuesta es no, HTML + Astro te va a ahorrar semanas de trabajo y meses de mantenimiento.
