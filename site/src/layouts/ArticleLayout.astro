@@ -24,8 +24,8 @@ interface Props {
 const { title, description, date, category, tags, minutesRead, cover, coverAlt = '', headings, slug } = Astro.props;
 
 const formattedDate = date.toLocaleDateString('es-ES', {
-  day: '2-digit', month: 'long', year: 'numeric',
-});
+  day: '2-digit', month: 'short', year: 'numeric',
+}).toUpperCase();
 
 const catSlug = category.toLowerCase().replace(/\s+/g, '-');
 
@@ -46,61 +46,59 @@ const related = allPosts
     <ParticlesBg />
     <Header />
 
-    <!-- Barra de progreso de lectura -->
-    <div class="progress-bar" id="reading-progress" aria-hidden="true"></div>
+    <!-- Barra de progreso de lectura (top fixed) -->
+    <div class="reading-progress-bar" id="reading-progress" aria-hidden="true"></div>
 
     <main style="position:relative;z-index:1">
-
-      <!-- ← Volver -->
-      <div class="back-row em-container">
-        <a href="/articulos" class="back-link">
-          <span class="arr-back">←</span> Artículos
-        </a>
-        <a href={`/articulos?cat=${catSlug}`} class="back-cat">{category}</a>
-      </div>
-
-      <!-- Cover 21:9 -->
-      {cover && (
-        <div class="cover-wrap">
-          <Image src={cover} alt={coverAlt} width={1440} height={620} class="cover-img" />
-          <div class="cover-overlay"></div>
-        </div>
-      )}
-
-      <!-- Hero content (título centrado, debajo del cover) -->
-      <div class={`hero-content em-container${!cover ? ' no-cover' : ''}`}>
-        <div class="hero-meta">
-          <a href={`/articulos?cat=${catSlug}`} class="cat">{category}</a>
-          <span class="dot"></span>
-          <span>{formattedDate}</span>
-          <span class="dot"></span>
-          <span>{minutesRead} min lectura</span>
-        </div>
-        <h1>{title}</h1>
-        <p class="desc">{description}</p>
-        <div class="tags-row">
-          {tags.map(tag => <span class="pill">{tag}</span>)}
-        </div>
-      </div>
-
-      <!-- Divisor punteado -->
-      <div class="em-container" style="border-top:1px dashed var(--color-em-border-2);margin-top:48px;padding-top:48px;padding-left:0;padding-right:0"></div>
-
-      <!-- Cuerpo: TOC + contenido -->
-      <div class="em-container article-body">
-        <aside class="toc-col">
-          <TableOfContents headings={headings} />
-        </aside>
-        <article class="prose-em">
-          <slot />
-        </article>
-      </div>
-
-      <!-- CTA autor inline (D·04) -->
       <div class="em-container">
-        <div class="author-cta-inline">
+
+        <!-- ← Volver a artículos -->
+        <a href="/articulos" class="back-link">← Volver a artículos</a>
+
+        <!-- Hero section -->
+        <section class="hero-section">
+
+          <!-- Cover 21:9 dentro del container, radius xl, sin efectos -->
+          {cover && (
+            <div class="cover-wrap">
+              <Image src={cover} alt={coverAlt} width={1440} height={620} class="cover-img" />
+            </div>
+          )}
+
+          <!-- Meta + título + descripción + tags, centrados -->
+          <div class={cover ? 'hero-content' : 'hero-content no-cover'}>
+            <div class="hero-meta">
+              <a href={`/articulos?cat=${catSlug}`} class="hero-cat">{category.toUpperCase()}</a>
+              <span class="hero-sep">·</span>
+              <span>{formattedDate}</span>
+              <span class="hero-sep">·</span>
+              <span>{minutesRead} MIN</span>
+            </div>
+            <h1>{title}</h1>
+            <p class="hero-desc">{description}</p>
+            <div class="tags-row">
+              {tags.map(tag => <span class="pill">{tag}</span>)}
+            </div>
+          </div>
+        </section>
+
+        <!-- Divisor punteado -->
+        <div class="divider-dashed"></div>
+
+        <!-- Grid: TOC + Prose -->
+        <div class="article-body">
+          <aside class="toc-col">
+            <TableOfContents headings={headings} />
+          </aside>
+          <article class="prose-em">
+            <slot />
+          </article>
+        </div>
+
+        <!-- Author CTA inline (centrado, max-width 680px) -->
+        <div class="author-cta">
           <div class="author-avatar"></div>
-          <div class="author-info-inline">
+          <div class="author-info">
             <strong>Edgar Martínez Palmero</strong>
             <p>Frontend developer en Vitoria-Gasteiz. Diseño y construyo interfaces.</p>
           </div>
@@ -108,29 +106,30 @@ const related = allPosts
             Ver portfolio <span class="arr">↗</span>
           </a>
         </div>
-      </div>
 
-      <!-- Seguir leyendo -->
-      {related.length > 0 && (
-        <section class="em-container related-section">
-          <div class="section-eyebrow">Seguir leyendo</div>
-          <div class="related-grid" style={`grid-template-columns: repeat(${Math.min(related.length, 3)}, 1fr)`}>
-            {related.map(post => (
-              <a class="em-glass em-glass-hover related-card" href={`/articulos/${post.id}`} data-glass>
-                <div class="related-body">
-                  <div class="em-meta">
-                    <span class="cat">{post.data.category}</span>
-                    <span class="dot"></span>
-                    <span>{post.data.date.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+        <!-- Seguir leyendo -->
+        {related.length > 0 && (
+          <section class="related-section">
+            <div class="section-eyebrow">Seguir leyendo</div>
+            <div class="related-grid" style={`grid-template-columns: repeat(${Math.min(related.length, 3)}, 1fr)`}>
+              {related.map(post => (
+                <a class="em-glass em-glass-hover related-card" href={`/articulos/${post.id}`} data-glass>
+                  <div class="related-body">
+                    <div class="em-meta">
+                      <span class="cat">{post.data.category}</span>
+                      <span class="dot"></span>
+                      <span>{post.data.date.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+                    </div>
+                    <h4>{post.data.title}</h4>
+                    <p>{post.data.description}</p>
                   </div>
-                  <h4>{post.data.title}</h4>
-                  <p>{post.data.description}</p>
-                </div>
-              </a>
-            ))}
-          </div>
-        </section>
-      )}
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
+
+      </div>
     </main>
 
     <Footer />
@@ -138,11 +137,10 @@ const related = allPosts
 </html>
 
 <style>
-  /* Barra de progreso */
-  .progress-bar {
+  /* ── Progreso top ─────────────────────────────────────────────────── */
+  .reading-progress-bar {
     position: fixed;
-    top: 0;
-    left: 0;
+    top: 0; left: 0;
     height: 2px;
     width: 0%;
     background: var(--color-em-brand);
@@ -151,120 +149,112 @@ const related = allPosts
     box-shadow: 0 0 8px var(--color-em-brand-soft);
   }
 
-  /* Volver */
-  .back-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding-top: 100px;
-    padding-bottom: 32px;
-  }
+  /* ── Volver ───────────────────────────────────────────────────────── */
   .back-link {
-    font-size: 13px;
+    display: inline-block;
+    padding-top: 100px;
+    padding-bottom: 24px;
     font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
     color: var(--color-em-fg-4);
     text-decoration: none;
     transition: color 0.2s;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
   }
   .back-link:hover { color: var(--color-em-fg-1); }
-  .arr-back { transition: transform 0.2s; display: inline-block; }
-  .back-link:hover .arr-back { transform: translateX(-4px); }
-  .back-cat {
-    font-size: 11px;
-    font-family: var(--font-mono);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--color-em-brand);
-    text-decoration: none;
-    border: 1px solid rgba(220,240,93,0.3);
-    padding: 3px 10px;
-    border-radius: var(--radius-pill);
-    transition: background 0.2s;
-  }
-  .back-cat:hover { background: rgba(220,240,93,0.08); }
 
-  /* Cover 21:9 */
+  /* ── Hero ─────────────────────────────────────────────────────────── */
+  .hero-section {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  /* Cover — dentro del container, sin efectos, radius xl */
   .cover-wrap {
-    position: relative;
     width: 100%;
     aspect-ratio: 21 / 9;
     overflow: hidden;
-    max-height: 560px;
+    border-radius: var(--radius-xl);
   }
   .cover-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center;
-    filter: brightness(0.65) saturate(0.85);
-  }
-  .cover-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to bottom, transparent 0%, rgba(10, 8, 29, 0.5) 60%, var(--color-em-bg) 100%);
+    /* sin filter, sin overlay — imagen limpia */
   }
 
-  /* Hero content centrado */
+  /* Texto del hero, centrado */
   .hero-content {
     text-align: center;
-    padding-top: 40px;
-    padding-bottom: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
   }
-  .hero-content.no-cover { padding-top: 0; }
+  .hero-content.no-cover { padding-top: 32px; }
+
   .hero-meta {
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 8px;
     font-family: var(--font-mono);
     font-size: 11px;
     color: var(--color-em-fg-4);
     letter-spacing: 0.15em;
-    text-transform: uppercase;
-    margin-bottom: 12px;
   }
+  .hero-cat {
+    color: var(--color-em-brand);
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+  .hero-cat:hover { opacity: 0.8; }
+  .hero-sep { color: var(--color-em-fg-5); }
+
   .hero-content h1 {
     font-family: var(--font-display);
     font-weight: 900;
-    font-size: clamp(40px, 5vw, 64px);
+    font-size: clamp(40px, 4.5vw, 54px);
     line-height: 1.05;
     letter-spacing: -0.03em;
     color: var(--color-em-fg-1);
     text-wrap: balance;
-    margin-bottom: 16px;
-    max-width: 22ch;
-    margin-left: auto;
-    margin-right: auto;
+    max-width: 18ch;
+    margin: 0;
   }
-  .hero-content .desc {
-    font-size: clamp(16px, 1.2vw, 20px);
+  .hero-desc {
+    font-size: 18px;
     color: var(--color-em-fg-3);
-    max-width: 58ch;
-    margin: 0 auto 20px;
-    line-height: 1.55;
+    line-height: 1.5;
+    max-width: 38ch;
+    margin: 0;
+    text-wrap: pretty;
   }
   .tags-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
 
+  /* ── Divisor punteado ─────────────────────────────────────────────── */
+  .divider-dashed {
+    margin-top: 64px;
+    border-top: 1px dashed var(--color-em-border-2);
+    margin-bottom: 48px;
+  }
 
-  /* Layout TOC + prose */
+  /* ── Grid TOC + Prose ─────────────────────────────────────────────── */
   .article-body {
     display: grid;
     grid-template-columns: 240px 1fr;
-    gap: 56px;
+    gap: 64px;
     align-items: start;
     padding-bottom: 80px;
   }
   .toc-col { display: block; }
 
-  /* Author CTA Inline (D·04) */
-  .author-cta-inline {
-    margin-top: 64px;
-    margin-left: auto;
-    margin-right: auto;
+  /* ── Author CTA inline ────────────────────────────────────────────── */
+  .author-cta {
     max-width: 680px;
+    margin: 0 auto 64px;
     padding: 24px;
     border: 1px solid var(--color-em-border-2);
     border-radius: var(--radius-xl);
@@ -277,34 +267,30 @@ const related = allPosts
     width: 56px;
     height: 56px;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--color-em-border-2), var(--color-em-border-1));
+    background: linear-gradient(135deg, var(--color-em-border-3), var(--color-em-border-1));
     flex-shrink: 0;
   }
-  .author-info-inline {
+  .author-info {
     flex: 1;
     display: flex;
     flex-direction: column;
     gap: 4px;
   }
-  .author-info-inline strong {
+  .author-info strong {
     font-family: var(--font-display);
     font-weight: 700;
-    font-size: 16px;
+    font-size: 15px;
     color: var(--color-em-fg-1);
   }
-  .author-info-inline p {
+  .author-info p {
     font-size: 13px;
     color: var(--color-em-fg-3);
     margin: 0;
     line-height: 1.5;
   }
 
-  /* Related */
-  .related-section {
-    margin-top: 64px;
-    margin-bottom: 0;
-    padding-bottom: 80px;
-  }
+  /* ── Seguir leyendo ───────────────────────────────────────────────── */
+  .related-section { padding-bottom: 80px; }
   .related-grid {
     display: grid;
     gap: 16px;
@@ -323,19 +309,23 @@ const related = allPosts
   .related-card:hover h4 { color: var(--color-em-brand); }
   .related-card p { font-size: 13px; color: var(--color-em-fg-3); line-height: 1.5; }
 
+  /* ── Responsive ───────────────────────────────────────────────────── */
   @media (max-width: 960px) {
     .article-body { grid-template-columns: 1fr; }
     .toc-col { display: none; }
-    .cover-wrap { aspect-ratio: 16 / 9; max-height: 360px; }
+    .cover-wrap { aspect-ratio: 16 / 9; }
   }
   @media (max-width: 640px) {
-    .back-row { padding-top: 80px; }
-    .author-cta { padding: 20px; }
+    .back-link { padding-top: 80px; }
+    .hero-content h1 { font-size: clamp(32px, 8vw, 44px); }
+    .hero-desc { font-size: 16px; }
+    .author-cta { flex-wrap: wrap; }
+    .author-cta .btn { width: 100%; justify-content: center; }
   }
 </style>
 
 <script>
-  // Glass border effect
+  // Glass border effect en cards relacionadas
   document.querySelectorAll<HTMLElement>('[data-glass]').forEach(el => {
     el.addEventListener('mousemove', (e: MouseEvent) => {
       const r = el.getBoundingClientRect();
@@ -344,19 +334,13 @@ const related = allPosts
     });
   });
 
-  // Reading progress bar
+  // Progress bar top
   const bar = document.getElementById('reading-progress') as HTMLElement | null;
   if (bar) {
-    function updateProgress() {
-      const article = document.querySelector('.prose-em') as HTMLElement | null;
-      if (!article) return;
-      const rect = article.getBoundingClientRect();
-      const total = article.offsetHeight;
-      const scrolled = Math.max(0, -rect.top);
-      const pct = Math.min(100, (scrolled / total) * 100);
-      bar.style.width = pct + '%';
+    function updateBar() {
+      const pct = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+      bar!.style.width = Math.min(100, pct) + '%';
     }
-    window.addEventListener('scroll', updateProgress, { passive: true });
-    updateProgress();
+    window.addEventListener('scroll', updateBar, { passive: true });
   }
 </script>
