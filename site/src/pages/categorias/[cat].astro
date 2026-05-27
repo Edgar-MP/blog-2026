@@ -1,0 +1,31 @@
+---
+// C·03 — Categorías como estado de filtro en /artículos.
+// Genera páginas de redirección para no romper enlaces existentes.
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  const categories = [...new Set(posts.map(p => p.data.category))];
+  return categories.map(category => ({
+    params: { cat: category.toLowerCase().replace(/\s+/g, '-') },
+    props: { catSlug: category.toLowerCase().replace(/\s+/g, '-') },
+  }));
+}
+
+const { catSlug } = Astro.props;
+const target = `/articulos?cat=${catSlug}`;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="refresh" content={`0;url=${target}`} />
+    <link rel="canonical" href={target} />
+    <title>Redirigiendo…</title>
+    <script define:vars={{ target }}>window.location.replace(target);</script>
+  </head>
+  <body>
+    <p>Redirigiendo a <a href={target}>artículos</a>…</p>
+  </body>
+</html>
