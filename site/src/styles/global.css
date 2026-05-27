@@ -110,7 +110,7 @@ body::before {
   font-size: 11px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--color-em-fg-5);
+  color: var(--color-em-fg-4);
   display: flex;
   align-items: center;
   gap: 14px;
@@ -120,7 +120,7 @@ body::before {
   content: "";
   width: 24px;
   height: 1px;
-  background: var(--color-em-fg-5);
+  background: var(--color-em-fg-4);
   flex-shrink: 0;
 }
 .section-eyebrow .count { color: var(--color-em-fg-4); margin-left: auto; }
