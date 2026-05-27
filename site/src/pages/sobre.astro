@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
-import profileImg from '../assets/profile.webp';
+import profileImg from '../assets/profile-generic-ia.png';
 
 const allPosts = await getCollection('blog', ({ data }) => !data.draft);
 const categories = [...new Set(allPosts.map(p => p.data.category))];
