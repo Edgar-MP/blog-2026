@@ -57,21 +57,6 @@ const featuredDate = featured?.data.date.toLocaleDateString('es-ES', {
         </div>
     </section>
 
-    <!-- CATEGORÍAS (filtros, sin eyebrow) -->
-    <section class="em-container categories-section">
-      <div class="cats">
-        <a class="cat cat-all cat-active" href="/articulos">Todos</a>
-        {categories.map((cat) => (
-          <a
-            class="cat"
-            href={`/articulos?cat=${cat.toLowerCase().replace(/\s+/g, '-')}`}
-          >
-            {cat}
-          </a>
-        ))}
-      </div>
-    </section>
-
     <!-- ARTÍCULO DESTACADO -->
     {featured && (
       <section class="em-container" id="featured">
@@ -197,14 +182,6 @@ const featuredDate = featured?.data.date.toLocaleDateString('es-ES', {
     text-wrap: pretty;
   }
   .cta-row { display: inline-flex; gap: 12px; margin-top: 36px; flex-wrap: wrap; }
-
-  /* ── Categorías (filtros silenciosos) ── */
-  .categories-section {
-    padding: 48px 32px;
-    margin-top: -24px;
-    margin-bottom: 64px;
-  }
-  .categories-section .cats { display: flex; flex-wrap: wrap; gap: 6px; }
 
   /* ── Featured card ── */
   #featured {
@@ -337,12 +314,8 @@ const featuredDate = featured?.data.date.toLocaleDateString('es-ES', {
     .about-block { grid-template-columns: 1fr; }
     .about-block .portrait { border-left: 0; border-top: 1px solid var(--color-em-border-2); aspect-ratio: 16/10; }
   }
-  @media (max-width: 960px) {
-    .categories-section { padding: 40px 32px; }
-  }
   @media (max-width: 640px) {
     .hero { padding: 120px 20px 80px; }
-    .categories-section { padding: 32px 20px; margin-bottom: 48px; }
     .featured .body, .about-block .body { padding: 28px 24px; }
   }
 </style>

@@ -131,6 +131,7 @@ body::before {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  margin-left: auto;
 }
 .section-eyebrow .count-link:hover { color: var(--color-em-brand); }
 
