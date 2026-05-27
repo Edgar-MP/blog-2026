@@ -1,0 +1,129 @@
+---
+---
+
+<footer class="em-footer">
+  <div class="em-container">
+    <div class="row">
+      <div>
+        <div class="sig">Construyendo el futuro de la web,<br/>pixel a <em>pixel.</em></div>
+        <div class="loc">Vitoria-Gasteiz · ES · 2026</div>
+      </div>
+
+      <div>
+        <h6>Blog</h6>
+        <ul>
+          <li><a href="/">Inicio</a></li>
+          <li><a href="/articulos">Artículos</a></li>
+          <li><a href="/articulos">Categorías</a></li>
+          <li><a href="/sobre">Sobre el blog</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h6>Edgar</h6>
+        <ul>
+          <li>
+            <a href="https://edgarmartinez.dev" target="_blank" rel="noopener noreferrer">
+              Portfolio <span class="ext">↗</span>
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/edgarmartinez" target="_blank" rel="noopener noreferrer">
+              GitHub <span class="ext">↗</span>
+            </a>
+          </li>
+          <li>
+            <a href="https://linkedin.com/in/edgarmartinez" target="_blank" rel="noopener noreferrer">
+              LinkedIn <span class="ext">↗</span>
+            </a>
+          </li>
+          <li><a href="mailto:edgar@edgarmartinez.dev">Email</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h6>RSS</h6>
+        <ul>
+          <li><a href="/rss.xml">Feed RSS</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="bottom">
+      <span>© 2026 · Edgar Martínez Palmero</span>
+      <span>Diseñado y desarrollado con <span class="heart">❤</span> desde Vitoria</span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .em-footer {
+    position: relative;
+    z-index: 1;
+    margin-top: 120px;
+    padding: 64px 0 40px;
+    border-top: 1px solid var(--color-em-border-2);
+    background: rgba(5, 5, 6, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .row {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    gap: 48px;
+  }
+  .sig {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--color-em-fg-1);
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+  }
+  .sig em { color: var(--color-em-brand); font-style: normal; }
+  .loc { margin-top: 10px; font-size: 12px; color: var(--color-em-fg-4); }
+
+  h6 {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    color: var(--color-em-fg-5);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    font-weight: 500;
+  }
+  ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  ul a {
+    font-size: 13px;
+    color: var(--color-em-fg-3);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.25s;
+  }
+  ul a:hover { color: var(--color-em-fg-1); }
+  .ext { color: var(--color-em-fg-5); font-size: 11px; }
+
+  .bottom {
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--color-em-border-1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-em-fg-5);
+  }
+  .heart { color: var(--color-em-brand); }
+
+  @media (max-width: 960px) {
+    .row { grid-template-columns: 1fr 1fr; gap: 32px; }
+  }
+  @media (max-width: 640px) {
+    .row { grid-template-columns: 1fr; }
+    .bottom { flex-direction: column; gap: 8px; text-align: center; }
+  }
+</style>
