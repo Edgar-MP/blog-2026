@@ -13,7 +13,7 @@ const h2and3 = headings.filter(h => h.depth <= 3);
 
 {h2and3.length > 0 && (
   <nav class="toc" aria-label="Tabla de contenidos">
-    <div class="toc-label">Contenidos</div>
+    <div class="toc-label">En este artículo</div>
     <ol>
       {h2and3.map(h => (
         <li class:list={[{ 'h3': h.depth === 3 }]}>
@@ -21,6 +21,13 @@ const h2and3 = headings.filter(h => h.depth <= 3);
         </li>
       ))}
     </ol>
+    <!-- Progreso de lectura -->
+    <div class="toc-progress">
+      <span class="progress-label">Progreso</span>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+    </div>
   </nav>
 )}
 
@@ -47,7 +54,7 @@ const h2and3 = headings.filter(h => h.depth <= 3);
     padding-bottom: 10px;
     border-bottom: 1px solid var(--color-em-border-1);
   }
-  ol { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+  ol { list-style: none; display: flex; flex-direction: column; gap: 2px; margin-bottom: 14px; }
   li a {
     display: block;
     font-size: 13px;
@@ -60,11 +67,41 @@ const h2and3 = headings.filter(h => h.depth <= 3);
   li a:hover { color: var(--color-em-fg-1); background: rgba(255,255,255,0.04); }
   li.h3 a { padding-left: 20px; font-size: 12px; }
   li a.active { color: var(--color-em-brand); }
+
+  .toc-progress {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--color-em-border-2);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .progress-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-em-fg-5);
+  }
+  .progress-bar {
+    height: 2px;
+    background: var(--color-em-border-2);
+    border-radius: 9999px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--color-em-brand);
+    width: 0%;
+    transition: width 0.1s linear;
+  }
 </style>
 
 <script>
-  // Highlight active heading on scroll
+  // Highlight active heading on scroll + reading progress
   const links = document.querySelectorAll<HTMLAnchorElement>('.toc a');
+  const progressFill = document.getElementById('progress-fill') as HTMLElement | null;
+
   if (links.length) {
     const headingEls = Array.from(links).map(a => document.getElementById(a.getAttribute('href')!.slice(1)));
     const observer = new IntersectionObserver(entries => {
@@ -78,4 +115,17 @@ const h2and3 = headings.filter(h => h.depth <= 3);
     }, { rootMargin: '-20% 0% -70% 0%' });
     headingEls.forEach(el => el && observer.observe(el));
   }
+
+  // Update reading progress
+  function updateProgress() {
+    const article = document.querySelector('.prose-em') as HTMLElement | null;
+    if (!article || !progressFill) return;
+    const rect = article.getBoundingClientRect();
+    const total = article.offsetHeight;
+    const scrolled = Math.max(0, -rect.top);
+    const pct = Math.min(100, (scrolled / total) * 100);
+    progressFill.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
 </script>

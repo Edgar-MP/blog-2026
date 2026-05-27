@@ -69,7 +69,7 @@ const related = allPosts
 
       <!-- Hero content (título centrado, debajo del cover) -->
       <div class={`hero-content em-container${!cover ? ' no-cover' : ''}`}>
-        <div class="em-meta" style="justify-content:center;margin-bottom:16px">
+        <div class="hero-meta">
           <a href={`/articulos?cat=${catSlug}`} class="cat">{category}</a>
           <span class="dot"></span>
           <span>{formattedDate}</span>
@@ -83,7 +83,8 @@ const related = allPosts
         </div>
       </div>
 
-      <hr class="article-divider" />
+      <!-- Divisor punteado -->
+      <div class="em-container" style="border-top:1px dashed var(--color-em-border-2);margin-top:48px;padding-top:48px;padding-left:0;padding-right:0"></div>
 
       <!-- Cuerpo: TOC + contenido -->
       <div class="em-container article-body">
@@ -92,24 +93,21 @@ const related = allPosts
         </aside>
         <article class="prose-em">
           <slot />
-
-          <!-- CTA autor al final del artículo -->
-          <div class="author-cta">
-            <span class="author-cta-label">— escrito por —</span>
-            <div class="author-cta-inner">
-              <div class="author-info">
-                <strong>Edgar Martínez</strong>
-                <span>Frontend Developer & Designer · Vitoria-Gasteiz</span>
-              </div>
-              <div class="author-links">
-                <a href="https://edgarmartinez.dev" target="_blank" rel="noopener noreferrer" class="btn btn-sm">
-                  Portfolio ↗
-                </a>
-                <a href="/rss.xml" class="btn btn-sm">RSS</a>
-              </div>
-            </div>
-          </div>
         </article>
+      </div>
+
+      <!-- CTA autor inline (D·04) -->
+      <div class="em-container">
+        <div class="author-cta-inline">
+          <div class="author-avatar"></div>
+          <div class="author-info-inline">
+            <strong>Edgar Martínez Palmero</strong>
+            <p>Frontend developer en Vitoria-Gasteiz. Diseño y construyo interfaces.</p>
+          </div>
+          <a href="https://edgarmartinez.dev" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
+            Ver portfolio <span class="arr">↗</span>
+          </a>
+        </div>
       </div>
 
       <!-- Seguir leyendo -->
@@ -216,21 +214,33 @@ const related = allPosts
     padding-bottom: 8px;
   }
   .hero-content.no-cover { padding-top: 0; }
+  .hero-meta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-em-fg-4);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
   .hero-content h1 {
     font-family: var(--font-display);
     font-weight: 900;
-    font-size: clamp(28px, 4vw, 58px);
-    line-height: 1.1;
+    font-size: clamp(40px, 5vw, 64px);
+    line-height: 1.05;
     letter-spacing: -0.03em;
     color: var(--color-em-fg-1);
     text-wrap: balance;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     max-width: 22ch;
     margin-left: auto;
     margin-right: auto;
   }
   .hero-content .desc {
-    font-size: clamp(14px, 1.1vw, 17px);
+    font-size: clamp(16px, 1.2vw, 20px);
     color: var(--color-em-fg-3);
     max-width: 58ch;
     margin: 0 auto 20px;
@@ -238,14 +248,6 @@ const related = allPosts
   }
   .tags-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
 
-  /* Divisor */
-  .article-divider {
-    border: none;
-    border-top: 1px solid var(--color-em-border-1);
-    margin: 40px auto;
-    max-width: var(--width-em-max);
-    padding: 0 32px;
-  }
 
   /* Layout TOC + prose */
   .article-body {
@@ -257,46 +259,45 @@ const related = allPosts
   }
   .toc-col { display: block; }
 
-  /* Author CTA */
-  .author-cta {
+  /* Author CTA Inline (D·04) */
+  .author-cta-inline {
     margin-top: 64px;
-    padding: 28px 32px;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 680px;
+    padding: 24px;
     border: 1px solid var(--color-em-border-2);
     border-radius: var(--radius-xl);
-    background: rgba(255,255,255,0.02);
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    max-width: 680px;
-  }
-  .author-cta-label {
-    font-family: var(--font-hand);
-    font-size: 16px;
-    color: var(--color-em-fg-5);
-  }
-  .author-cta-inner {
+    background: var(--color-em-surface);
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 20px;
-    flex-wrap: wrap;
   }
-  .author-info {
+  .author-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-em-border-2), var(--color-em-border-1));
+    flex-shrink: 0;
+  }
+  .author-info-inline {
+    flex: 1;
     display: flex;
     flex-direction: column;
     gap: 4px;
   }
-  .author-info strong {
+  .author-info-inline strong {
     font-family: var(--font-display);
     font-weight: 700;
     font-size: 16px;
     color: var(--color-em-fg-1);
   }
-  .author-info span {
+  .author-info-inline p {
     font-size: 13px;
-    color: var(--color-em-fg-4);
+    color: var(--color-em-fg-3);
+    margin: 0;
+    line-height: 1.5;
   }
-  .author-links { display: flex; gap: 8px; }
 
   /* Related */
   .related-section {
