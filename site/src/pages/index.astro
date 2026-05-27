@@ -40,7 +40,7 @@ const featuredDate = featured?.data.date.toLocaleDateString('es-ES', {
     <section class="hero hero-medium">
       <div class="hero-content">
         <h1 class="hero-title">
-          Notas sobre <em>frontend, diseño</em> y sistemas web
+          Blog · Edgar <em>Martínez</em>
         </h1>
         <p class="hero-sub">
           Aprendizajes y decisiones técnicas desde la práctica.
@@ -56,10 +56,24 @@ const featuredDate = featured?.data.date.toLocaleDateString('es-ES', {
       </div>
     </section>
 
+    <!-- CATEGORÍAS (filtros, sin eyebrow) -->
+    <section class="em-container categories-section">
+      <div class="cats">
+        <a class="cat cat-all cat-active" href="/articulos">Todos</a>
+        {categories.map((cat) => (
+          <a
+            class="cat"
+            href={`/articulos?cat=${cat.toLowerCase().replace(/\s+/g, '-')}`}
+          >
+            {cat}
+          </a>
+        ))}
+      </div>
+    </section>
+
     <!-- ARTÍCULO DESTACADO -->
     {featured && (
       <section class="em-container" id="featured">
-        <div class="section-eyebrow">Artículo destacado</div>
         <a class="em-glass em-glass-hover featured" href={`/articulos/${featured.id}`} data-glass>
           <span class="badge">★ Destacado</span>
           {featured.data.cover && (
@@ -88,28 +102,10 @@ const featuredDate = featured?.data.date.toLocaleDateString('es-ES', {
       </section>
     )}
 
-    <!-- CATEGORÍAS -->
-    <section class="em-container" style="margin-top:96px">
-      <div class="section-eyebrow">
-        Categorías
-        <span class="count">{categories.length} temas</span>
-      </div>
-      <div class="cats">
-        {categories.map((cat, i) => (
-          <a
-            class:list={['cat', { 'cat-active': i === 0 }]}
-            href={`/categorias/${cat.toLowerCase().replace(/\s+/g, '-')}`}
-          >
-            {cat}
-          </a>
-        ))}
-      </div>
-    </section>
-
-    <!-- ÚLTIMOS ARTÍCULOS -->
+    <!-- MÁS ARTÍCULOS -->
     <section class="em-container" style="margin-top:96px" id="latest">
       <div class="section-eyebrow">
-        Últimos artículos
+        Más artículos
         <a class="count-link" href="/articulos">ver todos →</a>
       </div>
       <div class="cards-grid">
@@ -163,9 +159,9 @@ const featuredDate = featured?.data.date.toLocaleDateString('es-ES', {
   .hero-medium {
     display: flex;
     align-items: center;
-    min-height: 40vh;
-    padding-top: 80px;
-    padding-bottom: 80px;
+    min-height: auto;
+    padding-top: 140px;
+    padding-bottom: 72px;
   }
   .hero-content {
     max-width: 54ch;
@@ -174,12 +170,12 @@ const featuredDate = featured?.data.date.toLocaleDateString('es-ES', {
     font-family: var(--font-display);
     font-weight: 900;
     text-transform: none;
-    line-height: 1.1;
+    line-height: 1.15;
     letter-spacing: -0.03em;
     color: var(--color-em-fg-1);
-    font-size: clamp(32px, 5vw, 56px);
+    font-size: clamp(28px, 4vw, 48px);
     margin: 0;
-    text-wrap: pretty;
+    text-wrap: balance;
   }
   .hero-title em {
     font-style: italic;
@@ -197,7 +193,18 @@ const featuredDate = featured?.data.date.toLocaleDateString('es-ES', {
   }
   .cta-row { display: inline-flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
 
+  /* ── Categorías (filtros silenciosos) ── */
+  .categories-section {
+    padding: 48px 32px;
+    margin-top: -24px;
+    margin-bottom: 64px;
+  }
+  .categories-section .cats { display: flex; flex-wrap: wrap; gap: 6px; }
+
   /* ── Featured card ── */
+  #featured {
+    margin-top: 0;
+  }
   .featured {
     display: grid;
     grid-template-columns: 1.1fr 1fr;
@@ -325,8 +332,12 @@ const featuredDate = featured?.data.date.toLocaleDateString('es-ES', {
     .about-block { grid-template-columns: 1fr; }
     .about-block .portrait { border-left: 0; border-top: 1px solid var(--color-em-border-2); aspect-ratio: 16/10; }
   }
+  @media (max-width: 960px) {
+    .categories-section { padding: 40px 32px; }
+  }
   @media (max-width: 640px) {
-    .hero-medium { min-height: auto; padding-top: 60px; padding-bottom: 60px; }
+    .hero-medium { padding-top: 100px; padding-bottom: 56px; }
+    .categories-section { padding: 32px 20px; margin-bottom: 48px; }
     .featured .body, .about-block .body { padding: 28px 24px; }
   }
 </style>
