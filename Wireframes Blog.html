@@ -1,0 +1,2463 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Wireframes · blog.edgarmartinez.dev</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,700;0,900;1,400;1,700&family=Architects+Daughter&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+<style>
+  /* ───────────── Design tokens (lifted from Edgar's portfolio DS) ───────────── */
+  :root{
+    --em-bg:#0a081d;
+    --em-bg-alt:#050506;
+    --em-surface:rgba(18,18,21,0.4);
+    --em-surface-2:rgba(26,26,30,0.8);
+    --em-brand:#dcf05d;
+    --em-brand-bright:#d1ff4d;
+    --em-brand-soft:rgba(220,240,93,.18);
+    --em-fg-1:rgba(255,255,255,.95);
+    --em-fg-2:rgba(255,255,255,.78);
+    --em-fg-3:rgba(255,255,255,.55);
+    --em-fg-4:rgba(255,255,255,.35);
+    --em-fg-5:rgba(255,255,255,.18);
+    --em-border-1:rgba(255,255,255,.06);
+    --em-border-2:rgba(255,255,255,.10);
+    --em-border-3:rgba(255,255,255,.18);
+    --em-font-display:"Montserrat", system-ui, sans-serif;
+    --em-font-hand:"Architects Daughter", "Caveat", cursive;
+    --em-font-mono:"JetBrains Mono", monospace;
+    --em-r-xs:4px; --em-r-sm:8px; --em-r-md:16px; --em-r-lg:24px; --em-r-xl:32px; --em-r-pill:9999px;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--em-bg);color:var(--em-fg-2);font-family:var(--em-font-display);font-weight:300;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  body{
+    background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(220,240,93,.05), transparent 60%),
+      radial-gradient(900px 500px at 10% 110%, rgba(220,240,93,.04), transparent 60%),
+      var(--em-bg);
+    min-height:100vh;
+    padding-bottom:160px;
+  }
+
+  /* ───────────── Doc chrome ───────────── */
+  .doc-header{
+    max-width:1320px;margin:0 auto;padding:56px 32px 24px;
+  }
+  .doc-eyebrow{
+    font-family:var(--em-font-hand);font-size:14px;letter-spacing:.04em;
+    color:var(--em-brand);margin-bottom:14px;display:flex;align-items:center;gap:10px;
+  }
+  .doc-eyebrow::before{content:"";width:24px;height:1px;background:var(--em-brand)}
+  .doc-title{
+    font-weight:900;text-transform:uppercase;letter-spacing:-.04em;line-height:1;
+    font-size:clamp(40px,5vw,72px);color:var(--em-fg-1);
+  }
+  .doc-title em{font-style:italic;color:var(--em-brand);font-weight:900}
+  .doc-sub{
+    margin-top:18px;max-width:760px;color:var(--em-fg-3);font-size:16px;
+  }
+  .doc-meta{
+    display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:24px;
+    font-family:var(--em-font-mono);font-size:11px;color:var(--em-fg-4);
+    text-transform:uppercase;letter-spacing:.18em;
+  }
+  .doc-meta span{display:inline-flex;align-items:center;gap:8px}
+  .doc-meta span::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--em-fg-5)}
+  .doc-meta .pulse::before{background:#10b981;box-shadow:0 0 8px #10b981}
+
+  /* ───────────── Tabs ───────────── */
+  .tabs{
+    position:sticky;top:0;z-index:50;
+    background:linear-gradient(to bottom, var(--em-bg) 65%, rgba(10,8,29,0));
+    padding:18px 32px 18px;
+    margin-top:24px;
+  }
+  .tabs-inner{
+    max-width:1320px;margin:0 auto;display:flex;gap:6px;flex-wrap:wrap;
+    background:var(--em-surface-2);
+    border:1px solid var(--em-border-2);
+    border-radius:var(--em-r-pill);
+    padding:6px;backdrop-filter:blur(12px);
+    width:fit-content;
+  }
+  .tab{
+    appearance:none;background:transparent;border:0;cursor:pointer;
+    color:var(--em-fg-3);font-family:var(--em-font-display);font-weight:500;font-size:12px;
+    letter-spacing:.2em;text-transform:uppercase;
+    padding:10px 18px;border-radius:var(--em-r-pill);
+    transition:color .25s, background .25s;
+    display:inline-flex;align-items:center;gap:8px;
+  }
+  .tab:hover{color:var(--em-fg-1)}
+  .tab .count{
+    font-family:var(--em-font-mono);font-size:10px;letter-spacing:.05em;
+    color:var(--em-fg-5);
+  }
+  .tab[aria-selected="true"]{
+    background:var(--em-brand);color:#0a081d;
+    box-shadow:0 0 18px rgba(220,240,93,.35);
+  }
+  .tab[aria-selected="true"] .count{color:rgba(10,8,29,.55)}
+
+  /* ───────────── Variation list ───────────── */
+  .page{display:none;max-width:1320px;margin:0 auto;padding:32px;}
+  .page.active{display:block}
+
+  .variation{
+    margin-bottom:64px;
+  }
+  .var-head{
+    display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:end;
+    margin-bottom:18px;padding-bottom:16px;
+    border-bottom:1px dashed var(--em-border-3);
+  }
+  .var-tag{
+    font-family:var(--em-font-hand);font-size:46px;line-height:1;color:var(--em-brand);
+    transform:rotate(-3deg);transform-origin:left bottom;
+  }
+  .var-name{
+    font-family:var(--em-font-display);font-weight:700;text-transform:uppercase;
+    letter-spacing:.02em;color:var(--em-fg-1);font-size:22px;
+  }
+  .var-desc{
+    color:var(--em-fg-3);font-size:13px;margin-top:6px;max-width:62ch;
+  }
+  .var-tagline{
+    font-family:var(--em-font-hand);color:var(--em-fg-4);font-size:18px;
+    transform:rotate(2deg);transform-origin:right bottom;text-align:right;
+    line-height:1.2;max-width:240px;
+  }
+
+  /* ───────────── Wireframe canvas ───────────── */
+  .wf{
+    background:rgba(255,255,255,.015);
+    border:1px dashed var(--em-border-3);
+    border-radius:var(--em-r-lg);
+    padding:28px;
+    position:relative;
+    overflow:hidden;
+  }
+  .wf::before{
+    /* annotation marker in corner */
+    content:"desktop · 1280";
+    position:absolute;top:10px;right:14px;
+    font-family:var(--em-font-mono);font-size:10px;letter-spacing:.1em;
+    color:var(--em-fg-5);text-transform:uppercase;
+  }
+
+  /* Shared wireframe primitives */
+  .box{
+    border:1px dashed var(--em-border-3);
+    border-radius:var(--em-r-md);
+    background:rgba(255,255,255,.02);
+    position:relative;
+    min-height:60px;
+  }
+  .box.solid{border-style:solid;border-color:var(--em-border-2);background:var(--em-surface)}
+  .box.brand{border-color:rgba(220,240,93,.4);background:rgba(220,240,93,.06)}
+  .box[data-label]::after{
+    content:attr(data-label);
+    position:absolute;top:8px;left:10px;
+    font-family:var(--em-font-mono);font-size:10px;letter-spacing:.12em;
+    color:var(--em-fg-4);text-transform:uppercase;
+  }
+  .img{
+    border:1px dashed var(--em-border-3);
+    background:
+      linear-gradient(135deg, transparent 49.6%, var(--em-border-2) 49.6%, var(--em-border-2) 50.4%, transparent 50.4%),
+      linear-gradient(45deg, transparent 49.6%, var(--em-border-2) 49.6%, var(--em-border-2) 50.4%, transparent 50.4%),
+      rgba(255,255,255,.015);
+    border-radius:var(--em-r-md);
+    position:relative;
+  }
+  .img[data-label]::after{
+    content:attr(data-label);
+    position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    font-family:var(--em-font-hand);font-size:14px;color:var(--em-fg-3);
+    background:var(--em-bg);padding:2px 10px;border-radius:4px;
+  }
+  /* text lines */
+  .lines{display:flex;flex-direction:column;gap:8px}
+  .line{height:8px;background:var(--em-fg-5);border-radius:2px;width:100%}
+  .line.s60{width:60%}.line.s80{width:80%}.line.s40{width:40%}.line.s90{width:90%}.line.s70{width:70%}
+  .line.h{height:14px;background:var(--em-fg-3)}
+  .line.brand{background:var(--em-brand)}
+  /* pill */
+  .pill{
+    display:inline-flex;align-items:center;gap:6px;
+    border:1px solid var(--em-border-3);border-radius:var(--em-r-pill);
+    padding:4px 12px;font-family:var(--em-font-mono);font-size:10px;
+    color:var(--em-fg-3);text-transform:uppercase;letter-spacing:.15em;
+    background:rgba(255,255,255,.02);
+  }
+  .pill.brand{border-color:rgba(220,240,93,.5);color:var(--em-brand);background:rgba(220,240,93,.06)}
+  .pill.solid{background:var(--em-brand);color:#0a081d;border-color:var(--em-brand);font-weight:600}
+
+  /* ───────────── Header used across variations ───────────── */
+  .hdr{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:14px 20px;border:1px solid var(--em-border-2);border-radius:var(--em-r-pill);
+    background:var(--em-surface-2);backdrop-filter:blur(12px);
+    margin-bottom:24px;
+  }
+  .hdr-brand{display:flex;align-items:center;gap:10px;color:var(--em-fg-1);font-weight:700;font-size:14px;letter-spacing:.02em}
+  .hdr-brand .glyph{
+    width:22px;height:22px;border-radius:6px;background:#121215;border:1px solid var(--em-border-2);
+    display:grid;place-items:center;color:var(--em-brand);font-weight:900;font-size:12px;
+  }
+  .hdr-nav{display:flex;gap:22px;align-items:center;font-size:11px;text-transform:uppercase;letter-spacing:.2em;color:var(--em-fg-3)}
+  .hdr-nav a{color:inherit;text-decoration:none;cursor:default}
+  .hdr-nav a.active{color:var(--em-brand)}
+  .hdr-nav a.ext{
+    color:var(--em-fg-4);border-left:1px solid var(--em-border-2);padding-left:18px;
+    display:inline-flex;align-items:center;gap:6px;
+  }
+  .hdr-nav a.ext::after{content:"↗";font-size:13px;letter-spacing:0}
+  .hdr-toggle{
+    width:34px;height:18px;border-radius:9999px;background:rgba(255,255,255,.05);
+    border:1px solid var(--em-border-2);position:relative;
+  }
+  .hdr-toggle::after{
+    content:"";position:absolute;width:12px;height:12px;border-radius:50%;
+    background:var(--em-brand);top:2px;left:2px;
+  }
+
+  /* ───────────── Footer used across variations ───────────── */
+  .ftr{
+    margin-top:24px;padding:24px;border:1px dashed var(--em-border-3);
+    border-radius:var(--em-r-lg);display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;gap:24px;
+  }
+  .ftr h6{font-family:var(--em-font-mono);font-size:10px;letter-spacing:.2em;color:var(--em-fg-5);text-transform:uppercase;margin-bottom:10px;font-weight:500}
+  .ftr p, .ftr li{font-size:12px;color:var(--em-fg-3)}
+  .ftr ul{list-style:none;display:flex;flex-direction:column;gap:6px}
+  .ftr .sig{color:var(--em-fg-2);font-size:13px;font-weight:500}
+  .ftr .sig em{color:var(--em-brand);font-style:normal}
+
+  /* ───────────── Card primitives ───────────── */
+  .card{
+    border:1px solid var(--em-border-2);border-radius:var(--em-r-lg);
+    background:var(--em-surface);padding:20px;display:flex;flex-direction:column;gap:12px;
+  }
+  .card .meta{display:flex;gap:10px;align-items:center;font-family:var(--em-font-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--em-fg-4)}
+  .card .meta .dot{width:3px;height:3px;border-radius:50%;background:var(--em-fg-5)}
+  .card h3{font-size:18px;font-weight:700;line-height:1.25;color:var(--em-fg-1);letter-spacing:-.01em}
+  .card .desc{font-size:13px;color:var(--em-fg-3);line-height:1.5}
+  .card .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto;padding-top:10px}
+
+  /* ───────────── Annotation stickers ───────────── */
+  .sticky{
+    position:absolute;background:#fff5a8;color:#3a2a00;
+    font-family:var(--em-font-hand);font-size:12px;line-height:1.2;
+    padding:8px 12px;border-radius:3px;max-width:170px;
+    box-shadow:0 6px 18px rgba(0,0,0,.4);
+    transform:rotate(-2deg);z-index:5;
+  }
+  .sticky.r{transform:rotate(2deg);background:#caffe1;color:#003a1d}
+  .sticky.b{background:#0a081d;color:var(--em-brand);border:1px dashed var(--em-brand);box-shadow:none}
+
+  .arrow{
+    position:absolute;font-family:var(--em-font-hand);color:var(--em-brand);
+    font-size:18px;pointer-events:none;
+  }
+
+  /* ───────────── Grid helpers ───────────── */
+  .row{display:flex;gap:16px}
+  .col{display:flex;flex-direction:column;gap:16px;flex:1}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .grid-6{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+  .mt-8{margin-top:8px}.mt-16{margin-top:16px}.mt-24{margin-top:24px}.mt-32{margin-top:32px}.mt-48{margin-top:48px}
+  .mb-8{margin-bottom:8px}.mb-16{margin-bottom:16px}.mb-24{margin-bottom:24px}
+
+  /* ───────────── Hand-style typography ───────────── */
+  .hand{font-family:var(--em-font-hand)}
+  .label-mono{font-family:var(--em-font-mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--em-fg-4)}
+
+  /* ───────────── Page-specific helpers ───────────── */
+  /* Hero variants */
+  .hero{padding:48px 24px;border:1px dashed var(--em-border-3);border-radius:var(--em-r-lg);position:relative}
+  .hero-title{
+    font-family:var(--em-font-display);font-weight:900;text-transform:uppercase;letter-spacing:-.04em;
+    line-height:.95;color:var(--em-fg-1);font-size:64px;
+  }
+  .hero-title em{font-style:italic;color:var(--em-brand);font-weight:900}
+  .hero-sub{margin-top:14px;color:var(--em-fg-3);font-size:15px;max-width:520px}
+  .hero-cta{display:flex;gap:10px;margin-top:22px}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:10px 18px;border-radius:var(--em-r-pill);
+    font-family:var(--em-font-display);font-size:12px;letter-spacing:.15em;
+    text-transform:uppercase;font-weight:500;
+    border:1px solid var(--em-border-3);color:var(--em-fg-1);
+  }
+  .btn.primary{background:var(--em-brand);color:#0a081d;border-color:var(--em-brand);font-weight:600}
+  .btn .arr{font-family:var(--em-font-display);font-size:13px}
+
+  /* Featured article block */
+  .featured{
+    display:grid;grid-template-columns:1.1fr .9fr;gap:24px;
+    padding:24px;border:1px solid var(--em-border-2);border-radius:var(--em-r-xl);
+    background:var(--em-surface);position:relative;
+  }
+  .featured .badge{
+    position:absolute;top:18px;left:24px;
+  }
+
+  /* Article body — used in detalle */
+  .prose{max-width:680px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+  .prose .p{display:flex;flex-direction:column;gap:6px}
+  .prose .p .line{height:6px}
+  .prose h2{font-family:var(--em-font-display);font-weight:700;font-size:22px;color:var(--em-fg-1);margin-top:14px}
+  .prose h3{font-family:var(--em-font-display);font-weight:600;font-size:16px;color:var(--em-fg-2);margin-top:8px}
+  .prose .code{
+    border:1px solid var(--em-border-2);border-radius:var(--em-r-md);background:#0d0c1f;
+    padding:0;overflow:hidden;
+  }
+  .prose .code .head{
+    display:flex;justify-content:space-between;align-items:center;padding:8px 14px;
+    border-bottom:1px solid var(--em-border-2);
+    font-family:var(--em-font-mono);font-size:10px;color:var(--em-fg-4);letter-spacing:.1em;text-transform:uppercase;
+  }
+  .prose .code .body{padding:14px;display:flex;flex-direction:column;gap:6px;font-family:var(--em-font-mono);font-size:12px}
+  .prose .code .body .ln{display:flex;gap:10px;color:var(--em-fg-3)}
+  .prose .code .body .ln .n{color:var(--em-fg-5);width:18px;text-align:right}
+  .prose .code .kw{color:#c084fc}.prose .code .str{color:var(--em-brand)}.prose .code .fn{color:#7dd3fc}.prose .code .com{color:var(--em-fg-5);font-style:italic}
+
+  .callout{
+    border:1px solid var(--em-border-2);border-radius:var(--em-r-md);
+    padding:14px 16px 14px 18px;background:rgba(255,255,255,.02);
+    display:flex;gap:14px;position:relative;
+  }
+  .callout::before{
+    content:"";width:3px;background:var(--em-fg-5);border-radius:9999px;
+    position:absolute;left:6px;top:14px;bottom:14px;
+  }
+  .callout.note::before{background:#7dd3fc}
+  .callout.tip::before{background:var(--em-brand)}
+  .callout.warn::before{background:#fb923c}
+  .callout.summary::before{background:#a78bfa}
+  .callout .ico{font-family:var(--em-font-mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--em-fg-2);min-width:90px}
+  .callout.note .ico{color:#7dd3fc}.callout.tip .ico{color:var(--em-brand)}.callout.warn .ico{color:#fb923c}.callout.summary .ico{color:#a78bfa}
+  .callout .body{flex:1;color:var(--em-fg-3);font-size:13px}
+
+  .quote{
+    border-left:2px solid var(--em-brand);padding:6px 0 6px 18px;
+    font-family:var(--em-font-display);font-weight:300;font-style:italic;
+    color:var(--em-fg-2);font-size:18px;line-height:1.5;
+  }
+
+  .tbl{
+    border:1px solid var(--em-border-2);border-radius:var(--em-r-md);overflow:hidden;
+    font-family:var(--em-font-mono);font-size:11px;
+  }
+  .tbl .tr{display:grid;grid-template-columns:1.2fr 1fr 1fr;padding:10px 14px;border-bottom:1px solid var(--em-border-2);color:var(--em-fg-3)}
+  .tbl .tr:last-child{border-bottom:0}
+  .tbl .tr.h{background:rgba(255,255,255,.03);color:var(--em-fg-4);text-transform:uppercase;letter-spacing:.15em;font-size:10px}
+
+  .toc{
+    border:1px dashed var(--em-border-3);border-radius:var(--em-r-md);
+    padding:18px;font-size:12px;color:var(--em-fg-3);
+  }
+  .toc h6{font-family:var(--em-font-mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--em-fg-5);margin-bottom:12px;font-weight:500}
+  .toc ol{list-style:none;display:flex;flex-direction:column;gap:8px;counter-reset:t}
+  .toc li{counter-increment:t;display:flex;gap:10px;align-items:baseline}
+  .toc li::before{content:counter(t,decimal-leading-zero);font-family:var(--em-font-mono);font-size:9px;color:var(--em-fg-5);letter-spacing:.1em}
+  .toc li.active{color:var(--em-brand)}
+  .toc li.active::before{color:var(--em-brand)}
+  .toc li.sub{padding-left:22px;font-size:11px;color:var(--em-fg-4)}
+  .toc li.sub::before{content:"–";color:var(--em-fg-5)}
+
+  /* Mobile-ish breakpoint for the doc itself */
+  @media (max-width:720px){
+    .doc-header{padding:32px 16px 16px}
+    .tabs{padding:12px 16px}
+    .page{padding:16px}
+    .hdr-nav{display:none}
+    .ftr{grid-template-columns:1fr 1fr}
+    .featured{grid-template-columns:1fr}
+    .hero-title{font-size:36px}
+  }
+</style>
+</head>
+<body>
+
+<!-- ───────────────────── Doc header ───────────────────── -->
+<header class="doc-header">
+  <div class="doc-eyebrow">Wireframes · v1 · 27 may 2026</div>
+  <h1 class="doc-title">Blog · <em>baja fidelidad</em></h1>
+  <p class="doc-sub">
+    Exploración de estructura para <strong style="color:var(--em-fg-1)">blog.edgarmartinez.dev</strong>.
+    Cinco páginas, tres variaciones por página. Fondo del portfolio, todo monocromo más el acento lima.
+    No es diseño final — es para decidir <em style="color:var(--em-brand);font-style:normal">qué pieza va dónde</em> antes de pulir.
+  </p>
+  <div class="doc-meta">
+    <span>5 páginas</span>
+    <span>17 wireframes</span>
+    <span>desktop only</span>
+    <span class="pulse">en revisión</span>
+  </div>
+</header>
+
+<!-- ───────────────────── Tabs ───────────────────── -->
+<nav class="tabs" aria-label="Páginas">
+  <div class="tabs-inner" role="tablist">
+    <button class="tab" role="tab" aria-selected="true" data-page="home">Home <span class="count">/3</span></button>
+    <button class="tab" role="tab" aria-selected="false" data-page="listado">Artículos <span class="count">/3</span></button>
+    <button class="tab" role="tab" aria-selected="false" data-page="detalle">Detalle <span class="count">/4</span></button>
+    <button class="tab" role="tab" aria-selected="false" data-page="categoria">Categoría <span class="count">/3</span></button>
+    <button class="tab" role="tab" aria-selected="false" data-page="sobre">Sobre el blog <span class="count">/4</span></button>
+  </div>
+</nav>
+
+<!-- ───────────────────── HOME ───────────────────── -->
+<main class="page active" id="page-home" data-screen-label="Home">
+
+  <!-- HOME · V1 — Editorial Magazine -->
+  <section class="variation">
+    <div class="var-head">
+      <div class="var-tag">H · 01</div>
+      <div>
+        <div class="var-name">Editorial · Magazine</div>
+        <div class="var-desc">Hero tipográfico grande tipo portfolio, artículo destacado a ancho completo con peso real, después grid simple. Foco en lectura y en señalar qué leer primero.</div>
+      </div>
+      <div class="var-tagline">jerarquía clásica<br/>“lee esto primero”</div>
+    </div>
+
+    <div class="wf">
+      <!-- Header -->
+      <div class="hdr">
+        <div class="hdr-brand"><span class="glyph">+</span> Edgar Martínez <span style="color:var(--em-fg-4);font-weight:400">/ Blog</span></div>
+        <nav class="hdr-nav">
+          <a class="active">Inicio</a>
+          <a>Artículos</a>
+          <a>Categorías</a>
+          <a>Sobre</a>
+          <a class="ext">Portfolio</a>
+          <span class="hdr-toggle" aria-hidden="true"></span>
+        </nav>
+      </div>
+
+      <!-- Hero -->
+      <section class="hero" style="padding:64px 24px 56px">
+        <div class="label-mono mb-16">blog · edgarmartinez.dev</div>
+        <h1 class="hero-title">Blog de<br/>Edgar <em>Martínez</em></h1>
+        <p class="hero-sub">Frontend, diseño y sistemas web desde la práctica. Aprendizajes, decisiones técnicas y experimentos que voy documentando mientras construyo productos.</p>
+        <div class="hero-cta">
+          <span class="btn primary">Leer últimos artículos <span class="arr">→</span></span>
+          <span class="btn">Ver portfolio <span class="arr">↗</span></span>
+        </div>
+        <div class="sticky" style="right:24px;top:24px">hero potente,<br/>pero corto.<br/>todo cabe en 1 pantalla</div>
+      </section>
+
+      <!-- Featured -->
+      <div class="mt-32 mb-16 label-mono">— Artículo destacado</div>
+      <section class="featured">
+        <span class="pill solid badge">⭑ Destacado</span>
+        <div class="img" data-label="cover · 4/3" style="aspect-ratio:4/3;margin-top:32px"></div>
+        <div style="display:flex;flex-direction:column;gap:14px;justify-content:center">
+          <div class="meta" style="display:flex;gap:10px;align-items:center;font-family:var(--em-font-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--em-fg-4)">
+            <span style="color:var(--em-brand)">Design Systems</span><span>·</span><span>27 may 2026</span><span>·</span><span>6 min lectura</span>
+          </div>
+          <h2 style="font-size:32px;font-weight:700;line-height:1.15;color:var(--em-fg-1);letter-spacing:-.01em">
+            Cómo plantearía un sistema de diseño para una web pequeña
+          </h2>
+          <p style="font-size:14px;color:var(--em-fg-3);line-height:1.6">
+            Una guía práctica para definir componentes, patrones y decisiones visuales sin sobredimensionar el proyecto.
+          </p>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <span class="pill">Design Systems</span><span class="pill">Frontend</span><span class="pill">UI</span>
+          </div>
+          <div style="margin-top:8px"><span class="btn primary" style="padding:8px 14px">Leer artículo <span class="arr">→</span></span></div>
+        </div>
+      </section>
+
+      <!-- Categorías -->
+      <div class="mt-48 mb-16" style="display:flex;justify-content:space-between;align-items:baseline">
+        <span class="label-mono">— Categorías</span>
+        <span class="label-mono" style="color:var(--em-fg-5)">8 temas</span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <span class="pill brand">Frontend</span><span class="pill">Design Systems</span><span class="pill">Astro</span>
+        <span class="pill">Next.js</span><span class="pill">WordPress</span><span class="pill">Shopify</span>
+        <span class="pill">Proyectos</span><span class="pill">Notas</span>
+      </div>
+
+      <!-- Últimos -->
+      <div class="mt-48 mb-16" style="display:flex;justify-content:space-between;align-items:baseline">
+        <span class="label-mono">— Últimos artículos</span>
+        <span class="label-mono" style="color:var(--em-fg-4)">ver todos →</span>
+      </div>
+      <div class="grid-3">
+        <article class="card" data-comment-anchor="cc-1" style="padding:0;overflow:hidden">
+          <div class="img" data-label="cover · 16/10" style="aspect-ratio:16/10;border-radius:0;border-left:0;border-right:0;border-top:0"></div>
+          <div style="padding:18px;display:flex;flex-direction:column;gap:10px;flex:1">
+            <span class="label-mono" style="color:var(--em-brand)">Astro</span>
+            <h3>Cómo organizo componentes reutilizables en Astro + Tailwind</h3>
+            <p class="desc">Patrones para componer interfaces sin acoplarte al CMS.</p>
+            <div class="meta"><span>21 may</span><span class="dot"></span><span>5 min</span></div>
+            <div class="tags"><span class="pill">Astro</span><span class="pill">Tailwind</span></div>
+          </div>
+        </article>
+        <article class="card" style="padding:0;overflow:hidden">
+          <div class="img" data-label="cover · 16/10" style="aspect-ratio:16/10;border-radius:0;border-left:0;border-right:0;border-top:0"></div>
+          <div style="padding:18px;display:flex;flex-direction:column;gap:10px;flex:1">
+            <span class="label-mono" style="color:var(--em-brand)">Design Systems</span>
+            <h3>Lo que aprendí creando un design system pequeño</h3>
+            <p class="desc">Errores, atajos útiles y decisiones que rentaron.</p>
+            <div class="meta"><span>14 may</span><span class="dot"></span><span>7 min</span></div>
+            <div class="tags"><span class="pill">DS</span><span class="pill">Frontend</span></div>
+          </div>
+        </article>
+        <article class="card" style="padding:0;overflow:hidden">
+          <div class="img" data-label="cover · 16/10" style="aspect-ratio:16/10;border-radius:0;border-left:0;border-right:0;border-top:0"></div>
+          <div style="padding:18px;display:flex;flex-direction:column;gap:10px;flex:1">
+            <span class="label-mono" style="color:var(--em-brand)">Frontend</span>
+            <h3>Por qué no todo necesita ser una SPA</h3>
+            <p class="desc">Cuándo elegir HTML + un poco de JS y por qué importa.</p>
+            <div class="meta"><span>06 may</span><span class="dot"></span><span>4 min</span></div>
+            <div class="tags"><span class="pill">SSR</span><span class="pill">Astro</span></div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Sobre -->
+      <div class="mt-48 mb-16 label-mono">— Sobre este blog</div>
+      <section style="display:grid;grid-template-columns:1.4fr 1fr;gap:24px;padding:28px;border:1px solid var(--em-border-2);border-radius:var(--em-r-xl);background:var(--em-surface)">
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <span class="hand" style="font-size:14px;color:var(--em-brand)">— notas, no documentación —</span>
+          <p style="font-size:17px;line-height:1.55;color:var(--em-fg-2)">
+            Este blog es mi espacio para documentar aprendizajes, decisiones técnicas y experimentos relacionados con frontend, diseño de interfaces y desarrollo web. No pretende ser una documentación perfecta, sino una colección de notas útiles desde la práctica.
+          </p>
+          <div><span class="btn">Conocer más sobre mí <span class="arr">→</span></span></div>
+        </div>
+        <div class="img" data-label="portrait · 4/5" style="aspect-ratio:4/5"></div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="ftr">
+        <div>
+          <div class="sig">Construyendo el futuro de la web,<br/>pixel a pixel.</div>
+          <p style="margin-top:10px">Vitoria-Gasteiz · ES</p>
+        </div>
+        <div><h6>Navegación</h6><ul><li>Inicio</li><li>Artículos</li><li>Categorías</li><li>Sobre el blog</li></ul></div>
+        <div><h6>Edgar</h6><ul><li>Portfolio ↗</li><li>GitHub ↗</li><li>LinkedIn ↗</li><li>Email</li></ul></div>
+        <div><h6>RSS</h6><ul><li>Feed RSS</li><li>JSON feed</li></ul></div>
+      </footer>
+    </div>
+  </section>
+
+  <!-- HOME · V2 — Index cronológico -->
+  <section class="variation">
+    <div class="var-head">
+      <div class="var-tag">H · 02</div>
+      <div>
+        <div class="var-name">Index · Notas cronológicas</div>
+        <div class="var-desc">Estilo cuaderno técnico. Hero corto, todo el resto es feed cronológico con sidebar de categorías. Para quien quiere ver “qué ha publicado últimamente” sin scroll innecesario.</div>
+      </div>
+      <div class="var-tagline">denso, tipo<br/>“log de aprendizajes”</div>
+    </div>
+
+    <div class="wf">
+      <div class="hdr">
+        <div class="hdr-brand"><span class="glyph">+</span> Edgar Martínez <span style="color:var(--em-fg-4);font-weight:400">/ Blog</span></div>
+        <nav class="hdr-nav">
+          <a class="active">Inicio</a><a>Artículos</a><a>Categorías</a><a>Sobre</a>
+          <a class="ext">Portfolio</a>
+        </nav>
+      </div>
+
+      <!-- Hero corto -->
+      <section style="padding:40px 0 32px;border-bottom:1px dashed var(--em-border-3)">
+        <div class="label-mono mb-16">notas · @edgarmtnz</div>
+        <h1 style="font-family:var(--em-font-display);font-weight:900;text-transform:uppercase;letter-spacing:-.03em;font-size:48px;line-height:1;color:var(--em-fg-1)">
+          Frontend, diseño y sistemas web<br/><em style="color:var(--em-brand);font-weight:900;font-style:italic">desde la práctica.</em>
+        </h1>
+        <p style="margin-top:14px;color:var(--em-fg-3);max-width:560px;font-size:14px">
+          Aprendizajes, decisiones técnicas y experimentos. Sin calendario fijo, sin newsletter.
+        </p>
+      </section>
+
+      <!-- Feed + sidebar -->
+      <div style="display:grid;grid-template-columns:1fr 240px;gap:40px;margin-top:32px;position:relative">
+
+        <div>
+          <!-- Destacado discreto -->
+          <article style="border:1px solid var(--em-border-2);border-radius:var(--em-r-lg);padding:20px;background:var(--em-surface);display:grid;grid-template-columns:140px 1fr;gap:20px;align-items:center;margin-bottom:24px;position:relative">
+            <span class="pill solid" style="position:absolute;top:-10px;left:18px;font-size:9px">★ Destacado</span>
+            <div class="img" data-label="cover" style="aspect-ratio:1/1"></div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div class="meta" style="display:flex;gap:8px;font-family:var(--em-font-mono);font-size:10px;color:var(--em-fg-4);letter-spacing:.12em;text-transform:uppercase"><span style="color:var(--em-brand)">Design Systems</span><span>·</span><span>27 may · 6 min</span></div>
+              <h3 style="font-size:20px;font-weight:700;color:var(--em-fg-1);line-height:1.2">Cómo plantearía un sistema de diseño para una web pequeña</h3>
+              <p style="font-size:13px;color:var(--em-fg-3)">Una guía práctica para definir componentes, patrones y decisiones visuales sin sobredimensionar el proyecto.</p>
+            </div>
+          </article>
+
+          <div class="label-mono mb-16">— 2026 / May</div>
+
+          <!-- Feed item -->
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:0">
+            <li style="display:grid;grid-template-columns:80px 56px 1fr auto;gap:18px;padding:18px 0;border-bottom:1px dashed var(--em-border-2);align-items:center">
+              <span class="label-mono">21 · 05</span>
+              <div class="img" style="aspect-ratio:1/1;border-radius:var(--em-r-sm);min-height:0"></div>
+              <div>
+                <span class="label-mono" style="color:var(--em-brand)">Astro</span>
+                <h4 style="font-size:17px;font-weight:600;color:var(--em-fg-1);margin-top:4px">Cómo organizo componentes reutilizables en Astro + Tailwind</h4>
+                <p style="font-size:13px;color:var(--em-fg-3);margin-top:4px">Patrones para componer interfaces sin acoplarte al CMS de turno.</p>
+              </div>
+              <span class="label-mono">5 min →</span>
+            </li>
+            <li style="display:grid;grid-template-columns:80px 56px 1fr auto;gap:18px;padding:18px 0;border-bottom:1px dashed var(--em-border-2);align-items:center">
+              <span class="label-mono">14 · 05</span>
+              <div class="img" style="aspect-ratio:1/1;border-radius:var(--em-r-sm);min-height:0"></div>
+              <div>
+                <span class="label-mono" style="color:var(--em-brand)">Design Systems</span>
+                <h4 style="font-size:17px;font-weight:600;color:var(--em-fg-1);margin-top:4px">Lo que aprendí creando un design system pequeño</h4>
+                <p style="font-size:13px;color:var(--em-fg-3);margin-top:4px">Errores, atajos útiles y decisiones que rentaron.</p>
+              </div>
+              <span class="label-mono">7 min →</span>
+            </li>
+            <li style="display:grid;grid-template-columns:80px 56px 1fr auto;gap:18px;padding:18px 0;border-bottom:1px dashed var(--em-border-2);align-items:center">
+              <span class="label-mono">06 · 05</span>
+              <div class="img" style="aspect-ratio:1/1;border-radius:var(--em-r-sm);min-height:0"></div>
+              <div>
+                <span class="label-mono" style="color:var(--em-brand)">Frontend</span>
+                <h4 style="font-size:17px;font-weight:600;color:var(--em-fg-1);margin-top:4px">Por qué no todo necesita ser una SPA</h4>
+                <p style="font-size:13px;color:var(--em-fg-3);margin-top:4px">Cuándo elegir HTML + un poco de JS y por qué importa.</p>
+              </div>
+              <span class="label-mono">4 min →</span>
+            </li>
+            <li style="display:grid;grid-template-columns:80px 56px 1fr auto;gap:18px;padding:18px 0;border-bottom:1px dashed var(--em-border-2);align-items:center">
+              <span class="label-mono">02 · 05</span>
+              <div class="img" style="aspect-ratio:1/1;border-radius:var(--em-r-sm);min-height:0"></div>
+              <div>
+                <span class="label-mono" style="color:var(--em-brand)">Frontend</span>
+                <h4 style="font-size:17px;font-weight:600;color:var(--em-fg-1);margin-top:4px">Cómo estructuraría un proyecto frontend mantenible</h4>
+                <p style="font-size:13px;color:var(--em-fg-3);margin-top:4px">Carpetas, capas y el “pero ¿dónde va esto?” resuelto.</p>
+              </div>
+              <span class="label-mono">8 min →</span>
+            </li>
+          </ul>
+
+          <div class="label-mono mb-16" style="margin-top:32px">— 2026 / Apr</div>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:0">
+            <li style="display:grid;grid-template-columns:80px 56px 1fr auto;gap:18px;padding:18px 0;border-bottom:1px dashed var(--em-border-2);align-items:center">
+              <span class="label-mono">27 · 04</span>
+              <div class="img" style="aspect-ratio:1/1;border-radius:var(--em-r-sm);min-height:0"></div>
+              <div>
+                <span class="label-mono" style="color:var(--em-brand)">WordPress</span>
+                <h4 style="font-size:17px;font-weight:600;color:var(--em-fg-1);margin-top:4px">Errores típicos al montar una web con WordPress y Tailwind</h4>
+              </div>
+              <span class="label-mono">6 min →</span>
+            </li>
+            <li style="display:grid;grid-template-columns:80px 56px 1fr auto;gap:18px;padding:18px 0;border-bottom:1px dashed var(--em-border-2);align-items:center">
+              <span class="label-mono">15 · 04</span>
+              <div class="img" style="aspect-ratio:1/1;border-radius:var(--em-r-sm);min-height:0"></div>
+              <div>
+                <span class="label-mono" style="color:var(--em-brand)">Notas</span>
+                <h4 style="font-size:17px;font-weight:600;color:var(--em-fg-1);margin-top:4px">Notas sobre rendimiento web en proyectos reales</h4>
+              </div>
+              <span class="label-mono">5 min →</span>
+            </li>
+          </ul>
+
+          <div style="display:flex;justify-content:center;margin-top:32px"><span class="btn">Ver todos los artículos <span class="arr">→</span></span></div>
+        </div>
+
+        <!-- Sidebar -->
+        <aside style="display:flex;flex-direction:column;gap:24px;position:sticky;top:80px;align-self:start">
+          <div>
+            <h6 class="label-mono" style="margin-bottom:10px">Categorías</h6>
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--em-fg-3)">
+              <li style="display:flex;justify-content:space-between"><span style="color:var(--em-brand)">Frontend</span><span class="label-mono">12</span></li>
+              <li style="display:flex;justify-content:space-between"><span>Design Systems</span><span class="label-mono">8</span></li>
+              <li style="display:flex;justify-content:space-between"><span>Astro</span><span class="label-mono">6</span></li>
+              <li style="display:flex;justify-content:space-between"><span>Next.js</span><span class="label-mono">4</span></li>
+              <li style="display:flex;justify-content:space-between"><span>WordPress</span><span class="label-mono">3</span></li>
+              <li style="display:flex;justify-content:space-between"><span>Shopify</span><span class="label-mono">2</span></li>
+              <li style="display:flex;justify-content:space-between"><span>Proyectos</span><span class="label-mono">5</span></li>
+              <li style="display:flex;justify-content:space-between"><span>Notas</span><span class="label-mono">14</span></li>
+            </ul>
+          </div>
+          <div>
+            <h6 class="label-mono" style="margin-bottom:10px">Sobre el blog</h6>
+            <p style="font-size:12px;color:var(--em-fg-3);line-height:1.55">Notas y aprendizajes que voy escribiendo mientras construyo productos web.</p>
+            <span class="btn" style="margin-top:12px;padding:6px 12px;font-size:10px">Saber más <span class="arr">→</span></span>
+          </div>
+          <div>
+            <h6 class="label-mono" style="margin-bottom:10px">Suscríbete</h6>
+            <p style="font-size:12px;color:var(--em-fg-3);line-height:1.55">Por RSS, sin newsletter.</p>
+            <div style="margin-top:8px;display:flex;gap:6px"><span class="pill">RSS</span><span class="pill">JSON</span></div>
+          </div>
+        </aside>
+
+        <span class="arrow" style="left:62%;top:-26px;transform:rotate(-8deg)">↘ sidebar fijo al scroll</span>
+      </div>
+
+      <footer class="ftr" style="margin-top:48px">
+        <div><div class="sig">Edgar <em>Martínez</em></div><p style="margin-top:8px">Frontend developer · Vitoria-Gasteiz</p></div>
+        <div><h6>Blog</h6><ul><li>Artículos</li><li>Categorías</li><li>RSS</li></ul></div>
+        <div><h6>Edgar</h6><ul><li>Portfolio ↗</li><li>GitHub ↗</li><li>LinkedIn ↗</li><li>Email</li></ul></div>
+        <div><h6>Año</h6><ul><li>2026</li><li>2025</li><li>2024</li></ul></div>
+      </footer>
+    </div>
+  </section>
+
+  <!-- HOME · V3 — Bento Híbrido -->
+  <section class="variation">
+    <div class="var-head">
+      <div class="var-tag">H · 03</div>
+      <div>
+        <div class="var-name">Bento · Continuidad con portfolio</div>
+        <div class="var-desc">Hereda la rejilla bento del portfolio: destacado grande, categorías como mosaico, últimos en lista compacta. La pieza más “de la casa” pero asume que el lector ya viene del portfolio.</div>
+      </div>
+      <div class="var-tagline">misma gramática<br/>que el portfolio</div>
+    </div>
+
+    <div class="wf">
+      <div class="hdr">
+        <div class="hdr-brand"><span class="glyph">+</span> Edgar Martínez <span style="color:var(--em-fg-4);font-weight:400">/ Blog</span></div>
+        <nav class="hdr-nav">
+          <a class="active">Inicio</a><a>Artículos</a><a>Categorías</a><a>Sobre</a>
+          <a class="ext">Portfolio</a>
+        </nav>
+      </div>
+
+      <!-- Mini hero -->
+      <section style="padding:48px 0 24px">
+        <div style="display:grid;grid-template-columns:1fr auto;gap:32px;align-items:end">
+          <div>
+            <div class="label-mono mb-16">blog · v1 · 2026</div>
+            <h1 style="font-family:var(--em-font-display);font-weight:900;text-transform:uppercase;letter-spacing:-.04em;font-size:80px;line-height:.95;color:var(--em-fg-1);position:relative">
+              Notas
+              <span style="position:absolute;top:6px;left:6px;color:var(--em-brand);opacity:.18;text-shadow:none;z-index:-1">Notas</span>
+              <em style="font-style:italic;color:var(--em-brand);font-weight:900;display:block;font-size:36px;letter-spacing:-.02em;margin-top:4px">desde la práctica</em>
+            </h1>
+          </div>
+          <p style="max-width:280px;color:var(--em-fg-3);font-size:14px;text-align:right;padding-bottom:14px">
+            Aprendizajes, decisiones técnicas y experimentos que voy documentando mientras construyo productos web.
+          </p>
+        </div>
+      </section>
+
+      <!-- BENTO -->
+      <div style="display:grid;grid-template-columns:1.4fr 1fr;grid-template-rows:auto auto;gap:16px;margin-top:24px">
+
+        <!-- Destacado grande -->
+        <article style="grid-row:span 2;border:1px solid var(--em-border-2);border-radius:var(--em-r-xl);background:var(--em-surface);padding:24px;display:flex;flex-direction:column;gap:18px;position:relative">
+          <span class="pill solid" style="align-self:flex-start;font-size:9px">★ Destacado</span>
+          <div class="img" data-label="cover · 16/10" style="aspect-ratio:16/10"></div>
+          <div class="meta" style="display:flex;gap:10px;align-items:center;font-family:var(--em-font-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--em-fg-4)">
+            <span style="color:var(--em-brand)">Design Systems</span><span>·</span><span>27 may 2026</span><span>·</span><span>6 min</span>
+          </div>
+          <h3 style="font-size:28px;font-weight:700;color:var(--em-fg-1);line-height:1.15;letter-spacing:-.01em">Cómo plantearía un sistema de diseño para una web pequeña</h3>
+          <p style="font-size:14px;color:var(--em-fg-3);line-height:1.55">Una guía práctica para definir componentes, patrones y decisiones visuales sin sobredimensionar el proyecto.</p>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:auto">
+            <div style="display:flex;gap:6px"><span class="pill">DS</span><span class="pill">Frontend</span><span class="pill">UI</span></div>
+            <span class="btn primary" style="padding:8px 14px">Leer <span class="arr">→</span></span>
+          </div>
+        </article>
+
+        <!-- Categorías bento -->
+        <article style="border:1px solid var(--em-border-2);border-radius:var(--em-r-xl);background:var(--em-surface);padding:20px;display:flex;flex-direction:column">
+          <div style="display:flex;justify-content:space-between;margin-bottom:14px">
+            <span class="label-mono">— Categorías</span><span class="label-mono" style="color:var(--em-fg-5)">8</span>
+          </div>
+          <div class="grid-2" style="flex:1">
+            <div class="box solid" style="padding:14px;display:flex;flex-direction:column;justify-content:space-between"><span style="font-size:16px;font-weight:600;color:var(--em-fg-1)">Frontend</span><span class="label-mono">12 art.</span></div>
+            <div class="box solid" style="padding:14px;display:flex;flex-direction:column;justify-content:space-between"><span style="font-size:16px;font-weight:600;color:var(--em-fg-1)">Design Systems</span><span class="label-mono">08 art.</span></div>
+            <div class="box solid" style="padding:14px;display:flex;flex-direction:column;justify-content:space-between"><span style="font-size:16px;font-weight:600;color:var(--em-fg-1)">Astro</span><span class="label-mono">06 art.</span></div>
+            <div class="box solid" style="padding:14px;display:flex;flex-direction:column;justify-content:space-between"><span style="font-size:16px;font-weight:600;color:var(--em-fg-1)">Next.js</span><span class="label-mono">04 art.</span></div>
+            <div class="box solid" style="padding:14px;display:flex;flex-direction:column;justify-content:space-between"><span style="font-size:16px;font-weight:600;color:var(--em-fg-1)">WordPress</span><span class="label-mono">03 art.</span></div>
+            <div class="box solid" style="padding:14px;display:flex;flex-direction:column;justify-content:space-between"><span style="font-size:16px;font-weight:600;color:var(--em-fg-1)">Notas</span><span class="label-mono">14 art.</span></div>
+          </div>
+          <span class="label-mono" style="margin-top:14px;color:var(--em-fg-4)">Ver todas las categorías →</span>
+        </article>
+
+        <!-- Sobre block -->
+        <article style="border:1px solid var(--em-border-2);border-radius:var(--em-r-xl);background:var(--em-surface);padding:24px;display:flex;flex-direction:column;gap:12px">
+          <span class="label-mono">— Sobre este blog</span>
+          <p style="font-size:14px;color:var(--em-fg-2);line-height:1.55">Mi espacio para documentar aprendizajes, decisiones técnicas y experimentos. Notas útiles desde la práctica, no documentación.</p>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:auto">
+            <span class="hand" style="color:var(--em-brand);font-size:14px">— escrito en abierto —</span>
+            <span class="btn" style="padding:6px 12px;font-size:10px">Saber más <span class="arr">→</span></span>
+          </div>
+        </article>
+      </div>
+
+      <!-- Últimos compacto -->
+      <div class="mt-32 mb-16" style="display:flex;justify-content:space-between;align-items:baseline">
+        <span class="label-mono">— Últimos artículos</span><span class="label-mono" style="color:var(--em-fg-4)">Ver todos →</span>
+      </div>
+      <div style="border:1px solid var(--em-border-2);border-radius:var(--em-r-xl);background:var(--em-surface);overflow:hidden">
+        <div style="display:grid;grid-template-columns:96px 48px 1.4fr 1fr auto;padding:12px 20px;border-bottom:1px solid var(--em-border-2);gap:16px;align-items:center">
+          <span class="label-mono">21 may</span>
+          <div class="img" style="width:48px;height:48px;border-radius:var(--em-r-sm);min-height:0"></div>
+          <span style="font-size:15px;font-weight:500;color:var(--em-fg-1)">Cómo organizo componentes reutilizables en Astro + Tailwind</span>
+          <span class="label-mono" style="color:var(--em-brand)">Astro</span>
+          <span class="label-mono">5 min →</span>
+        </div>
+        <div style="display:grid;grid-template-columns:96px 48px 1.4fr 1fr auto;padding:12px 20px;border-bottom:1px solid var(--em-border-2);gap:16px;align-items:center">
+          <span class="label-mono">14 may</span>
+          <div class="img" style="width:48px;height:48px;border-radius:var(--em-r-sm);min-height:0"></div>
+          <span style="font-size:15px;font-weight:500;color:var(--em-fg-1)">Lo que aprendí creando un design system pequeño</span>
+          <span class="label-mono" style="color:var(--em-brand)">Design Systems</span>
+          <span class="label-mono">7 min →</span>
+        </div>
+        <div style="display:grid;grid-template-columns:96px 48px 1.4fr 1fr auto;padding:12px 20px;border-bottom:1px solid var(--em-border-2);gap:16px;align-items:center">
+          <span class="label-mono">06 may</span>
+          <div class="img" style="width:48px;height:48px;border-radius:var(--em-r-sm);min-height:0"></div>
+          <span style="font-size:15px;font-weight:500;color:var(--em-fg-1)">Por qué no todo necesita ser una SPA</span>
+          <span class="label-mono" style="color:var(--em-brand)">Frontend</span>
+          <span class="label-mono">4 min →</span>
+        </div>
+        <div style="display:grid;grid-template-columns:120px 1.4fr 1fr auto;padding:14px 20px;gap:20px;align-items:center">
+          <span class="label-mono">02 may</span>
+          <div class="img" style="width:48px;height:48px;border-radius:var(--em-r-sm);min-height:0"></div>
+          <span style="font-size:15px;font-weight:500;color:var(--em-fg-1)">Cómo estructuraría un proyecto frontend mantenible</span>
+          <span class="label-mono" style="color:var(--em-brand)">Frontend</span>
+          <span class="label-mono">8 min →</span>
+        </div>
+      </div>
+
+      <footer class="ftr" style="margin-top:32px">
+        <div><div class="sig">Diseñado y desarrollado<br/>con cuidado desde Vitoria.</div></div>
+        <div><h6>Blog</h6><ul><li>Inicio</li><li>Artículos</li><li>Categorías</li></ul></div>
+        <div><h6>Edgar</h6><ul><li>Portfolio ↗</li><li>GitHub ↗</li><li>LinkedIn ↗</li></ul></div>
+        <div><h6>RSS</h6><ul><li>Feed</li><li>JSON</li></ul></div>
+      </footer>
+    </div>
+  </section>
+
+</main>
+
+<!-- ───────────────────── LISTADO ───────────────────── -->
+<main class="page" id="page-listado" data-screen-label="Artículos">
+
+  <!-- LISTADO · V1 — Lista editorial larga -->
+  <section class="variation">
+    <div class="var-head">
+      <div class="var-tag">L · 01</div>
+      <div>
+        <div class="var-name">Lista editorial · una columna</div>
+        <div class="var-desc">Cada artículo respira: título grande, descripción, meta, separador. Pensado para una persona que quiere leer cabeceras sin saturarse de imágenes.</div>
+      </div>
+      <div class="var-tagline">como un sumario<br/>de revista impresa</div>
+    </div>
+
+    <div class="wf">
+      <div class="hdr">
+        <div class="hdr-brand"><span class="glyph">+</span> Edgar Martínez <span style="color:var(--em-fg-4);font-weight:400">/ Blog</span></div>
+        <nav class="hdr-nav">
+          <a>Inicio</a><a class="active">Artículos</a><a>Categorías</a><a>Sobre</a>
+          <a class="ext">Portfolio</a>
+        </nav>
+      </div>
+
+      <!-- Page header -->
+      <section style="padding:48px 0 24px;border-bottom:1px dashed var(--em-border-3);position:relative">
+        <div style="display:grid;grid-template-columns:1fr auto;align-items:end;gap:32px">
+          <div>
+            <div class="label-mono mb-16">— archivo completo</div>
+            <h1 style="font-family:var(--em-font-display);font-weight:900;text-transform:uppercase;letter-spacing:-.04em;font-size:80px;line-height:.95;color:var(--em-fg-1)">Artículos</h1>
+            <p style="margin-top:14px;color:var(--em-fg-3);max-width:560px;font-size:15px">Todo lo que he ido publicando — frontend, diseño y sistemas. Orden cronológico, filtrable por categoría.</p>
+          </div>
+          <div style="text-align:right;font-family:var(--em-font-mono);font-size:11px;letter-spacing:.15em;color:var(--em-fg-4);text-transform:uppercase">
+            <div style="font-size:36px;color:var(--em-brand);font-family:var(--em-font-display);font-weight:900;line-height:1;letter-spacing:-.02em">54</div>
+            <div style="margin-top:6px">artículos publicados</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Filtros sticky -->
+      <div style="position:sticky;top:80px;z-index:5;background:linear-gradient(to bottom, var(--em-bg) 70%, transparent);padding:18px 0;margin-top:16px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <span class="label-mono" style="margin-right:8px">Filtrar:</span>
+        <span class="pill solid">Todos</span>
+        <span class="pill">Frontend</span><span class="pill">Design Systems</span><span class="pill">Astro</span>
+        <span class="pill">Next.js</span><span class="pill">WordPress</span><span class="pill">Shopify</span>
+        <span class="pill">Proyectos</span><span class="pill">Notas</span>
+        <span style="margin-left:auto" class="label-mono">Orden: Reciente ↓</span>
+      </div>
+
+      <!-- Lista -->
+      <ul style="list-style:none;display:flex;flex-direction:column">
+        <li style="padding:32px 0;border-bottom:1px dashed var(--em-border-2);display:grid;grid-template-columns:140px 160px 1fr auto;gap:24px;align-items:start">
+          <div>
+            <div class="label-mono">27 · 05 · 2026</div>
+            <div class="label-mono" style="color:var(--em-brand);margin-top:8px">Design Systems</div>
+          </div>
+          <div class="img" data-label="cover" style="aspect-ratio:4/3"></div>
+          <div>
+            <h3 style="font-size:26px;font-weight:700;color:var(--em-fg-1);line-height:1.2;letter-spacing:-.01em">Cómo plantearía un sistema de diseño para una web pequeña</h3>
+            <p style="margin-top:8px;color:var(--em-fg-3);font-size:14px;max-width:60ch;line-height:1.55">Una guía práctica para definir componentes, patrones y decisiones visuales sin sobredimensionar el proyecto.</p>
+            <div style="margin-top:14px;display:flex;gap:6px;flex-wrap:wrap"><span class="pill">DS</span><span class="pill">Frontend</span><span class="pill">UI</span></div>
+          </div>
+          <div style="text-align:right">
+            <span class="label-mono">06 min</span>
+            <div style="margin-top:14px;font-family:var(--em-font-hand);font-size:24px;color:var(--em-brand)">→</div>
+          </div>
+        </li>
+        <li style="padding:32px 0;border-bottom:1px dashed var(--em-border-2);display:grid;grid-template-columns:140px 160px 1fr auto;gap:24px;align-items:start">
+          <div>
+            <div class="label-mono">21 · 05 · 2026</div>
+            <div class="label-mono" style="color:var(--em-brand);margin-top:8px">Astro</div>
+          </div>
+          <div class="img" data-label="cover" style="aspect-ratio:4/3"></div>
+          <div>
+            <h3 style="font-size:26px;font-weight:700;color:var(--em-fg-1);line-height:1.2;letter-spacing:-.01em">Cómo organizo componentes reutilizables en Astro + Tailwind</h3>
+            <p style="margin-top:8px;color:var(--em-fg-3);font-size:14px;max-width:60ch;line-height:1.55">Patrones para componer interfaces sin acoplarte al CMS, y cuándo extraer cada cosa a su propio archivo.</p>
+            <div style="margin-top:14px;display:flex;gap:6px;flex-wrap:wrap"><span class="pill">Astro</span><span class="pill">Tailwind</span></div>
+          </div>
+          <div style="text-align:right">
+            <span class="label-mono">05 min</span>
+            <div style="margin-top:14px;font-family:var(--em-font-hand);font-size:24px;color:var(--em-brand)">→</div>
+          </div>
+        </li>
+        <li style="padding:32px 0;border-bottom:1px dashed var(--em-border-2);display:grid;grid-template-columns:140px 160px 1fr auto;gap:24px;align-items:start">
+          <div>
+            <div class="label-mono">14 · 05 · 2026</div>
+            <div class="label-mono" style="color:var(--em-brand);margin-top:8px">Design Systems</div>
+          </div>
+          <div class="img" data-label="cover" style="aspect-ratio:4/3"></div>
+          <div>
+            <h3 style="font-size:26px;font-weight:700;color:var(--em-fg-1);line-height:1.2;letter-spacing:-.01em">Lo que aprendí creando un design system pequeño</h3>
+            <p style="margin-top:8px;color:var(--em-fg-3);font-size:14px;max-width:60ch;line-height:1.55">Errores, atajos útiles y decisiones que rentaron a la hora de mantenerlo en el tiempo.</p>
+            <div style="margin-top:14px;display:flex;gap:6px;flex-wrap:wrap"><span class="pill">DS</span><span class="pill">Tokens</span><span class="pill">Sistema</span></div>
+          </div>
+          <div style="text-align:right">
+            <span class="label-mono">07 min</span>
+            <div style="margin-top:14px;font-family:var(--em-font-hand);font-size:24px;color:var(--em-brand)">→</div>
+          </div>
+        </li>
+        <li style="padding:32px 0;border-bottom:1px dashed var(--em-border-2);display:grid;grid-template-columns:140px 160px 1fr auto;gap:24px;align-items:start">
+          <div>
+            <div class="label-mono">06 · 05 · 2026</div>
+            <div class="label-mono" style="color:var(--em-brand);margin-top:8px">Frontend</div>
+          </div>
+          <div class="img" data-label="cover" style="aspect-ratio:4/3"></div>
+          <div>
+            <h3 style="font-size:26px;font-weight:700;color:var(--em-fg-1);line-height:1.2;letter-spacing:-.01em">Por qué no todo necesita ser una SPA</h3>
+            <p style="margin-top:8px;color:var(--em-fg-3);font-size:14px;max-width:60ch;line-height:1.55">Cuándo elegir HTML + un poco de JS y por qué importa para usuarios y para tu cordura.</p>
+          </div>
+          <div style="text-align:right">
+            <span class="label-mono">04 min</span>
+            <div style="margin-top:14px;font-family:var(--em-font-hand);font-size:24px;color:var(--em-brand)">→</div>
+          </div>
+        </li>
+        <li style="padding:32px 0;display:grid;grid-template-columns:140px 160px 1fr auto;gap:24px;align-items:start">
+          <div>
+            <div class="label-mono">02 · 05 · 2026</div>
+            <div class="label-mono" style="color:var(--em-brand);margin-top:8px">Frontend</div>
+          </div>
+          <div class="img" data-label="cover" style="aspect-ratio:4/3"></div>
+          <div>
+            <h3 style="font-size:26px;font-weight:700;color:var(--em-fg-1);line-height:1.2;letter-spacing:-.01em">Cómo estructuraría un proyecto frontend mantenible</h3>
+            <p style="margin-top:8px;color:var(--em-fg-3);font-size:14px;max-width:60ch;line-height:1.55">Carpetas, capas y el “pero ¿dónde va esto?” resuelto.</p>
+          </div>
+          <div style="text-align:right">
+            <span class="label-mono">08 min</span>
+            <div style="margin-top:14px;font-family:var(--em-font-hand);font-size:24px;color:var(--em-brand)">→</div>
+          </div>
+        </li>
+      </ul>
+
+      <div style="display:flex;justify-content:center;margin-top:24px"><span class="btn">Cargar más artículos <span class="arr">↓</span></span></div>
+
+      <footer class="ftr" style="margin-top:48px">
+        <div><div class="sig">Edgar <em>Martínez</em></div><p style="margin-top:8px">Vitoria-Gasteiz · ES</p></div>
+        <div><h6>Blog</h6><ul><li>Artículos</li><li>Categorías</li><li>RSS</li></ul></div>
+        <div><h6>Edgar</h6><ul><li>Portfolio ↗</li><li>GitHub ↗</li><li>LinkedIn ↗</li></ul></div>
+        <div><h6>Otros</h6><ul><li>2026</li><li>2025</li></ul></div>
+      </footer>
+    </div>
+  </section>
+
+  <!-- LISTADO · V2 — Grid 2 columnas -->
+  <section class="variation">
+    <div class="var-head">
+      <div class="var-tag">L · 02</div>
+      <div>
+        <div class="var-name">Grid · cards con cover</div>
+        <div class="var-desc">Dos columnas, cada card con imagen, categoría y meta. Más visual; útil si los artículos llevan portada de forma habitual.</div>
+      </div>
+      <div class="var-tagline">cards con cover<br/>imagen tira mucho</div>
+    </div>
+
+    <div class="wf">
+      <div class="hdr">
+        <div class="hdr-brand"><span class="glyph">+</span> Edgar Martínez <span style="color:var(--em-fg-4);font-weight:400">/ Blog</span></div>
+        <nav class="hdr-nav">
+          <a>Inicio</a><a class="active">Artículos</a><a>Categorías</a><a>Sobre</a>
+          <a class="ext">Portfolio</a>
+        </nav>
+      </div>
+
+      <section style="padding:48px 0 32px">
+        <div class="label-mono mb-16">— 54 artículos</div>
+        <h1 style="font-family:var(--em-font-display);font-weight:900;text-transform:uppercase;letter-spacing:-.04em;font-size:64px;line-height:.95;color:var(--em-fg-1)">Artículos</h1>
+        <p style="margin-top:14px;color:var(--em-fg-3);max-width:560px;font-size:15px">Todo lo que he ido publicando, de lo más reciente a lo más antiguo.</p>
+      </section>
+
+      <!-- Filtros -->
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;border-top:1px dashed var(--em-border-3);border-bottom:1px dashed var(--em-border-3);padding:16px 0;margin-bottom:32px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <span class="pill solid">Todos</span>
+          <span class="pill">Frontend</span><span class="pill">Design Systems</span><span class="pill">Astro</span>
+          <span class="pill">Next.js</span><span class="pill">+4 más</span>
+        </div>
+        <div style="display:flex;gap:14px;align-items:center">
+          <span class="label-mono">Buscar [⌘ K]</span>
+          <span class="label-mono">Reciente ↓</span>
+        </div>
+      </div>
+
+      <!-- Grid cards -->
+      <div class="grid-2">
+        <article class="card" style="padding:0;overflow:hidden">
+          <div class="img" data-label="cover" style="aspect-ratio:16/9;border-radius:0;border-left:0;border-right:0;border-top:0"></div>
+          <div style="padding:20px;display:flex;flex-direction:column;gap:10px">
+            <div class="meta"><span style="color:var(--em-brand)">Design Systems</span><span class="dot"></span><span>27 may 2026</span><span class="dot"></span><span>6 min</span></div>
+            <h3>Cómo plantearía un sistema de diseño para una web pequeña</h3>
+            <p class="desc">Una guía práctica para definir componentes, patrones y decisiones visuales sin sobredimensionar.</p>
+            <div class="tags"><span class="pill">DS</span><span class="pill">UI</span></div>
+          </div>
+        </article>
+        <article class="card" style="padding:0;overflow:hidden">
+          <div class="img" data-label="cover" style="aspect-ratio:16/9;border-radius:0;border-left:0;border-right:0;border-top:0"></div>
+          <div style="padding:20px;display:flex;flex-direction:column;gap:10px">
+            <div class="meta"><span style="color:var(--em-brand)">Astro</span><span class="dot"></span><span>21 may 2026</span><span class="dot"></span><span>5 min</span></div>
+            <h3>Cómo organizo componentes reutilizables en Astro + Tailwind</h3>
+            <p class="desc">Patrones para componer interfaces sin acoplarte al CMS de turno.</p>
+            <div class="tags"><span class="pill">Astro</span><span class="pill">Tailwind</span></div>
+          </div>
+        </article>
+        <article class="card" style="padding:0;overflow:hidden">
+          <div class="img" data-label="cover" style="aspect-ratio:16/9;border-radius:0;border-left:0;border-right:0;border-top:0"></div>
+          <div style="padding:20px;display:flex;flex-direction:column;gap:10px">
+            <div class="meta"><span style="color:var(--em-brand)">Design Systems</span><span class="dot"></span><span>14 may 2026</span><span class="dot"></span><span>7 min</span></div>
+            <h3>Lo que aprendí creando un design system pequeño</h3>
+            <p class="desc">Errores, atajos útiles y decisiones que rentaron.</p>
+            <div class="tags"><span class="pill">DS</span><span class="pill">Tokens</span></div>
+          </div>
+        </article>
+        <article class="card" style="padding:0;overflow:hidden">
+          <div class="img" data-label="cover" style="aspect-ratio:16/9;border-radius:0;border-left:0;border-right:0;border-top:0"></div>
+          <div style="padding:20px;display:flex;flex-direction:column;gap:10px">
+            <div class="meta"><span style="color:var(--em-brand)">Frontend</span><span class="dot"></span><span>06 may 2026</span><span class="dot"></span><span>4 min</span></div>
+            <h3>Por qué no todo necesita ser una SPA</h3>
+            <p class="desc">Cuándo elegir HTML + un poco de JS y por qué importa.</p>
+            <div class="tags"><span class="pill">SSR</span><span class="pill">Astro</span></div>
+          </div>
+        </article>
+        <article class="card" style="padding:0;overflow:hidden">
+          <div class="img" data-label="cover" style="aspect-ratio:16/9;border-radius:0;border-left:0;border-right:0;border-top:0"></div>
+          <div style="padding:20px;display:flex;flex-direction:column;gap:10px">
+            <div class="meta"><span style="color:var(--em-brand)">Frontend</span><span class="dot"></span><span>02 may 2026</span><span class="dot"></span><span>8 min</span></div>
+            <h3>Cómo estructuraría un proyecto frontend mantenible</h3>
+            <p class="desc">Carpetas, capas y decisiones que escalan.</p>
+            <div class="tags"><span class="pill">Frontend</span><span class="pill">Arquitectura</span></div>
+          </div>
+        </article>
+        <article class="card" style="padding:0;overflow:hidden">
+          <div class="img" data-label="cover" style="aspect-ratio:16/9;border-radius:0;border-left:0;border-right:0;border-top:0"></div>
+          <div style="padding:20px;display:flex;flex-direction:column;gap:10px">
+            <div class="meta"><span style="color:var(--em-brand)">WordPress</span><span class="dot"></span><span>27 abr 2026</span><span class="dot"></span><span>6 min</span></div>
+            <h3>Errores típicos al montar una web con WordPress y Tailwind</h3>
+            <p class="desc">Lo que ojalá supiera antes de empezar mi primer proyecto.</p>
+            <div class="tags"><span class="pill">WP</span><span class="pill">Tailwind</span></div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Paginación -->
+      <div style="display:flex;justify-content:center;align-items:center;gap:10px;margin-top:32px">
+        <span class="pill">← Anterior</span>
+        <span class="pill solid">1</span>
+        <span class="pill">2</span>
+        <span class="pill">3</span>
+        <span class="label-mono">…</span>
+        <span class="pill">9</span>
+        <span class="pill">Siguiente →</span>
+      </div>
+
+      <footer class="ftr" style="margin-top:48px">
+        <div><div class="sig">Edgar <em>Martínez</em></div></div>
+        <div><h6>Blog</h6><ul><li>Inicio</li><li>Categorías</li><li>Sobre</li></ul></div>
+        <div><h6>Edgar</h6><ul><li>Portfolio ↗</li><li>GitHub ↗</li><li>LinkedIn ↗</li></ul></div>
+        <div><h6>RSS</h6><ul><li>Feed</li></ul></div>
+      </footer>
+    </div>
+  </section>
+
+  <!-- LISTADO · V3 — Tabla densa -->
+  <section class="variation">
+    <div class="var-head">
+      <div class="var-tag">L · 03</div>
+      <div>
+        <div class="var-name">Archivo · tabla densa</div>
+        <div class="var-desc">Modo “archivo completo” para gente que quiere escanear muchos títulos rápido. Filtros laterales persistentes, una fila por artículo, ordenable.</div>
+      </div>
+      <div class="var-tagline">tipo /uses<br/>tipo /archive</div>
+    </div>
+
+    <div class="wf">
+      <div class="hdr">
+        <div class="hdr-brand"><span class="glyph">+</span> Edgar Martínez <span style="color:var(--em-fg-4);font-weight:400">/ Blog</span></div>
+        <nav class="hdr-nav">
+          <a>Inicio</a><a class="active">Artículos</a><a>Categorías</a><a>Sobre</a>
+          <a class="ext">Portfolio</a>
+        </nav>
+      </div>
+
+      <section style="padding:40px 0 28px;display:flex;justify-content:space-between;align-items:end;gap:32px;border-bottom:1px dashed var(--em-border-3)">
+        <div>
+          <div class="label-mono mb-16">— archivo</div>
+          <h1 style="font-family:var(--em-font-display);font-weight:900;text-transform:uppercase;letter-spacing:-.04em;font-size:56px;line-height:1;color:var(--em-fg-1)">Artículos</h1>
+          <p style="margin-top:12px;color:var(--em-fg-3);max-width:520px;font-size:14px">Vista completa, filtrable y ordenable. Para los que prefieren escanear.</p>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center">
+          <span class="pill brand">Tabla</span><span class="pill">Grid</span>
+          <span class="label-mono" style="margin-left:14px">Buscar ⌘K</span>
+        </div>
+      </section>
+
+      <div style="display:grid;grid-template-columns:200px 1fr;gap:32px;margin-top:32px">
+
+        <!-- Sidebar filtros -->
+        <aside style="display:flex;flex-direction:column;gap:18px;position:sticky;top:80px;align-self:start">
+          <div>
+            <h6 class="label-mono" style="margin-bottom:10px">Categoría</h6>
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:6px;font-size:13px">
+              <li style="display:flex;justify-content:space-between;color:var(--em-fg-1)"><span>Todas</span><span class="label-mono">54</span></li>
+              <li style="display:flex;justify-content:space-between;color:var(--em-brand)"><span>Frontend</span><span class="label-mono">12</span></li>
+              <li style="display:flex;justify-content:space-between"><span style="color:var(--em-fg-3)">Design Systems</span><span class="label-mono">08</span></li>
+              <li style="display:flex;justify-content:space-between"><span style="color:var(--em-fg-3)">Astro</span><span class="label-mono">06</span></li>
+              <li style="display:flex;justify-content:space-between"><span style="color:var(--em-fg-3)">Next.js</span><span class="label-mono">04</span></li>
+              <li style="display:flex;justify-content:space-between"><span style="color:var(--em-fg-3)">WordPress</span><span class="label-mono">03</span></li>
+              <li style="display:flex;justify-content:space-between"><span style="color:var(--em-fg-3)">Shopify</span><span class="label-mono">02</span></li>
+              <li style="display:flex;justify-content:space-between"><span style="color:var(--em-fg-3)">Proyectos</span><span class="label-mono">05</span></li>
+              <li style="display:flex;justify-content:space-between"><span style="color:var(--em-fg-3)">Notas</span><span class="label-mono">14</span></li>
+            </ul>
+          </div>
+          <div>
+            <h6 class="label-mono" style="margin-bottom:10px">Año</h6>
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--em-fg-3)">
+              <li style="display:flex;justify-content:space-between;color:var(--em-fg-1)"><span>2026</span><span class="label-mono">18</span></li>
+              <li style="display:flex;justify-content:space-between"><span>2025</span><span class="label-mono">22</span></li>
+              <li style="display:flex;justify-content:space-between"><span>2024</span><span class="label-mono">14</span></li>
+            </ul>
+          </div>
+          <div>
+            <h6 class="label-mono" style="margin-bottom:10px">Tags populares</h6>
+            <div style="display:flex;flex-wrap:wrap;gap:6px"><span class="pill">Astro</span><span class="pill">Tailwind</span><span class="pill">DS</span><span class="pill">UI</span><span class="pill">SSR</span></div>
+          </div>
+        </aside>
+
+        <!-- Tabla -->
+        <div>
+          <div style="display:grid;grid-template-columns:90px 36px 1fr 140px 60px;padding:12px 16px;border-bottom:1px solid var(--em-border-2);font-family:var(--em-font-mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--em-fg-5);background:rgba(255,255,255,.02);border-radius:var(--em-r-sm) var(--em-r-sm) 0 0">
+            <span>Fecha ↓</span><span></span><span>Título</span><span>Categoría</span><span style="text-align:right">Min</span>
+          </div>
+          <div style="display:grid;grid-template-columns:90px 36px 1fr 140px 60px;padding:10px 16px;border-bottom:1px solid var(--em-border-1);align-items:center">
+            <span class="label-mono">27.05.26</span>
+            <div class="img" style="width:32px;height:32px;border-radius:var(--em-r-xs);min-height:0"></div>
+            <span style="font-size:14px;color:var(--em-fg-1)">Cómo plantearía un sistema de diseño para una web pequeña</span>
+            <span class="label-mono" style="color:var(--em-brand)">Design Systems</span>
+            <span class="label-mono" style="text-align:right">06</span>
+          </div>
+          <div style="display:grid;grid-template-columns:90px 36px 1fr 140px 60px;padding:10px 16px;border-bottom:1px solid var(--em-border-1);align-items:center">
+            <span class="label-mono">21.05.26</span>
+            <div class="img" style="width:32px;height:32px;border-radius:var(--em-r-xs);min-height:0"></div>
+            <span style="font-size:14px;color:var(--em-fg-1)">Cómo organizo componentes reutilizables en Astro + Tailwind</span>
+            <span class="label-mono" style="color:var(--em-brand)">Astro</span>
+            <span class="label-mono" style="text-align:right">05</span>
+          </div>
+          <div style="display:grid;grid-template-columns:90px 36px 1fr 140px 60px;padding:10px 16px;border-bottom:1px solid var(--em-border-1);align-items:center">
+            <span class="label-mono">14.05.26</span>
+            <div class="img" style="width:32px;height:32px;border-radius:var(--em-r-xs);min-height:0"></div>
+            <span style="font-size:14px;color:var(--em-fg-1)">Lo que aprendí creando un design system pequeño</span>
+            <span class="label-mono" style="color:var(--em-brand)">Design Systems</span>
+            <span class="label-mono" style="text-align:right">07</span>
+          </div>
+          <div style="display:grid;grid-template-columns:90px 36px 1fr 140px 60px;padding:10px 16px;border-bottom:1px solid var(--em-border-1);align-items:center">
+            <span class="label-mono">06.05.26</span>
+            <div class="img" style="width:32px;height:32px;border-radius:var(--em-r-xs);min-height:0"></div>
+            <span style="font-size:14px;color:var(--em-fg-1)">Por qué no todo necesita ser una SPA</span>
+            <span class="label-mono" style="color:var(--em-brand)">Frontend</span>
+            <span class="label-mono" style="text-align:right">04</span>
+          </div>
+          <div style="display:grid;grid-template-columns:90px 36px 1fr 140px 60px;padding:10px 16px;border-bottom:1px solid var(--em-border-1);align-items:center">
+            <span class="label-mono">02.05.26</span>
+            <div class="img" style="width:32px;height:32px;border-radius:var(--em-r-xs);min-height:0"></div>
+            <span style="font-size:14px;color:var(--em-fg-1)">Cómo estructuraría un proyecto frontend mantenible</span>
+            <span class="label-mono" style="color:var(--em-brand)">Frontend</span>
+            <span class="label-mono" style="text-align:right">08</span>
+          </div>
+          <div style="display:grid;grid-template-columns:90px 36px 1fr 140px 60px;padding:10px 16px;border-bottom:1px solid var(--em-border-1);align-items:center">
+            <span class="label-mono">27.04.26</span>
+            <div class="img" style="width:32px;height:32px;border-radius:var(--em-r-xs);min-height:0"></div>
+            <span style="font-size:14px;color:var(--em-fg-1)">Errores típicos al montar una web con WordPress y Tailwind</span>
+            <span class="label-mono" style="color:var(--em-brand)">WordPress</span>
+            <span class="label-mono" style="text-align:right">06</span>
+          </div>
+          <div style="display:grid;grid-template-columns:90px 36px 1fr 140px 60px;padding:10px 16px;border-bottom:1px solid var(--em-border-1);align-items:center">
+            <span class="label-mono">15.04.26</span>
+            <div class="img" style="width:32px;height:32px;border-radius:var(--em-r-xs);min-height:0"></div>
+            <span style="font-size:14px;color:var(--em-fg-1)">Notas sobre rendimiento web en proyectos reales</span>
+            <span class="label-mono" style="color:var(--em-brand)">Notas</span>
+            <span class="label-mono" style="text-align:right">05</span>
+          </div>
+          <div style="display:grid;grid-template-columns:90px 36px 1fr 140px 60px;padding:10px 16px;align-items:center">
+            <span class="label-mono">08.04.26</span>
+            <div class="img" style="width:32px;height:32px;border-radius:var(--em-r-xs);min-height:0"></div>
+            <span style="font-size:14px;color:var(--em-fg-1)">Migrando un proyecto Next.js de pages a app router</span>
+            <span class="label-mono" style="color:var(--em-brand)">Next.js</span>
+            <span class="label-mono" style="text-align:right">09</span>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:18px;font-family:var(--em-font-mono);font-size:11px;color:var(--em-fg-4);letter-spacing:.1em;text-transform:uppercase">
+            <span>Mostrando 8 / 54</span>
+            <div style="display:flex;gap:6px"><span class="pill">←</span><span class="pill solid">1</span><span class="pill">2</span><span class="pill">3</span><span class="pill">→</span></div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="ftr" style="margin-top:48px">
+        <div><div class="sig">Edgar <em>Martínez</em></div></div>
+        <div><h6>Blog</h6><ul><li>Inicio</li><li>Categorías</li><li>Sobre</li></ul></div>
+        <div><h6>Edgar</h6><ul><li>Portfolio ↗</li><li>GitHub ↗</li><li>LinkedIn ↗</li></ul></div>
+        <div><h6>RSS</h6><ul><li>Feed</li></ul></div>
+      </footer>
+    </div>
+  </section>
+
+</main>
+
+<!-- ───────────────────── DETALLE ───────────────────── -->
+<main class="page" id="page-detalle" data-screen-label="Detalle de artículo">
+
+  <!-- DETALLE · V1 — Columna central -->
+  <section class="variation">
+    <div class="var-head">
+      <div class="var-tag">D · 01</div>
+      <div>
+        <div class="var-name">Columna central · lectura pura</div>
+        <div class="var-desc">El artículo manda. Ancho cómodo (~680px), meta sobria arriba, sin TOC visible. Para lecturas medias donde no necesitas saltar entre secciones.</div>
+      </div>
+      <div class="var-tagline">silencio alrededor<br/>del texto</div>
+    </div>
+
+    <div class="wf">
+      <div class="hdr">
+        <div class="hdr-brand"><span class="glyph">+</span> Edgar Martínez <span style="color:var(--em-fg-4);font-weight:400">/ Blog</span></div>
+        <nav class="hdr-nav">
+          <a>Inicio</a><a class="active">Artículos</a><a>Categorías</a><a>Sobre</a>
+          <a class="ext">Portfolio</a>
+        </nav>
+      </div>
+
+      <!-- Volver -->
+      <div style="max-width:680px;margin:32px auto 0;font-size:12px;color:var(--em-fg-4);font-family:var(--em-font-mono);letter-spacing:.15em;text-transform:uppercase">← Volver a artículos</div>
+
+      <!-- Article header -->
+      <header style="max-width:680px;margin:24px auto 32px;display:flex;flex-direction:column;gap:14px;padding-bottom:24px;border-bottom:1px dashed var(--em-border-3)">
+        <div class="label-mono" style="color:var(--em-brand)">Design Systems</div>
+        <h1 style="font-family:var(--em-font-display);font-weight:900;font-size:44px;line-height:1.08;letter-spacing:-.02em;color:var(--em-fg-1)">Cómo plantearía un sistema de diseño para una web pequeña</h1>
+        <p style="font-size:17px;color:var(--em-fg-3);line-height:1.5">No todos los proyectos necesitan un design system enorme. A veces basta con definir bien las decisiones base.</p>
+        <div style="display:flex;gap:14px;align-items:center;font-family:var(--em-font-mono);font-size:11px;color:var(--em-fg-4);letter-spacing:.15em;text-transform:uppercase">
+          <span>27 may 2026</span>
+          <span style="width:3px;height:3px;border-radius:50%;background:var(--em-fg-5)"></span>
+          <span>6 min lectura</span>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap"><span class="pill">Design Systems</span><span class="pill">Frontend</span><span class="pill">UI</span></div>
+      </header>
+
+      <!-- Prose -->
+      <article class="prose">
+        <div class="p"><div class="line s90"></div><div class="line"></div><div class="line s80"></div><div class="line s60"></div></div>
+        <h2>1 · Empezar por las decisiones, no por los componentes</h2>
+        <div class="p"><div class="line"></div><div class="line s90"></div><div class="line s70"></div></div>
+        <div class="callout note">
+          <span class="ico">↳ Nota</span>
+          <span class="body">Un sistema de diseño no son los componentes — son las decisiones que llevaron a esos componentes.</span>
+        </div>
+        <div class="p"><div class="line"></div><div class="line s80"></div></div>
+        <h3>1.1 · Color, tipografía, espaciado</h3>
+        <div class="p"><div class="line"></div><div class="line s90"></div><div class="line s60"></div></div>
+        <ul style="display:flex;flex-direction:column;gap:6px;color:var(--em-fg-3);font-size:14px;padding-left:20px">
+          <li>Define una paleta corta antes que un sistema de tokens enorme.</li>
+          <li>Una sola tipografía bien usada vale por tres.</li>
+          <li>Reserva el acento de color para lo que de verdad importa.</li>
+        </ul>
+
+        <h2>2 · Los componentes vienen después</h2>
+        <div class="p"><div class="line"></div><div class="line s80"></div></div>
+
+        <div class="code">
+          <div class="head"><span>tokens.css</span><span>CSS</span></div>
+          <div class="body">
+            <div class="ln"><span class="n">1</span><span><span class="kw">:root</span> {</span></div>
+            <div class="ln"><span class="n">2</span><span>&nbsp;&nbsp;<span class="fn">--em-brand</span>: <span class="str">#dcf05d</span>;</span></div>
+            <div class="ln"><span class="n">3</span><span>&nbsp;&nbsp;<span class="fn">--em-bg</span>: <span class="str">#0a081d</span>;</span></div>
+            <div class="ln"><span class="n">4</span><span>&nbsp;&nbsp;<span class="com">/* dos colores. nada más por ahora. */</span></span></div>
+            <div class="ln"><span class="n">5</span><span>}</span></div>
+          </div>
+        </div>
+
+        <div class="p"><div class="line"></div><div class="line s90"></div><div class="line s70"></div></div>
+
+        <div class="callout tip">
+          <span class="ico">★ Consejo</span>
+          <span class="body">Si tu DS aún no ha sobrevivido a un cambio importante de marca, todavía no es un DS. Es una hoja de estilos.</span>
+        </div>
+
+        <div class="img" data-label="captura · diagrama tokens" style="aspect-ratio:16/9;margin-top:8px"></div>
+        <div style="text-align:center;font-family:var(--em-font-mono);font-size:11px;color:var(--em-fg-5);letter-spacing:.1em;text-transform:uppercase">— diagrama de tokens base sobre superficie —</div>
+
+        <h2>3 · Lo que merece la pena documentar</h2>
+        <div class="p"><div class="line"></div><div class="line s80"></div></div>
+
+        <div class="tbl">
+          <div class="tr h"><span>Elemento</span><span>¿Documentar?</span><span>Por qué</span></div>
+          <div class="tr"><span>Tokens base</span><span style="color:var(--em-brand)">Sí</span><span>Cambiar = romper</span></div>
+          <div class="tr"><span>Botones</span><span style="color:var(--em-brand)">Sí</span><span>Variantes + estados</span></div>
+          <div class="tr"><span>Layouts internos</span><span style="color:var(--em-fg-4)">Quizá</span><span>Caso por caso</span></div>
+          <div class="tr"><span>Animaciones</span><span style="color:var(--em-fg-4)">Mínimo</span><span>Easings + duraciones</span></div>
+        </div>
+
+        <div class="quote">"Un buen sistema de diseño es el que sobrevive cuando ya no estás tú para mantenerlo."</div>
+
+        <div class="callout summary">
+          <span class="ico">≡ Resumen</span>
+          <span class="body">Empieza por decisiones (color, tipo, espaciado), documenta solo lo que se rompe al cambiar, y deja que los componentes emerjan del uso real, no al revés.</span>
+        </div>
+      </article>
+
+      <!-- Related -->
+      <section style="max-width:880px;margin:64px auto 0;padding-top:32px;border-top:1px dashed var(--em-border-3)">
+        <div class="label-mono mb-16">— También te puede interesar</div>
+        <div class="grid-3">
+          <article class="card" style="padding:0;overflow:hidden"><div class="img" style="aspect-ratio:16/9;border-radius:0;border-left:0;border-right:0;border-top:0"></div><div style="padding:18px;display:flex;flex-direction:column;gap:10px;flex:1"><span class="label-mono" style="color:var(--em-brand)">DS</span><h3>Lo que aprendí creando un design system pequeño</h3><div class="meta"><span>14 may</span><span class="dot"></span><span>7 min</span></div></div></article>
+          <article class="card" style="padding:0;overflow:hidden"><div class="img" style="aspect-ratio:16/9;border-radius:0;border-left:0;border-right:0;border-top:0"></div><div style="padding:18px;display:flex;flex-direction:column;gap:10px;flex:1"><span class="label-mono" style="color:var(--em-brand)">Astro</span><h3>Cómo organizo componentes reutilizables en Astro + Tailwind</h3><div class="meta"><span>21 may</span><span class="dot"></span><span>5 min</span></div></div></article>
+          <article class="card" style="padding:0;overflow:hidden"><div class="img" style="aspect-ratio:16/9;border-radius:0;border-left:0;border-right:0;border-top:0"></div><div style="padding:18px;display:flex;flex-direction:column;gap:10px;flex:1"><span class="label-mono" style="color:var(--em-brand)">Frontend</span><h3>Cómo estructuraría un proyecto frontend mantenible</h3><div class="meta"><span>02 may</span><span class="dot"></span><span>8 min</span></div></div></article>
+        </div>
+      </section>
+
+      <!-- CTA -->
+      <section style="max-width:680px;margin:48px auto 0;padding:32px;border:1px solid var(--em-border-2);border-radius:var(--em-r-xl);background:var(--em-surface);text-align:center">
+        <span class="hand" style="color:var(--em-brand);font-size:16px">¿Te ha gustado?</span>
+        <h3 style="font-size:24px;font-weight:700;color:var(--em-fg-1);margin-top:8px;letter-spacing:-.01em">Trabajo con frontend y design systems</h3>
+        <p style="color:var(--em-fg-3);font-size:14px;margin-top:8px">Si quieres ver más, pasa por el portfolio o escríbeme.</p>
+        <div style="display:flex;justify-content:center;gap:10px;margin-top:18px">
+          <span class="btn primary">Ver portfolio <span class="arr">↗</span></span>
+          <span class="btn">Hablemos <span class="arr">→</span></span>
+        </div>
+      </section>
+
+      <footer class="ftr" style="margin-top:48px">
+        <div><div class="sig">Edgar <em>Martínez</em></div></div>
+        <div><h6>Blog</h6><ul><li>Inicio</li><li>Artículos</li><li>Categorías</li></ul></div>
+        <div><h6>Edgar</h6><ul><li>Portfolio ↗</li><li>GitHub ↗</li><li>LinkedIn ↗</li></ul></div>
+        <div><h6>RSS</h6><ul><li>Feed</li></ul></div>
+      </footer>
+    </div>
+  </section>
+
+  <!-- DETALLE · V2 — Con TOC sidebar -->
+  <section class="variation">
+    <div class="var-head">
+      <div class="var-tag">D · 02</div>
+      <div>
+        <div class="var-name">Con TOC · navegación interna</div>
+        <div class="var-desc">Sidebar de tabla de contenidos a la izquierda, contenido en columna cómoda. Útil para artículos largos (>8 min) donde el lector quiere saltar.</div>
+      </div>
+      <div class="var-tagline">para artículos<br/>largos · 8 min+</div>
+    </div>
+
+    <div class="wf">
+      <div class="hdr">
+        <div class="hdr-brand"><span class="glyph">+</span> Edgar Martínez <span style="color:var(--em-fg-4);font-weight:400">/ Blog</span></div>
+        <nav class="hdr-nav">
+          <a>Inicio</a><a class="active">Artículos</a><a>Categorías</a><a>Sobre</a>
+          <a class="ext">Portfolio</a>
+        </nav>
+      </div>
+
+      <div style="display:grid;grid-template-columns:220px 1fr 220px;gap:48px;margin-top:32px">
+
+        <!-- TOC -->
+        <aside class="toc" style="position:sticky;top:80px;align-self:start">
+          <h6>En este artículo</h6>
+          <ol>
+            <li>Empezar por decisiones</li>
+            <li class="sub">Color, tipo, espaciado</li>
+            <li class="active">Los componentes vienen después</li>
+            <li class="sub">Tokens base</li>
+            <li>Lo que merece documentar</li>
+            <li>Cierre</li>
+          </ol>
+          <div style="margin-top:18px;padding-top:14px;border-top:1px dashed var(--em-border-2);font-family:var(--em-font-mono);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--em-fg-5)">
+            Progreso · 38%
+            <div style="margin-top:6px;height:2px;background:var(--em-border-2);border-radius:9999px;overflow:hidden"><div style="width:38%;height:100%;background:var(--em-brand)"></div></div>
+          </div>
+        </aside>
+
+        <!-- Article -->
+        <div>
+          <div style="font-size:12px;color:var(--em-fg-4);font-family:var(--em-font-mono);letter-spacing:.15em;text-transform:uppercase;margin-bottom:18px">← Volver a artículos</div>
+
+          <header style="display:flex;flex-direction:column;gap:14px;padding-bottom:24px;border-bottom:1px dashed var(--em-border-3)">
+            <div class="label-mono" style="color:var(--em-brand)">Design Systems</div>
+            <h1 style="font-family:var(--em-font-display);font-weight:900;font-size:40px;line-height:1.08;letter-spacing:-.02em;color:var(--em-fg-1)">Cómo plantearía un sistema de diseño para una web pequeña</h1>
+            <p style="font-size:16px;color:var(--em-fg-3);line-height:1.5">No todos los proyectos necesitan un design system enorme. A veces basta con definir bien las decisiones base.</p>
+            <div style="display:flex;gap:14px;align-items:center;font-family:var(--em-font-mono);font-size:11px;color:var(--em-fg-4);letter-spacing:.15em;text-transform:uppercase">
+              <span>27 may 2026</span>
+              <span style="width:3px;height:3px;border-radius:50%;background:var(--em-fg-5)"></span>
+              <span>6 min</span>
+            </div>
+          </header>
+
+          <article class="prose" style="max-width:none;margin-top:24px">
+            <div class="p"><div class="line s90"></div><div class="line"></div><div class="line s80"></div><div class="line s60"></div></div>
+            <h2>2 · Los componentes vienen después</h2>
+            <div class="p"><div class="line"></div><div class="line s90"></div><div class="line s70"></div></div>
+            <div class="callout tip">
+              <span class="ico">★ Consejo</span>
+              <span class="body">Empieza definiendo los tokens. Los componentes son consecuencia, no causa.</span>
+            </div>
+            <div class="img" data-label="diagrama" style="aspect-ratio:16/9"></div>
+            <h3>2.1 · Tokens base</h3>
+            <div class="p"><div class="line"></div><div class="line s80"></div></div>
+            <div class="code">
+              <div class="head"><span>tokens.css</span><span>CSS</span></div>
+              <div class="body">
+                <div class="ln"><span class="n">1</span><span><span class="kw">:root</span> {</span></div>
+                <div class="ln"><span class="n">2</span><span>&nbsp;&nbsp;<span class="fn">--em-brand</span>: <span class="str">#dcf05d</span>;</span></div>
+                <div class="ln"><span class="n">3</span><span>&nbsp;&nbsp;<span class="fn">--em-bg</span>: <span class="str">#0a081d</span>;</span></div>
+                <div class="ln"><span class="n">4</span><span>}</span></div>
+              </div>
+            </div>
+            <div class="p"><div class="line"></div><div class="line s80"></div></div>
+            <div class="callout warn">
+              <span class="ico">⚠ Error común</span>
+              <span class="body">Inventar tokens "por si acaso". Si no lo usas hoy, no lo definas hoy.</span>
+            </div>
+            <div class="quote">"Un buen DS sobrevive cuando ya no estás tú para mantenerlo."</div>
+          </article>
+        </div>
+
+        <!-- Acciones laterales -->
+        <aside style="position:sticky;top:80px;align-self:start;display:flex;flex-direction:column;gap:18px;font-size:12px;color:var(--em-fg-4)">
+          <div>
+            <h6 class="label-mono" style="margin-bottom:10px">Compartir</h6>
+            <div style="display:flex;flex-direction:column;gap:6px;color:var(--em-fg-3)"><span>Copiar enlace</span><span>LinkedIn</span><span>X / Twitter</span></div>
+          </div>
+          <div>
+            <h6 class="label-mono" style="margin-bottom:10px">Sobre el autor</h6>
+            <div style="display:flex;gap:10px;align-items:center">
+              <div class="img" style="width:36px;height:36px;border-radius:9999px"></div>
+              <div><div style="color:var(--em-fg-1);font-weight:500">Edgar M.</div><div class="label-mono" style="color:var(--em-fg-5);margin-top:2px">Frontend dev</div></div>
+            </div>
+            <span class="btn" style="margin-top:14px;padding:6px 12px;font-size:10px">Ver portfolio ↗</span>
+          </div>
+          <div>
+            <h6 class="label-mono" style="margin-bottom:10px">Categoría</h6>
+            <span class="pill brand">Design Systems</span>
+            <p style="font-size:12px;color:var(--em-fg-4);margin-top:8px">8 artículos más en esta categoría →</p>
+          </div>
+        </aside>
+      </div>
+
+      <!-- Related -->
+      <section style="margin-top:64px;padding-top:32px;border-top:1px dashed var(--em-border-3)">
+        <div class="label-mono mb-16">— Artículos relacionados</div>
+        <div class="grid-3">
+          <article class="card" style="padding:0;overflow:hidden"><div class="img" style="aspect-ratio:16/9;border-radius:0;border-left:0;border-right:0;border-top:0"></div><div style="padding:18px;display:flex;flex-direction:column;gap:10px;flex:1"><span class="label-mono" style="color:var(--em-brand)">DS</span><h3>Lo que aprendí creando un design system pequeño</h3><div class="meta"><span>14 may</span><span class="dot"></span><span>7 min</span></div></div></article>
+          <article class="card" style="padding:0;overflow:hidden"><div class="img" style="aspect-ratio:16/9;border-radius:0;border-left:0;border-right:0;border-top:0"></div><div style="padding:18px;display:flex;flex-direction:column;gap:10px;flex:1"><span class="label-mono" style="color:var(--em-brand)">Astro</span><h3>Cómo organizo componentes reutilizables en Astro + Tailwind</h3><div class="meta"><span>21 may</span><span class="dot"></span><span>5 min</span></div></div></article>
+          <article class="card" style="padding:0;overflow:hidden"><div class="img" style="aspect-ratio:16/9;border-radius:0;border-left:0;border-right:0;border-top:0"></div><div style="padding:18px;display:flex;flex-direction:column;gap:10px;flex:1"><span class="label-mono" style="color:var(--em-brand)">Frontend</span><h3>Cómo estructuraría un proyecto frontend mantenible</h3><div class="meta"><span>02 may</span><span class="dot"></span><span>8 min</span></div></div></article>
+        </div>
+      </section>
+
+      <footer class="ftr" style="margin-top:48px">
+        <div><div class="sig">Edgar <em>Martínez</em></div></div>
+        <div><h6>Blog</h6><ul><li>Inicio</li><li>Artículos</li><li>Categorías</li></ul></div>
+        <div><h6>Edgar</h6><ul><li>Portfolio ↗</li><li>GitHub ↗</li><li>LinkedIn ↗</li></ul></div>
+        <div><h6>RSS</h6><ul><li>Feed</li></ul></div>
+      </footer>
+    </div>
+  </section>
+
+  <!-- DETALLE · V3 — Hero con cover -->
+  <section class="variation">
+    <div class="var-head">
+      <div class="var-tag">D · 03</div>
+      <div>
+        <div class="var-name">Hero con cover · más editorial</div>
+        <div class="var-desc">Cover grande arriba, título sobre la portada, meta debajo, contenido en columna estrecha. Es el más “revista”; le sienta bien a artículos con un protagonista visual claro.</div>
+      </div>
+      <div class="var-tagline">tipo issue<br/>de revista</div>
+    </div>
+
+    <div class="wf">
+      <div class="hdr">
+        <div class="hdr-brand"><span class="glyph">+</span> Edgar Martínez <span style="color:var(--em-fg-4);font-weight:400">/ Blog</span></div>
+        <nav class="hdr-nav">
+          <a>Inicio</a><a class="active">Artículos</a><a>Categorías</a><a>Sobre</a>
+          <a class="ext">Portfolio</a>
+        </nav>
+      </div>
+
+      <!-- Big hero -->
+      <section style="margin-top:24px;position:relative">
+        <div style="font-size:12px;color:var(--em-fg-4);font-family:var(--em-font-mono);letter-spacing:.15em;text-transform:uppercase;margin-bottom:18px">← Volver</div>
+        <div class="img" data-label="cover · 21/9" style="aspect-ratio:21/9;border-radius:var(--em-r-xl)"></div>
+        <div style="margin-top:24px;text-align:center;display:flex;flex-direction:column;gap:14px;align-items:center">
+          <div class="label-mono" style="color:var(--em-brand)">Design Systems · 27 may 2026 · 6 min</div>
+          <h1 style="font-family:var(--em-font-display);font-weight:900;font-size:54px;line-height:1.05;letter-spacing:-.03em;color:var(--em-fg-1);max-width:880px">
+            Cómo plantearía un sistema de diseño para una web pequeña
+          </h1>
+          <p style="font-size:18px;color:var(--em-fg-3);line-height:1.5;max-width:680px">No todos los proyectos necesitan un design system enorme. A veces basta con definir bien las decisiones base.</p>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center"><span class="pill">Design Systems</span><span class="pill">Frontend</span><span class="pill">UI</span></div>
+        </div>
+      </section>
+
+      <article class="prose" style="margin-top:64px">
+        <div class="p"><div class="line s90"></div><div class="line"></div><div class="line s80"></div><div class="line s60"></div></div>
+        <h2>1 · Empezar por las decisiones</h2>
+        <div class="p"><div class="line"></div><div class="line s90"></div><div class="line s70"></div></div>
+        <div class="callout note"><span class="ico">↳ Nota</span><span class="body">Un DS no son los componentes — son las decisiones que llevaron a esos componentes.</span></div>
+        <div class="p"><div class="line"></div><div class="line s80"></div></div>
+        <div class="code">
+          <div class="head"><span>tokens.css</span><span>CSS</span></div>
+          <div class="body">
+            <div class="ln"><span class="n">1</span><span><span class="com">/* paleta corta. crece cuando duela. */</span></span></div>
+            <div class="ln"><span class="n">2</span><span><span class="kw">:root</span> { <span class="fn">--em-brand</span>: <span class="str">#dcf05d</span>; }</span></div>
+          </div>
+        </div>
+        <h3>1.1 · Tres tokens, no treinta</h3>
+        <div class="p"><div class="line"></div><div class="line s80"></div></div>
+        <div class="quote">"Tu DS empieza el día en que lo cambias, no el día en que lo escribes."</div>
+        <div class="callout summary"><span class="ico">≡ Resumen</span><span class="body">Decide poco, documenta lo que se rompe al cambiar, deja que los componentes emerjan del uso.</span></div>
+      </article>
+
+      <!-- Author + CTA inline -->
+      <section style="max-width:680px;margin:48px auto;padding:24px;border:1px solid var(--em-border-2);border-radius:var(--em-r-xl);background:var(--em-surface);display:flex;align-items:center;gap:20px">
+        <div class="img" style="width:56px;height:56px;border-radius:9999px;flex-shrink:0"></div>
+        <div style="flex:1">
+          <div style="color:var(--em-fg-1);font-weight:600">Edgar Martínez Palmero</div>
+          <div style="font-size:13px;color:var(--em-fg-3);margin-top:2px">Frontend developer en Vitoria-Gasteiz. Diseño y construyo interfaces.</div>
+        </div>
+        <span class="btn primary" style="padding:8px 14px">Ver portfolio <span class="arr">↗</span></span>
+      </section>
+
+      <!-- Related -->
+      <section style="margin-top:32px;padding-top:32px;border-top:1px dashed var(--em-border-3)">
+        <div class="label-mono mb-16">— Seguir leyendo</div>
+        <div class="grid-2">
+          <article class="card" style="display:flex;flex-direction:row;gap:16px;align-items:center">
+            <div class="img" style="width:96px;height:96px;flex-shrink:0"></div>
+            <div><span class="label-mono" style="color:var(--em-brand)">DS</span><h3>Lo que aprendí creando un design system pequeño</h3><div class="meta" style="margin-top:6px"><span>14 may</span><span class="dot"></span><span>7 min</span></div></div>
+          </article>
+          <article class="card" style="display:flex;flex-direction:row;gap:16px;align-items:center">
+            <div class="img" style="width:96px;height:96px;flex-shrink:0"></div>
+            <div><span class="label-mono" style="color:var(--em-brand)">Astro</span><h3>Cómo organizo componentes reutilizables en Astro + Tailwind</h3><div class="meta" style="margin-top:6px"><span>21 may</span><span class="dot"></span><span>5 min</span></div></div>
+          </article>
+        </div>
+      </section>
+
+      <footer class="ftr" style="margin-top:48px">
+        <div><div class="sig">Edgar <em>Martínez</em></div></div>
+        <div><h6>Blog</h6><ul><li>Inicio</li><li>Artículos</li><li>Categorías</li></ul></div>
+        <div><h6>Edgar</h6><ul><li>Portfolio ↗</li><li>GitHub ↗</li><li>LinkedIn ↗</li></ul></div>
+        <div><h6>RSS</h6><ul><li>Feed</li></ul></div>
+      </footer>
+    </div>
+  </section>
+
+  <!-- DETALLE · V4 — Hero con cover + TOC sticky (mezcla 02 × 03) -->
+  <section class="variation">
+    <div class="var-head">
+      <div class="var-tag">D · 04</div>
+      <div>
+        <div class="var-name">Hero con cover + TOC · mezcla 02 × 03</div>
+        <div class="var-desc">Arriba: cover grande y título centrado tipo revista (V3). Debajo: dos columnas — TOC y progreso a la izquierda, lectura a la derecha (V2). Sin sidebar de la derecha — la columna respira.</div>
+      </div>
+      <div class="var-tagline">hero editorial<br/>+ navegación interna</div>
+    </div>
+
+    <div class="wf">
+      <div class="hdr">
+        <div class="hdr-brand"><span class="glyph">+</span> Edgar Martínez <span style="color:var(--em-fg-4);font-weight:400">/ Blog</span></div>
+        <nav class="hdr-nav">
+          <a>Inicio</a><a class="active">Artículos</a><a>Categorías</a><a>Sobre</a>
+          <a class="ext">Portfolio</a>
+        </nav>
+      </div>
+
+      <!-- ── 1. Hero con cover (de V3) ──────────────────────────────── -->
+      <section style="margin-top:24px;position:relative">
+        <div style="font-size:12px;color:var(--em-fg-4);font-family:var(--em-font-mono);letter-spacing:.15em;text-transform:uppercase;margin-bottom:18px">← Volver a artículos</div>
+        <div class="img" data-label="cover · 21/9" style="aspect-ratio:21/9;border-radius:var(--em-r-xl)"></div>
+        <div style="margin-top:24px;text-align:center;display:flex;flex-direction:column;gap:14px;align-items:center">
+          <div class="label-mono" style="color:var(--em-brand)">Design Systems · 27 may 2026 · 6 min</div>
+          <h1 style="font-family:var(--em-font-display);font-weight:900;font-size:54px;line-height:1.05;letter-spacing:-.03em;color:var(--em-fg-1);max-width:880px">
+            Cómo plantearía un sistema de diseño para una web pequeña
+          </h1>
+          <p style="font-size:18px;color:var(--em-fg-3);line-height:1.5;max-width:680px">No todos los proyectos necesitan un design system enorme. A veces basta con definir bien las decisiones base.</p>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center"><span class="pill">Design Systems</span><span class="pill">Frontend</span><span class="pill">UI</span></div>
+        </div>
+      </section>
+
+      <!-- ── 2. TOC + contenido (de V2, sin sidebar derecha) ───────── -->
+      <div style="display:grid;grid-template-columns:240px 1fr;gap:64px;margin-top:64px;padding-top:48px;border-top:1px dashed var(--em-border-3)">
+
+        <!-- TOC sticky -->
+        <aside class="toc" style="position:sticky;top:80px;align-self:start">
+          <h6>En este artículo</h6>
+          <ol>
+            <li>Empezar por decisiones</li>
+            <li class="sub">Color, tipo, espaciado</li>
+            <li class="active">Los componentes vienen después</li>
+            <li class="sub">Tokens base</li>
+            <li>Lo que merece documentar</li>
+            <li>Cierre</li>
+          </ol>
+          <div style="margin-top:18px;padding-top:14px;border-top:1px dashed var(--em-border-2);font-family:var(--em-font-mono);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--em-fg-5)">
+            Progreso · 38%
+            <div style="margin-top:6px;height:2px;background:var(--em-border-2);border-radius:9999px;overflow:hidden"><div style="width:38%;height:100%;background:var(--em-brand)"></div></div>
+          </div>
+        </aside>
+
+        <!-- Contenido -->
+        <article class="prose" style="max-width:680px;margin:0">
+          <div class="p"><div class="line s90"></div><div class="line"></div><div class="line s80"></div><div class="line s60"></div></div>
+          <h2>1 · Empezar por las decisiones, no por los componentes</h2>
+          <div class="p"><div class="line"></div><div class="line s90"></div><div class="line s70"></div></div>
+          <div class="callout note">
+            <span class="ico">↳ Nota</span>
+            <span class="body">Un sistema de diseño no son los componentes — son las decisiones que llevaron a esos componentes.</span>
+          </div>
+          <div class="p"><div class="line"></div><div class="line s80"></div></div>
+          <h3>1.1 · Color, tipografía, espaciado</h3>
+          <div class="p"><div class="line"></div><div class="line s90"></div><div class="line s60"></div></div>
+          <ul style="display:flex;flex-direction:column;gap:6px;color:var(--em-fg-3);font-size:14px;padding-left:20px">
+            <li>Define una paleta corta antes que un sistema de tokens enorme.</li>
+            <li>Una sola tipografía bien usada vale por tres.</li>
+            <li>Reserva el acento de color para lo que de verdad importa.</li>
+          </ul>
+
+          <h2>2 · Los componentes vienen después</h2>
+          <div class="p"><div class="line"></div><div class="line s80"></div></div>
+          <div class="code">
+            <div class="head"><span>tokens.css</span><span>CSS</span></div>
+            <div class="body">
+              <div class="ln"><span class="n">1</span><span><span class="kw">:root</span> {</span></div>
+              <div class="ln"><span class="n">2</span><span>&nbsp;&nbsp;<span class="fn">--em-brand</span>: <span class="str">#dcf05d</span>;</span></div>
+              <div class="ln"><span class="n">3</span><span>&nbsp;&nbsp;<span class="fn">--em-bg</span>: <span class="str">#0a081d</span>;</span></div>
+              <div class="ln"><span class="n">4</span><span>&nbsp;&nbsp;<span class="com">/* dos colores. nada más por ahora. */</span></span></div>
+              <div class="ln"><span class="n">5</span><span>}</span></div>
+            </div>
+          </div>
+
+          <div class="p"><div class="line"></div><div class="line s90"></div><div class="line s70"></div></div>
+
+          <div class="callout tip">
+            <span class="ico">★ Consejo</span>
+            <span class="body">Si tu DS aún no ha sobrevivido a un cambio importante de marca, todavía no es un DS. Es una hoja de estilos.</span>
+          </div>
+
+          <div class="img" data-label="captura · diagrama tokens" style="aspect-ratio:16/9;margin-top:8px"></div>
+          <div style="text-align:center;font-family:var(--em-font-mono);font-size:11px;color:var(--em-fg-5);letter-spacing:.1em;text-transform:uppercase">— diagrama de tokens base sobre superficie —</div>
+
+          <h2>3 · Lo que merece la pena documentar</h2>
+          <div class="p"><div class="line"></div><div class="line s80"></div></div>
+
+          <div class="tbl">
+            <div class="tr h"><span>Elemento</span><span>¿Documentar?</span><span>Por qué</span></div>
+            <div class="tr"><span>Tokens base</span><span style="color:var(--em-brand)">Sí</span><span>Cambiar = romper</span></div>
+            <div class="tr"><span>Botones</span><span style="color:var(--em-brand)">Sí</span><span>Variantes + estados</span></div>
+            <div class="tr"><span>Layouts internos</span><span style="color:var(--em-fg-4)">Quizá</span><span>Caso por caso</span></div>
+          </div>
+
+          <div class="callout warn">
+            <span class="ico">⚠ Error común</span>
+            <span class="body">Inventar tokens "por si acaso". Si no lo usas hoy, no lo definas hoy.</span>
+          </div>
+
+          <div class="quote">"Un buen sistema de diseño es el que sobrevive cuando ya no estás tú para mantenerlo."</div>
+
+          <div class="callout summary">
+            <span class="ico">≡ Resumen</span>
+            <span class="body">Empieza por decisiones (color, tipo, espaciado), documenta solo lo que se rompe al cambiar, y deja que los componentes emerjan del uso real.</span>
+          </div>
+        </article>
+      </div>
+
+      <!-- ── 3. Author inline + CTA ─────────────────────────────────── -->
+      <section style="max-width:680px;margin:64px auto 0;padding:24px;border:1px solid var(--em-border-2);border-radius:var(--em-r-xl);background:var(--em-surface);display:flex;align-items:center;gap:20px">
+        <div class="img" style="width:56px;height:56px;border-radius:9999px;flex-shrink:0;min-height:0"></div>
+        <div style="flex:1">
+          <div style="color:var(--em-fg-1);font-weight:600">Edgar Martínez Palmero</div>
+          <div style="font-size:13px;color:var(--em-fg-3);margin-top:2px">Frontend developer en Vitoria-Gasteiz. Diseño y construyo interfaces.</div>
+        </div>
+        <span class="btn primary" style="padding:8px 14px">Ver portfolio <span class="arr">↗</span></span>
+      </section>
+
+      <!-- ── 4. Relacionados ────────────────────────────────────────── -->
+      <section style="margin-top:48px;padding-top:32px;border-top:1px dashed var(--em-border-3)">
+        <div class="label-mono mb-16">— Seguir leyendo</div>
+        <div class="grid-3">
+          <article class="card" style="padding:0;overflow:hidden"><div class="img" style="aspect-ratio:16/9;border-radius:0;border-left:0;border-right:0;border-top:0"></div><div style="padding:18px;display:flex;flex-direction:column;gap:10px;flex:1"><span class="label-mono" style="color:var(--em-brand)">DS</span><h3>Lo que aprendí creando un design system pequeño</h3><div class="meta"><span>14 may</span><span class="dot"></span><span>7 min</span></div></div></article>
+          <article class="card" style="padding:0;overflow:hidden"><div class="img" style="aspect-ratio:16/9;border-radius:0;border-left:0;border-right:0;border-top:0"></div><div style="padding:18px;display:flex;flex-direction:column;gap:10px;flex:1"><span class="label-mono" style="color:var(--em-brand)">Astro</span><h3>Cómo organizo componentes reutilizables en Astro + Tailwind</h3><div class="meta"><span>21 may</span><span class="dot"></span><span>5 min</span></div></div></article>
+          <article class="card" style="padding:0;overflow:hidden"><div class="img" style="aspect-ratio:16/9;border-radius:0;border-left:0;border-right:0;border-top:0"></div><div style="padding:18px;display:flex;flex-direction:column;gap:10px;flex:1"><span class="label-mono" style="color:var(--em-brand)">Frontend</span><h3>Cómo estructuraría un proyecto frontend mantenible</h3><div class="meta"><span>02 may</span><span class="dot"></span><span>8 min</span></div></div></article>
+        </div>
+      </section>
+
+      <footer class="ftr" style="margin-top:48px">
+        <div><div class="sig">Edgar <em>Martínez</em></div></div>
+        <div><h6>Blog</h6><ul><li>Inicio</li><li>Artículos</li><li>Categorías</li></ul></div>
+        <div><h6>Edgar</h6><ul><li>Portfolio ↗</li><li>GitHub ↗</li><li>LinkedIn ↗</li></ul></div>
+        <div><h6>RSS</h6><ul><li>Feed</li></ul></div>
+      </footer>
+    </div>
+  </section>
+
+</main>
+
+<!-- ───────────────────── CATEGORÍA ───────────────────── -->
+<main class="page" id="page-categoria" data-screen-label="Categoría">
+
+  <!-- CATEGORÍA · V1 — Header grande -->
+  <section class="variation">
+    <div class="var-head">
+      <div class="var-tag">C · 01</div>
+      <div>
+        <div class="var-name">Header de categoría · grande y editorial</div>
+        <div class="var-desc">La categoría tiene su propia entidad: hero con descripción, recuento y meta. Luego listado tipo blog. Igual estructura que /artículos pero con identidad por tema.</div>
+      </div>
+      <div class="var-tagline">la categoría<br/>tiene voz propia</div>
+    </div>
+
+    <div class="wf">
+      <div class="hdr">
+        <div class="hdr-brand"><span class="glyph">+</span> Edgar Martínez <span style="color:var(--em-fg-4);font-weight:400">/ Blog</span></div>
+        <nav class="hdr-nav">
+          <a>Inicio</a><a>Artículos</a><a class="active">Categorías</a><a>Sobre</a>
+          <a class="ext">Portfolio</a>
+        </nav>
+      </div>
+
+      <!-- Breadcrumb -->
+      <div style="margin-top:24px;font-family:var(--em-font-mono);font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--em-fg-4)">
+        Categorías <span style="color:var(--em-fg-5)">·</span> <span style="color:var(--em-brand)">Design Systems</span>
+      </div>
+
+      <!-- Big category hero -->
+      <section style="padding:32px 0 32px;border-bottom:1px dashed var(--em-border-3)">
+        <div style="display:grid;grid-template-columns:1fr auto;align-items:end;gap:32px">
+          <div>
+            <div class="label-mono mb-16">— categoría</div>
+            <h1 style="font-family:var(--em-font-display);font-weight:900;text-transform:uppercase;letter-spacing:-.04em;font-size:80px;line-height:.95;color:var(--em-fg-1);position:relative">
+              Design <em style="font-style:italic;color:var(--em-brand)">Systems</em>
+            </h1>
+            <p style="margin-top:20px;color:var(--em-fg-3);max-width:560px;font-size:16px;line-height:1.55">
+              Notas, decisiones y aprendizajes sobre cómo construyo, documento y mantengo sistemas de diseño en proyectos pequeños y medianos.
+            </p>
+          </div>
+          <div style="text-align:right;font-family:var(--em-font-mono);font-size:11px;letter-spacing:.15em;color:var(--em-fg-4);text-transform:uppercase">
+            <div style="font-size:48px;color:var(--em-brand);font-family:var(--em-font-display);font-weight:900;line-height:1;letter-spacing:-.02em">08</div>
+            <div style="margin-top:8px">artículos</div>
+            <div style="margin-top:18px;color:var(--em-fg-5)">Última actualización<br/>27 may 2026</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Otras categorías -->
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:24px">
+        <span class="label-mono" style="margin-right:8px">Saltar a:</span>
+        <span class="pill solid">Design Systems</span>
+        <span class="pill">Frontend</span><span class="pill">Astro</span>
+        <span class="pill">Next.js</span><span class="pill">WordPress</span><span class="pill">Shopify</span>
+        <span class="pill">Proyectos</span><span class="pill">Notas</span>
+      </div>
+
+      <!-- Listado -->
+      <ul style="list-style:none;display:flex;flex-direction:column;margin-top:32px">
+        <li style="padding:28px 0;border-bottom:1px dashed var(--em-border-2);display:grid;grid-template-columns:120px 140px 1fr auto;gap:24px;align-items:start">
+          <span class="label-mono">27 · 05 · 26</span>
+          <div class="img" data-label="cover" style="aspect-ratio:4/3"></div>
+          <div>
+            <h3 style="font-size:22px;font-weight:700;color:var(--em-fg-1);line-height:1.25;letter-spacing:-.01em">Cómo plantearía un sistema de diseño para una web pequeña</h3>
+            <p style="margin-top:6px;color:var(--em-fg-3);font-size:14px;max-width:60ch">Una guía práctica para definir componentes, patrones y decisiones visuales sin sobredimensionar.</p>
+            <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap"><span class="pill">DS</span><span class="pill">UI</span></div>
+          </div>
+          <span class="label-mono">06 min →</span>
+        </li>
+        <li style="padding:28px 0;border-bottom:1px dashed var(--em-border-2);display:grid;grid-template-columns:120px 140px 1fr auto;gap:24px;align-items:start">
+          <span class="label-mono">14 · 05 · 26</span>
+          <div class="img" data-label="cover" style="aspect-ratio:4/3"></div>
+          <div>
+            <h3 style="font-size:22px;font-weight:700;color:var(--em-fg-1);line-height:1.25;letter-spacing:-.01em">Lo que aprendí creando un design system pequeño</h3>
+            <p style="margin-top:6px;color:var(--em-fg-3);font-size:14px;max-width:60ch">Errores, atajos útiles y decisiones que rentaron a la hora de mantenerlo.</p>
+            <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap"><span class="pill">DS</span><span class="pill">Tokens</span></div>
+          </div>
+          <span class="label-mono">07 min →</span>
+        </li>
+        <li style="padding:28px 0;border-bottom:1px dashed var(--em-border-2);display:grid;grid-template-columns:120px 140px 1fr auto;gap:24px;align-items:start">
+          <span class="label-mono">22 · 03 · 26</span>
+          <div class="img" data-label="cover" style="aspect-ratio:4/3"></div>
+          <div>
+            <h3 style="font-size:22px;font-weight:700;color:var(--em-fg-1);line-height:1.25;letter-spacing:-.01em">Tokens, variables y la diferencia que nadie te cuenta</h3>
+            <p style="margin-top:6px;color:var(--em-fg-3);font-size:14px;max-width:60ch">Cuándo es una cosa y cuándo es la otra.</p>
+          </div>
+          <span class="label-mono">05 min →</span>
+        </li>
+        <li style="padding:28px 0;display:grid;grid-template-columns:120px 140px 1fr auto;gap:24px;align-items:start">
+          <span class="label-mono">10 · 02 · 26</span>
+          <div class="img" data-label="cover" style="aspect-ratio:4/3"></div>
+          <div>
+            <h3 style="font-size:22px;font-weight:700;color:var(--em-fg-1);line-height:1.25;letter-spacing:-.01em">¿Storybook o no Storybook? Mi respuesta corta</h3>
+            <p style="margin-top:6px;color:var(--em-fg-3);font-size:14px;max-width:60ch">Y la respuesta larga, con condicionantes.</p>
+          </div>
+          <span class="label-mono">04 min →</span>
+        </li>
+      </ul>
+
+      <div style="display:flex;justify-content:center;margin-top:24px"><span class="btn">Ver los 8 artículos <span class="arr">→</span></span></div>
+
+      <footer class="ftr" style="margin-top:48px">
+        <div><div class="sig">Edgar <em>Martínez</em></div></div>
+        <div><h6>Blog</h6><ul><li>Inicio</li><li>Artículos</li><li>Sobre</li></ul></div>
+        <div><h6>Edgar</h6><ul><li>Portfolio ↗</li><li>GitHub ↗</li><li>LinkedIn ↗</li></ul></div>
+        <div><h6>RSS</h6><ul><li>Feed</li></ul></div>
+      </footer>
+    </div>
+  </section>
+
+  <!-- CATEGORÍA · V2 — Índice general de categorías -->
+  <section class="variation">
+    <div class="var-head">
+      <div class="var-tag">C · 02</div>
+      <div>
+        <div class="var-name">Índice de categorías · página /categorías</div>
+        <div class="var-desc">La página índice donde se ven todas, cada una con descripción corta y recuento. Pensada para entrar y elegir tema, no para leer.</div>
+      </div>
+      <div class="var-tagline">para elegir tema<br/>antes de leer</div>
+    </div>
+
+    <div class="wf">
+      <div class="hdr">
+        <div class="hdr-brand"><span class="glyph">+</span> Edgar Martínez <span style="color:var(--em-fg-4);font-weight:400">/ Blog</span></div>
+        <nav class="hdr-nav">
+          <a>Inicio</a><a>Artículos</a><a class="active">Categorías</a><a>Sobre</a>
+          <a class="ext">Portfolio</a>
+        </nav>
+      </div>
+
+      <section style="padding:48px 0 32px;display:flex;justify-content:space-between;align-items:end;gap:32px;border-bottom:1px dashed var(--em-border-3)">
+        <div>
+          <div class="label-mono mb-16">— 8 temas</div>
+          <h1 style="font-family:var(--em-font-display);font-weight:900;text-transform:uppercase;letter-spacing:-.04em;font-size:64px;line-height:.95;color:var(--em-fg-1)">Categorías</h1>
+          <p style="margin-top:14px;color:var(--em-fg-3);max-width:560px;font-size:15px">Los temas en torno a los que escribo. Elige uno y se filtra el archivo.</p>
+        </div>
+      </section>
+
+      <!-- Cards de categorías -->
+      <div class="grid-2" style="margin-top:32px">
+        <article style="border:1px solid var(--em-border-2);border-radius:var(--em-r-xl);background:var(--em-surface);padding:28px;display:flex;flex-direction:column;gap:14px;min-height:220px;position:relative">
+          <div style="display:flex;justify-content:space-between;align-items:start">
+            <h3 style="font-family:var(--em-font-display);font-weight:900;text-transform:uppercase;letter-spacing:-.02em;font-size:32px;color:var(--em-fg-1)">Frontend</h3>
+            <span class="label-mono" style="color:var(--em-brand)">12 art.</span>
+          </div>
+          <p style="color:var(--em-fg-3);font-size:14px;line-height:1.55">Decisiones, arquitectura y patrones de frontend desde la práctica.</p>
+          <div style="display:flex;gap:6px;margin-top:auto"><span class="pill">SSR</span><span class="pill">Arquitectura</span><span class="pill">Tailwind</span></div>
+          <span class="hand" style="position:absolute;bottom:14px;right:18px;color:var(--em-brand);font-size:18px">→</span>
+        </article>
+
+        <article style="border:1px solid var(--em-border-2);border-radius:var(--em-r-xl);background:var(--em-surface);padding:28px;display:flex;flex-direction:column;gap:14px;min-height:220px;position:relative">
+          <div style="display:flex;justify-content:space-between;align-items:start">
+            <h3 style="font-family:var(--em-font-display);font-weight:900;text-transform:uppercase;letter-spacing:-.02em;font-size:32px;color:var(--em-fg-1)">Design <span style="color:var(--em-brand)">Systems</span></h3>
+            <span class="label-mono" style="color:var(--em-brand)">08 art.</span>
+          </div>
+          <p style="color:var(--em-fg-3);font-size:14px;line-height:1.55">Cómo construyo, documento y mantengo sistemas de diseño.</p>
+          <div style="display:flex;gap:6px;margin-top:auto"><span class="pill">Tokens</span><span class="pill">UI</span></div>
+          <span class="hand" style="position:absolute;bottom:14px;right:18px;color:var(--em-brand);font-size:18px">→</span>
+        </article>
+
+        <article style="border:1px solid var(--em-border-2);border-radius:var(--em-r-xl);background:var(--em-surface);padding:24px;display:flex;flex-direction:column;gap:12px;position:relative">
+          <div style="display:flex;justify-content:space-between;align-items:start">
+            <h3 style="font-family:var(--em-font-display);font-weight:900;text-transform:uppercase;font-size:24px;color:var(--em-fg-1)">Astro</h3>
+            <span class="label-mono" style="color:var(--em-brand)">06</span>
+          </div>
+          <p style="color:var(--em-fg-3);font-size:13px">Cómo lo uso, cuándo y cuándo no.</p>
+        </article>
+
+        <article style="border:1px solid var(--em-border-2);border-radius:var(--em-r-xl);background:var(--em-surface);padding:24px;display:flex;flex-direction:column;gap:12px;position:relative">
+          <div style="display:flex;justify-content:space-between;align-items:start">
+            <h3 style="font-family:var(--em-font-display);font-weight:900;text-transform:uppercase;font-size:24px;color:var(--em-fg-1)">Next.js</h3>
+            <span class="label-mono" style="color:var(--em-brand)">04</span>
+          </div>
+          <p style="color:var(--em-fg-3);font-size:13px">App router, RSC, decisiones de arquitectura.</p>
+        </article>
+
+        <article style="border:1px solid var(--em-border-2);border-radius:var(--em-r-xl);background:var(--em-surface);padding:24px;display:flex;flex-direction:column;gap:12px;position:relative">
+          <div style="display:flex;justify-content:space-between;align-items:start">
+            <h3 style="font-family:var(--em-font-display);font-weight:900;text-transform:uppercase;font-size:24px;color:var(--em-fg-1)">WordPress</h3>
+            <span class="label-mono" style="color:var(--em-brand)">03</span>
+          </div>
+          <p style="color:var(--em-fg-3);font-size:13px">Headless, ACF, Tailwind, decisiones útiles.</p>
+        </article>
+
+        <article style="border:1px solid var(--em-border-2);border-radius:var(--em-r-xl);background:var(--em-surface);padding:24px;display:flex;flex-direction:column;gap:12px;position:relative">
+          <div style="display:flex;justify-content:space-between;align-items:start">
+            <h3 style="font-family:var(--em-font-display);font-weight:900;text-transform:uppercase;font-size:24px;color:var(--em-fg-1)">Shopify</h3>
+            <span class="label-mono" style="color:var(--em-brand)">02</span>
+          </div>
+          <p style="color:var(--em-fg-3);font-size:13px">Liquid, secciones y theming pragmático.</p>
+        </article>
+
+        <article style="border:1px solid var(--em-border-2);border-radius:var(--em-r-xl);background:var(--em-surface);padding:24px;display:flex;flex-direction:column;gap:12px;position:relative">
+          <div style="display:flex;justify-content:space-between;align-items:start">
+            <h3 style="font-family:var(--em-font-display);font-weight:900;text-transform:uppercase;font-size:24px;color:var(--em-fg-1)">Proyectos</h3>
+            <span class="label-mono" style="color:var(--em-brand)">05</span>
+          </div>
+          <p style="color:var(--em-fg-3);font-size:13px">Casos reales: cómo se hicieron y por qué.</p>
+        </article>
+
+        <article style="border:1px solid var(--em-border-2);border-radius:var(--em-r-xl);background:var(--em-surface);padding:24px;display:flex;flex-direction:column;gap:12px;position:relative">
+          <div style="display:flex;justify-content:space-between;align-items:start">
+            <h3 style="font-family:var(--em-font-display);font-weight:900;text-transform:uppercase;font-size:24px;color:var(--em-fg-1)">Notas</h3>
+            <span class="label-mono" style="color:var(--em-brand)">14</span>
+          </div>
+          <p style="color:var(--em-fg-3);font-size:13px">Apuntes cortos, sin estructura formal.</p>
+        </article>
+      </div>
+
+      <footer class="ftr" style="margin-top:48px">
+        <div><div class="sig">Edgar <em>Martínez</em></div></div>
+        <div><h6>Blog</h6><ul><li>Inicio</li><li>Artículos</li><li>Sobre</li></ul></div>
+        <div><h6>Edgar</h6><ul><li>Portfolio ↗</li><li>GitHub ↗</li><li>LinkedIn ↗</li></ul></div>
+        <div><h6>RSS</h6><ul><li>Feed</li></ul></div>
+      </footer>
+    </div>
+  </section>
+
+  <!-- CATEGORÍA · V3 — Categoría como filtro sobre /artículos -->
+  <section class="variation">
+    <div class="var-head">
+      <div class="var-tag">C · 03</div>
+      <div>
+        <div class="var-name">Filtro · vive dentro de /artículos</div>
+        <div class="var-desc">La categoría no tiene página propia: es un estado del listado. Misma URL conceptual (/artículos?cat=ds) pero con cabecera adaptativa que cuenta de qué va el tema.</div>
+      </div>
+      <div class="var-tagline">menos páginas<br/>menos mantenimiento</div>
+    </div>
+
+    <div class="wf">
+      <div class="hdr">
+        <div class="hdr-brand"><span class="glyph">+</span> Edgar Martínez <span style="color:var(--em-fg-4);font-weight:400">/ Blog</span></div>
+        <nav class="hdr-nav">
+          <a>Inicio</a><a class="active">Artículos</a><a>Categorías</a><a>Sobre</a>
+          <a class="ext">Portfolio</a>
+        </nav>
+      </div>
+
+      <section style="padding:40px 0 24px">
+        <div class="label-mono mb-16">— archivo / filtrado por categoría</div>
+        <h1 style="font-family:var(--em-font-display);font-weight:900;text-transform:uppercase;letter-spacing:-.04em;font-size:56px;line-height:1;color:var(--em-fg-1)">Artículos</h1>
+      </section>
+
+      <!-- Filter bar con estado activo destacado -->
+      <div style="border-top:1px dashed var(--em-border-3);border-bottom:1px dashed var(--em-border-3);padding:16px 0;margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <span class="label-mono" style="margin-right:8px">Mostrando:</span>
+        <span class="pill">Todos</span>
+        <span class="pill">Frontend</span>
+        <span class="pill solid">Design Systems · 08 ×</span>
+        <span class="pill">Astro</span>
+        <span class="pill">Next.js</span>
+        <span class="pill">WordPress</span>
+        <span class="pill">Shopify</span>
+        <span class="pill">Proyectos</span>
+        <span class="pill">Notas</span>
+      </div>
+
+      <!-- Contextual blurb que aparece cuando hay filtro -->
+      <section style="padding:24px;border:1px solid var(--em-border-2);border-radius:var(--em-r-lg);background:rgba(220,240,93,.04);margin-top:24px;display:flex;justify-content:space-between;align-items:center;gap:24px">
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <span class="hand" style="color:var(--em-brand);font-size:16px">— Design Systems</span>
+          <p style="color:var(--em-fg-2);font-size:14px;max-width:60ch;line-height:1.55">Notas, decisiones y aprendizajes sobre cómo construyo, documento y mantengo sistemas de diseño en proyectos pequeños y medianos.</p>
+        </div>
+        <div style="text-align:right;font-family:var(--em-font-mono);font-size:11px;letter-spacing:.15em;color:var(--em-fg-4);text-transform:uppercase">
+          <div style="font-size:36px;color:var(--em-brand);font-family:var(--em-font-display);font-weight:900;line-height:1">08</div>
+          <div>artículos</div>
+        </div>
+      </section>
+
+      <!-- Listado filtrado -->
+      <ul style="list-style:none;display:flex;flex-direction:column;margin-top:24px">
+        <li style="padding:24px 0;border-bottom:1px dashed var(--em-border-2);display:grid;grid-template-columns:120px 110px 1fr auto;gap:20px;align-items:start">
+          <span class="label-mono">27 · 05 · 26</span>
+          <div class="img" data-label="cover" style="aspect-ratio:4/3"></div>
+          <div>
+            <h3 style="font-size:20px;font-weight:700;color:var(--em-fg-1);line-height:1.25">Cómo plantearía un sistema de diseño para una web pequeña</h3>
+            <p style="margin-top:4px;color:var(--em-fg-3);font-size:13px">Una guía práctica para definir componentes, patrones y decisiones visuales.</p>
+          </div>
+          <span class="label-mono">06 min →</span>
+        </li>
+        <li style="padding:24px 0;border-bottom:1px dashed var(--em-border-2);display:grid;grid-template-columns:120px 110px 1fr auto;gap:20px;align-items:start">
+          <span class="label-mono">14 · 05 · 26</span>
+          <div class="img" data-label="cover" style="aspect-ratio:4/3"></div>
+          <div>
+            <h3 style="font-size:20px;font-weight:700;color:var(--em-fg-1);line-height:1.25">Lo que aprendí creando un design system pequeño</h3>
+            <p style="margin-top:4px;color:var(--em-fg-3);font-size:13px">Errores, atajos útiles y decisiones que rentaron.</p>
+          </div>
+          <span class="label-mono">07 min →</span>
+        </li>
+        <li style="padding:24px 0;border-bottom:1px dashed var(--em-border-2);display:grid;grid-template-columns:120px 110px 1fr auto;gap:20px;align-items:start">
+          <span class="label-mono">22 · 03 · 26</span>
+          <div class="img" data-label="cover" style="aspect-ratio:4/3"></div>
+          <div>
+            <h3 style="font-size:20px;font-weight:700;color:var(--em-fg-1);line-height:1.25">Tokens, variables y la diferencia que nadie te cuenta</h3>
+          </div>
+          <span class="label-mono">05 min →</span>
+        </li>
+        <li style="padding:24px 0;display:grid;grid-template-columns:120px 110px 1fr auto;gap:20px;align-items:start">
+          <span class="label-mono">10 · 02 · 26</span>
+          <div class="img" data-label="cover" style="aspect-ratio:4/3"></div>
+          <div>
+            <h3 style="font-size:20px;font-weight:700;color:var(--em-fg-1);line-height:1.25">¿Storybook o no Storybook? Mi respuesta corta</h3>
+          </div>
+          <span class="label-mono">04 min →</span>
+        </li>
+      </ul>
+
+      <footer class="ftr" style="margin-top:48px">
+        <div><div class="sig">Edgar <em>Martínez</em></div></div>
+        <div><h6>Blog</h6><ul><li>Inicio</li><li>Artículos</li><li>Sobre</li></ul></div>
+        <div><h6>Edgar</h6><ul><li>Portfolio ↗</li><li>GitHub ↗</li><li>LinkedIn ↗</li></ul></div>
+        <div><h6>RSS</h6><ul><li>Feed</li></ul></div>
+      </footer>
+    </div>
+  </section>
+
+</main>
+
+<!-- ───────────────────── SOBRE ───────────────────── -->
+<main class="page" id="page-sobre" data-screen-label="Sobre el blog">
+
+  <!-- SOBRE · V1 — Manifesto largo -->
+  <section class="variation">
+    <div class="var-head">
+      <div class="var-tag">S · 01</div>
+      <div>
+        <div class="var-name">Manifesto · columna larga</div>
+        <div class="var-desc">Una sola columna, texto largo, contado en primera persona. Pensado para leerse de arriba a abajo como una carta corta.</div>
+      </div>
+      <div class="var-tagline">como una carta<br/>al lector</div>
+    </div>
+
+    <div class="wf">
+      <div class="hdr">
+        <div class="hdr-brand"><span class="glyph">+</span> Edgar Martínez <span style="color:var(--em-fg-4);font-weight:400">/ Blog</span></div>
+        <nav class="hdr-nav">
+          <a>Inicio</a><a>Artículos</a><a>Categorías</a><a class="active">Sobre</a>
+          <a class="ext">Portfolio</a>
+        </nav>
+      </div>
+
+      <article style="max-width:680px;margin:48px auto 0;display:flex;flex-direction:column;gap:24px">
+        <div class="label-mono" style="color:var(--em-brand)">— Sobre este blog</div>
+        <h1 style="font-family:var(--em-font-display);font-weight:900;font-size:48px;line-height:1.05;letter-spacing:-.02em;color:var(--em-fg-1)">
+          Notas, no documentación. <em style="font-style:italic;color:var(--em-brand)">Aprendizajes desde la práctica.</em>
+        </h1>
+
+        <div style="font-size:17px;color:var(--em-fg-2);line-height:1.7;display:flex;flex-direction:column;gap:18px">
+          <p>Este blog es mi espacio para documentar aprendizajes, decisiones técnicas y experimentos relacionados con <strong style="color:var(--em-fg-1);font-weight:600">frontend, diseño de interfaces y desarrollo web</strong>.</p>
+          <p>No pretende ser una documentación perfecta, sino una colección de notas útiles desde la práctica. Algunas serán muy completas, otras serán apuntes cortos. La intención es que ambas tengan sitio.</p>
+          <p>Escribo sobre lo que toco en mi día a día: arquitecturas frontend, design systems, integraciones con CMS, aplicaciones híbridas, y cómo intento que todo eso se mantenga sin volverse un infierno seis meses después.</p>
+        </div>
+
+        <div class="quote">"Si algo me costó entender, probablemente merezca un artículo."</div>
+
+        <h2 style="font-family:var(--em-font-display);font-weight:700;font-size:24px;color:var(--em-fg-1);margin-top:14px">Qué encontrarás</h2>
+        <ul style="display:flex;flex-direction:column;gap:8px;color:var(--em-fg-3);font-size:15px;line-height:1.6;padding-left:20px">
+          <li>Decisiones técnicas y por qué las tomé.</li>
+          <li>Patrones de organización de proyectos frontend.</li>
+          <li>Cómo construyo design systems pequeños y medianos.</li>
+          <li>Notas sobre Astro, Next.js, Tailwind, WordPress y Shopify.</li>
+          <li>Procesos de proyectos personales, sin filtros.</li>
+        </ul>
+
+        <h2 style="font-family:var(--em-font-display);font-weight:700;font-size:24px;color:var(--em-fg-1);margin-top:14px">Qué <em>no</em> encontrarás</h2>
+        <ul style="display:flex;flex-direction:column;gap:8px;color:var(--em-fg-3);font-size:15px;line-height:1.6;padding-left:20px">
+          <li>Tutoriales para principiantes.</li>
+          <li>"Top 10" o "X cosas que…".</li>
+          <li>Newsletter, popups, ni patrocinios.</li>
+        </ul>
+
+        <div style="margin-top:24px;display:flex;gap:10px;flex-wrap:wrap">
+          <span class="btn primary">Ver portfolio <span class="arr">↗</span></span>
+          <span class="btn">Ir a los artículos <span class="arr">→</span></span>
+        </div>
+      </article>
+
+      <footer class="ftr" style="margin-top:64px">
+        <div><div class="sig">Edgar <em>Martínez</em></div><p style="margin-top:8px">Vitoria-Gasteiz · ES</p></div>
+        <div><h6>Blog</h6><ul><li>Inicio</li><li>Artículos</li><li>Categorías</li></ul></div>
+        <div><h6>Edgar</h6><ul><li>Portfolio ↗</li><li>GitHub ↗</li><li>LinkedIn ↗</li><li>Email</li></ul></div>
+        <div><h6>RSS</h6><ul><li>Feed</li></ul></div>
+      </footer>
+    </div>
+  </section>
+
+  <!-- SOBRE · V2 — Bento -->
+  <section class="variation">
+    <div class="var-head">
+      <div class="var-tag">S · 02</div>
+      <div>
+        <div class="var-name">Bento · bloques temáticos</div>
+        <div class="var-desc">Misma información dividida en bloques: manifesto, sobre Edgar, qué encontrarás, link al portfolio. Más escaneable, menos lineal.</div>
+      </div>
+      <div class="var-tagline">misma gramática<br/>que la home v3</div>
+    </div>
+
+    <div class="wf">
+      <div class="hdr">
+        <div class="hdr-brand"><span class="glyph">+</span> Edgar Martínez <span style="color:var(--em-fg-4);font-weight:400">/ Blog</span></div>
+        <nav class="hdr-nav">
+          <a>Inicio</a><a>Artículos</a><a>Categorías</a><a class="active">Sobre</a>
+          <a class="ext">Portfolio</a>
+        </nav>
+      </div>
+
+      <section style="padding:48px 0 32px">
+        <div class="label-mono mb-16">— sobre el blog</div>
+        <h1 style="font-family:var(--em-font-display);font-weight:900;text-transform:uppercase;letter-spacing:-.04em;font-size:72px;line-height:.95;color:var(--em-fg-1)">
+          Notas, <em style="font-style:italic;color:var(--em-brand);font-weight:900">no documentación.</em>
+        </h1>
+      </section>
+
+      <div style="display:grid;grid-template-columns:1.4fr 1fr;grid-template-rows:auto auto auto;gap:16px">
+
+        <!-- Manifesto bloque grande -->
+        <article style="grid-row:span 2;border:1px solid var(--em-border-2);border-radius:var(--em-r-xl);background:var(--em-surface);padding:28px;display:flex;flex-direction:column;gap:14px">
+          <span class="label-mono">— manifesto</span>
+          <p style="font-size:18px;color:var(--em-fg-2);line-height:1.6">
+            Este blog es mi espacio para documentar aprendizajes, decisiones técnicas y experimentos relacionados con frontend, diseño de interfaces y desarrollo web.
+          </p>
+          <p style="font-size:15px;color:var(--em-fg-3);line-height:1.6">
+            No pretende ser una documentación perfecta, sino una colección de notas útiles desde la práctica. Algunas serán muy completas, otras serán apuntes cortos. Ambas cuentan.
+          </p>
+          <div class="quote" style="margin-top:14px;font-size:16px">"Si algo me costó entender, probablemente merezca un artículo."</div>
+        </article>
+
+        <!-- Sobre Edgar -->
+        <article style="border:1px solid var(--em-border-2);border-radius:var(--em-r-xl);background:var(--em-surface);padding:24px;display:flex;flex-direction:column;gap:14px">
+          <span class="label-mono">— sobre edgar</span>
+          <div style="display:flex;gap:14px;align-items:center">
+            <div class="img" style="width:56px;height:56px;border-radius:9999px;flex-shrink:0"></div>
+            <div>
+              <div style="color:var(--em-fg-1);font-weight:600;font-size:15px">Edgar Martínez Palmero</div>
+              <div style="font-size:12px;color:var(--em-fg-4);margin-top:2px">Frontend developer · Vitoria-Gasteiz</div>
+            </div>
+          </div>
+          <p style="font-size:13px;color:var(--em-fg-3);line-height:1.6">
+            Desde 2022 en Veiss Comunicación. Diseño y construyo interfaces, sistemas de diseño y aplicaciones híbridas.
+          </p>
+          <span class="btn" style="padding:8px 14px;font-size:11px;align-self:flex-start">Ver portfolio <span class="arr">↗</span></span>
+        </article>
+
+        <!-- Tags / temas -->
+        <article style="border:1px solid var(--em-border-2);border-radius:var(--em-r-xl);background:var(--em-surface);padding:24px;display:flex;flex-direction:column;gap:14px">
+          <span class="label-mono">— sobre qué escribo</span>
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            <span class="pill brand">Frontend</span><span class="pill">Design Systems</span><span class="pill">Astro</span><span class="pill">Next.js</span><span class="pill">WordPress</span><span class="pill">Shopify</span><span class="pill">Proyectos</span><span class="pill">Notas</span>
+          </div>
+          <p style="font-size:13px;color:var(--em-fg-3);line-height:1.55">8 temas, sin ranking. Algunos se llenarán, otros se quedarán pequeños.</p>
+        </article>
+
+        <!-- Qué no encontrarás -->
+        <article style="border:1px solid var(--em-border-2);border-radius:var(--em-r-xl);background:var(--em-surface);padding:24px;display:flex;flex-direction:column;gap:14px">
+          <span class="label-mono">— qué no</span>
+          <ul style="display:flex;flex-direction:column;gap:8px;color:var(--em-fg-3);font-size:13px;list-style:none">
+            <li>· Tutoriales para principiantes</li>
+            <li>· “Top 10” o listicles</li>
+            <li>· Newsletter, popups, patrocinios</li>
+          </ul>
+        </article>
+
+        <!-- CTA banda -->
+        <article style="grid-column:span 2;border:1px solid var(--em-border-2);border-radius:var(--em-r-xl);background:var(--em-surface);padding:24px;display:flex;justify-content:space-between;align-items:center;gap:20px">
+          <div>
+            <span class="hand" style="color:var(--em-brand);font-size:16px">¿Empezamos?</span>
+            <h3 style="font-size:22px;font-weight:700;color:var(--em-fg-1);margin-top:4px">Pasa a leer o pasa al portfolio</h3>
+          </div>
+          <div style="display:flex;gap:10px"><span class="btn primary">Ir a artículos <span class="arr">→</span></span><span class="btn">Ver portfolio <span class="arr">↗</span></span></div>
+        </article>
+      </div>
+
+      <footer class="ftr" style="margin-top:48px">
+        <div><div class="sig">Edgar <em>Martínez</em></div></div>
+        <div><h6>Blog</h6><ul><li>Inicio</li><li>Artículos</li><li>Categorías</li></ul></div>
+        <div><h6>Edgar</h6><ul><li>Portfolio ↗</li><li>GitHub ↗</li><li>LinkedIn ↗</li></ul></div>
+        <div><h6>RSS</h6><ul><li>Feed</li></ul></div>
+      </footer>
+    </div>
+  </section>
+
+  <!-- SOBRE · V3 — Q&A / Coloquial -->
+  <section class="variation">
+    <div class="var-head">
+      <div class="var-tag">S · 03</div>
+      <div>
+        <div class="var-name">Q&A · preguntas y respuestas</div>
+        <div class="var-desc">Estructura conversacional con preguntas como anclas. Cercano y escaneable; útil si quieres que la página responda dudas concretas (“¿con qué frecuencia escribes?”, “¿puedo suscribirme?”).</div>
+      </div>
+      <div class="var-tagline">conversacional<br/>tipo entrevista</div>
+    </div>
+
+    <div class="wf">
+      <div class="hdr">
+        <div class="hdr-brand"><span class="glyph">+</span> Edgar Martínez <span style="color:var(--em-fg-4);font-weight:400">/ Blog</span></div>
+        <nav class="hdr-nav">
+          <a>Inicio</a><a>Artículos</a><a>Categorías</a><a class="active">Sobre</a>
+          <a class="ext">Portfolio</a>
+        </nav>
+      </div>
+
+      <section style="padding:48px 0 24px;border-bottom:1px dashed var(--em-border-3)">
+        <div class="label-mono mb-16">— sobre el blog</div>
+        <h1 style="font-family:var(--em-font-display);font-weight:900;text-transform:uppercase;letter-spacing:-.04em;font-size:64px;line-height:.95;color:var(--em-fg-1)">Preguntas <em style="font-style:italic;color:var(--em-brand)">frecuentes</em></h1>
+        <p style="margin-top:14px;color:var(--em-fg-3);max-width:560px;font-size:15px">Lo que me suelen preguntar sobre este blog. Si tu pregunta no está, escríbeme.</p>
+      </section>
+
+      <div style="display:grid;grid-template-columns:280px 1fr;gap:48px;margin-top:32px">
+
+        <aside style="position:sticky;top:80px;align-self:start;display:flex;flex-direction:column;gap:18px">
+          <div style="display:flex;gap:14px;align-items:center">
+            <div class="img" style="width:64px;height:64px;border-radius:9999px"></div>
+            <div><div style="color:var(--em-fg-1);font-weight:600">Edgar Martínez</div><div class="label-mono" style="color:var(--em-fg-5);margin-top:2px">Vitoria-Gasteiz</div></div>
+          </div>
+          <p style="font-size:13px;color:var(--em-fg-3);line-height:1.6">Frontend developer en Veiss Comunicación. Construyo interfaces, sistemas de diseño y apps híbridas.</p>
+          <div style="display:flex;flex-direction:column;gap:6px"><span class="btn" style="padding:8px 12px;font-size:11px">Portfolio <span class="arr">↗</span></span><span class="btn" style="padding:8px 12px;font-size:11px">LinkedIn <span class="arr">↗</span></span><span class="btn" style="padding:8px 12px;font-size:11px">Email <span class="arr">→</span></span></div>
+        </aside>
+
+        <!-- Q&A -->
+        <div style="display:flex;flex-direction:column;gap:18px">
+          <div style="padding:24px;border:1px solid var(--em-border-2);border-radius:var(--em-r-lg);background:var(--em-surface);display:flex;flex-direction:column;gap:10px">
+            <span class="label-mono" style="color:var(--em-brand)">¿Qué es esto?</span>
+            <h3 style="font-size:20px;font-weight:700;color:var(--em-fg-1);line-height:1.3">Un blog personal con notas técnicas, no una publicación profesional.</h3>
+            <p style="color:var(--em-fg-3);font-size:14px;line-height:1.6">Documento aprendizajes, decisiones técnicas y experimentos. No pretende ser documentación perfecta; es una colección de notas útiles desde la práctica.</p>
+          </div>
+
+          <div style="padding:24px;border:1px solid var(--em-border-2);border-radius:var(--em-r-lg);background:var(--em-surface);display:flex;flex-direction:column;gap:10px">
+            <span class="label-mono" style="color:var(--em-brand)">¿Sobre qué escribes?</span>
+            <p style="color:var(--em-fg-3);font-size:14px;line-height:1.6">Frontend, diseño de interfaces, design systems, Astro, Next.js, integraciones con CMS, proyectos personales y apuntes cortos cuando algo me llama la atención.</p>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px"><span class="pill">Frontend</span><span class="pill">DS</span><span class="pill">Astro</span><span class="pill">+5</span></div>
+          </div>
+
+          <div style="padding:24px;border:1px solid var(--em-border-2);border-radius:var(--em-r-lg);background:var(--em-surface);display:flex;flex-direction:column;gap:10px">
+            <span class="label-mono" style="color:var(--em-brand)">¿Cada cuánto escribes?</span>
+            <p style="color:var(--em-fg-3);font-size:14px;line-height:1.6">Cuando me apetece y tengo algo útil que decir. No hay calendario fijo, no hay objetivos de publicación.</p>
+          </div>
+
+          <div style="padding:24px;border:1px solid var(--em-border-2);border-radius:var(--em-r-lg);background:var(--em-surface);display:flex;flex-direction:column;gap:10px">
+            <span class="label-mono" style="color:var(--em-brand)">¿Cómo me suscribo?</span>
+            <p style="color:var(--em-fg-3);font-size:14px;line-height:1.6">Por RSS. No hay newsletter ni captura de email — quiero que el blog viva fuera de tu bandeja de entrada.</p>
+            <div style="display:flex;gap:6px;margin-top:4px"><span class="pill brand">RSS</span><span class="pill">JSON Feed</span></div>
+          </div>
+
+          <div style="padding:24px;border:1px solid var(--em-border-2);border-radius:var(--em-r-lg);background:var(--em-surface);display:flex;flex-direction:column;gap:10px">
+            <span class="label-mono" style="color:var(--em-brand)">¿Trabajas con clientes desde aquí?</span>
+            <p style="color:var(--em-fg-3);font-size:14px;line-height:1.6">No directamente. Para eso está el portfolio, donde sí explico cómo trabajo y cómo contactarme para proyectos.</p>
+            <span class="btn" style="padding:8px 14px;font-size:11px;align-self:flex-start">Ir al portfolio <span class="arr">↗</span></span>
+          </div>
+        </div>
+      </div>
+
+      <footer class="ftr" style="margin-top:48px">
+        <div><div class="sig">Edgar <em>Martínez</em></div></div>
+        <div><h6>Blog</h6><ul><li>Inicio</li><li>Artículos</li><li>Categorías</li></ul></div>
+        <div><h6>Edgar</h6><ul><li>Portfolio ↗</li><li>GitHub ↗</li><li>LinkedIn ↗</li></ul></div>
+        <div><h6>RSS</h6><ul><li>Feed</li></ul></div>
+      </footer>
+    </div>
+  </section>
+  <!-- SOBRE · V4 — Manifesto + Q&A · 2 columnas (mezcla 01 × 03) -->
+  <section class="variation">
+    <div class="var-head">
+      <div class="var-tag">S · 04</div>
+      <div>
+        <div class="var-name">Manifesto + Q&amp;A · 2 columnas</div>
+        <div class="var-desc">Misma mezcla 01 × 03, ahora a dos columnas: sidebar con Edgar + enlaces (de V3) y columna principal con manifesto + preguntas frecuentes (de V1+V3). La voz se mantiene, pero hay siempre algo a la vista para saltar al portfolio.</div>
+      </div>
+      <div class="var-tagline">voz + utilidad<br/>en paralelo</div>
+    </div>
+
+    <div class="wf">
+      <div class="hdr">
+        <div class="hdr-brand"><span class="glyph">+</span> Edgar Martínez <span style="color:var(--em-fg-4);font-weight:400">/ Blog</span></div>
+        <nav class="hdr-nav">
+          <a>Inicio</a><a>Artículos</a><a>Categorías</a><a class="active">Sobre</a>
+          <a class="ext">Portfolio</a>
+        </nav>
+      </div>
+
+      <!-- ── Page header común ──────────────────────────────────────── -->
+      <section style="padding:48px 0 28px;border-bottom:1px dashed var(--em-border-3)">
+        <div class="label-mono" style="color:var(--em-brand);margin-bottom:14px">— Sobre este blog</div>
+        <h1 style="font-family:var(--em-font-display);font-weight:900;font-size:64px;line-height:1.02;letter-spacing:-.03em;color:var(--em-fg-1);max-width:18ch">
+          Notas, no documentación. <em style="font-style:italic;color:var(--em-brand)">Aprendizajes desde la práctica.</em>
+        </h1>
+      </section>
+
+      <!-- ── 2 columnas: sidebar (V3) + columna principal (V1+V3) ──── -->
+      <div style="display:grid;grid-template-columns:280px 1fr;gap:64px;margin-top:40px">
+
+        <!-- ── Sidebar (de V3, evolucionado) ───────────────────────── -->
+        <aside style="position:sticky;top:80px;align-self:start;display:flex;flex-direction:column;gap:24px">
+
+          <!-- Profile -->
+          <div style="display:flex;flex-direction:column;gap:14px;padding-bottom:20px;border-bottom:1px dashed var(--em-border-2)">
+            <div class="img" style="width:96px;height:96px;border-radius:9999px;min-height:0"></div>
+            <div>
+              <div style="color:var(--em-fg-1);font-weight:700;font-size:18px;letter-spacing:-.01em">Edgar Martínez Palmero</div>
+              <div class="label-mono" style="color:var(--em-fg-5);margin-top:6px">Vitoria-Gasteiz · ES</div>
+            </div>
+            <p style="font-size:13px;color:var(--em-fg-3);line-height:1.6">Frontend developer en Veiss Comunicación desde 2022. Diseño y construyo interfaces, sistemas de diseño y apps híbridas.</p>
+            <span class="hand" style="color:var(--em-brand);font-size:14px;transform:rotate(-1deg);align-self:flex-start">— hola 👋 —</span>
+          </div>
+
+          <!-- Enlaces -->
+          <div>
+            <h6 class="label-mono" style="margin-bottom:12px;color:var(--em-fg-5)">Enlaces</h6>
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;font-size:13px">
+              <li style="display:flex;justify-content:space-between;padding:8px 12px;border:1px solid var(--em-border-2);border-radius:var(--em-r-sm);background:var(--em-surface);color:var(--em-fg-1)"><span>Portfolio</span><span class="label-mono" style="color:var(--em-brand)">↗</span></li>
+              <li style="display:flex;justify-content:space-between;padding:8px 12px;border:1px solid var(--em-border-2);border-radius:var(--em-r-sm);background:var(--em-surface);color:var(--em-fg-1)"><span>GitHub</span><span class="label-mono" style="color:var(--em-brand)">↗</span></li>
+              <li style="display:flex;justify-content:space-between;padding:8px 12px;border:1px solid var(--em-border-2);border-radius:var(--em-r-sm);background:var(--em-surface);color:var(--em-fg-1)"><span>LinkedIn</span><span class="label-mono" style="color:var(--em-brand)">↗</span></li>
+              <li style="display:flex;justify-content:space-between;padding:8px 12px;border:1px solid var(--em-border-2);border-radius:var(--em-r-sm);background:var(--em-surface);color:var(--em-fg-1)"><span>Email</span><span class="label-mono" style="color:var(--em-brand)">→</span></li>
+            </ul>
+          </div>
+
+          <!-- Suscribirse -->
+          <div>
+            <h6 class="label-mono" style="margin-bottom:12px;color:var(--em-fg-5)">Suscríbete</h6>
+            <p style="font-size:12px;color:var(--em-fg-3);line-height:1.55;margin-bottom:10px">Por RSS, sin newsletter.</p>
+            <div style="display:flex;gap:6px"><span class="pill brand">RSS</span><span class="pill">JSON Feed</span></div>
+          </div>
+
+          <!-- Stats sutiles -->
+          <div style="padding-top:20px;border-top:1px dashed var(--em-border-2);font-family:var(--em-font-mono);font-size:10px;color:var(--em-fg-5);letter-spacing:.15em;text-transform:uppercase;display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;justify-content:space-between"><span>Artículos</span><span style="color:var(--em-fg-3)">54</span></div>
+            <div style="display:flex;justify-content:space-between"><span>Temas</span><span style="color:var(--em-fg-3)">08</span></div>
+            <div style="display:flex;justify-content:space-between"><span>Desde</span><span style="color:var(--em-fg-3)">2024</span></div>
+          </div>
+        </aside>
+
+        <!-- ── Columna principal ───────────────────────────────────── -->
+        <div style="display:flex;flex-direction:column;gap:48px">
+
+          <!-- 1. Manifesto (de V1) -->
+          <article style="display:flex;flex-direction:column;gap:18px;max-width:60ch">
+            <div style="font-size:18px;color:var(--em-fg-2);line-height:1.7;display:flex;flex-direction:column;gap:16px">
+              <p style="font-family:var(--em-font-display);font-weight:300;font-size:22px;line-height:1.45;color:var(--em-fg-1)">Este blog es mi espacio para documentar aprendizajes, decisiones técnicas y experimentos relacionados con <strong style="font-weight:600">frontend, diseño de interfaces y desarrollo web</strong>.</p>
+              <p>No pretende ser una documentación perfecta, sino una colección de notas útiles desde la práctica. Algunas serán muy completas, otras serán apuntes cortos — ambas tienen sitio aquí.</p>
+              <p>Escribo cuando me apetece, sobre lo que toco en mi día a día y sobre lo que me cuesta entender. Si te resulta útil, perfecto.</p>
+            </div>
+
+            <div class="quote" style="margin-top:8px">"Si algo me costó entender, probablemente merezca un artículo."</div>
+          </article>
+
+          <!-- 2. Preguntas frecuentes (de V3) -->
+          <section>
+            <div style="display:flex;justify-content:space-between;align-items:end;gap:24px;padding-bottom:20px;border-bottom:1px dashed var(--em-border-3);margin-bottom:24px">
+              <div>
+                <div class="label-mono" style="color:var(--em-brand);margin-bottom:8px">— Preguntas frecuentes</div>
+                <h2 style="font-family:var(--em-font-display);font-weight:900;font-size:32px;line-height:1;letter-spacing:-.02em;color:var(--em-fg-1);text-transform:uppercase">
+                  Lo que me <em style="font-style:italic;color:var(--em-brand)">suelen preguntar</em>
+                </h2>
+              </div>
+              <span class="hand" style="color:var(--em-fg-4);font-size:13px;transform:rotate(-2deg);max-width:140px;text-align:right;padding-bottom:6px">5 dudas que vuelven<br/>cada cierto tiempo</span>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:14px">
+              <div style="padding:22px;border:1px solid var(--em-border-2);border-radius:var(--em-r-lg);background:var(--em-surface);display:flex;flex-direction:column;gap:8px">
+                <span class="label-mono" style="color:var(--em-brand)">¿Sobre qué escribes?</span>
+                <p style="color:var(--em-fg-2);font-size:15px;line-height:1.6">Frontend, diseño de interfaces, design systems, Astro, Next.js, integraciones con CMS, proyectos personales y apuntes cortos cuando algo me llama la atención.</p>
+                <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px"><span class="pill">Frontend</span><span class="pill">DS</span><span class="pill">Astro</span><span class="pill">+5</span></div>
+              </div>
+
+              <div style="padding:22px;border:1px solid var(--em-border-2);border-radius:var(--em-r-lg);background:var(--em-surface);display:flex;flex-direction:column;gap:8px">
+                <span class="label-mono" style="color:var(--em-brand)">¿Cada cuánto escribes?</span>
+                <p style="color:var(--em-fg-2);font-size:15px;line-height:1.6">Cuando me apetece y tengo algo útil que decir. No hay calendario fijo, no hay objetivos de publicación — el blog vive a mi ritmo.</p>
+              </div>
+
+              <div style="padding:22px;border:1px solid var(--em-border-2);border-radius:var(--em-r-lg);background:var(--em-surface);display:flex;flex-direction:column;gap:8px">
+                <span class="label-mono" style="color:var(--em-brand)">¿Cómo me suscribo?</span>
+                <p style="color:var(--em-fg-2);font-size:15px;line-height:1.6">Por RSS. No hay newsletter ni captura de email — quiero que el blog viva fuera de tu bandeja de entrada.</p>
+              </div>
+
+              <div style="padding:22px;border:1px solid var(--em-border-2);border-radius:var(--em-r-lg);background:var(--em-surface);display:flex;flex-direction:column;gap:8px">
+                <span class="label-mono" style="color:var(--em-brand)">¿Qué <em style="font-style:italic;color:var(--em-fg-2)">no</em> voy a encontrar aquí?</span>
+                <ul style="display:flex;flex-direction:column;gap:6px;color:var(--em-fg-2);font-size:15px;list-style:none;line-height:1.6">
+                  <li>· Tutoriales para principiantes.</li>
+                  <li>· “Top 10” o listicles.</li>
+                  <li>· Newsletter, popups, ni patrocinios.</li>
+                </ul>
+              </div>
+
+              <div style="padding:22px;border:1px solid var(--em-border-2);border-radius:var(--em-r-lg);background:var(--em-surface);display:flex;flex-direction:column;gap:8px">
+                <span class="label-mono" style="color:var(--em-brand)">¿Trabajas con clientes desde aquí?</span>
+                <p style="color:var(--em-fg-2);font-size:15px;line-height:1.6">No directamente. Para eso está el portfolio, donde sí explico cómo trabajo y cómo contactarme para proyectos.</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 3. CTA final (de V1) -->
+          <section style="padding:32px;border:1px solid var(--em-border-2);border-radius:var(--em-r-xl);background:rgba(220,240,93,.04);display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap">
+            <div>
+              <span class="hand" style="color:var(--em-brand);font-size:16px">— y ya está —</span>
+              <h3 style="font-size:22px;font-weight:700;color:var(--em-fg-1);letter-spacing:-.01em;margin-top:6px;max-width:32ch">Si te quedan más dudas, escríbeme. Si no, ya puedes pasar a leer.</h3>
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <span class="btn primary">Ir a artículos <span class="arr">→</span></span>
+              <span class="btn">Ver portfolio <span class="arr">↗</span></span>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <footer class="ftr" style="margin-top:80px">
+        <div><div class="sig">Edgar <em>Martínez</em></div><p style="margin-top:8px">Vitoria-Gasteiz · ES</p></div>
+        <div><h6>Blog</h6><ul><li>Inicio</li><li>Artículos</li><li>Categorías</li></ul></div>
+        <div><h6>Edgar</h6><ul><li>Portfolio ↗</li><li>GitHub ↗</li><li>LinkedIn ↗</li><li>Email</li></ul></div>
+        <div><h6>RSS</h6><ul><li>Feed</li></ul></div>
+      </footer>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  (function(){
+    const tabs = document.querySelectorAll('.tab');
+    const pages = document.querySelectorAll('.page');
+    function activate(name){
+      tabs.forEach(t => t.setAttribute('aria-selected', t.dataset.page === name ? 'true' : 'false'));
+      pages.forEach(p => p.classList.toggle('active', p.id === 'page-' + name));
+      // sync URL hash for sharability
+      if (location.hash !== '#' + name) history.replaceState(null, '', '#' + name);
+      window.scrollTo({top:0, behavior:'instant'});
+    }
+    tabs.forEach(t => t.addEventListener('click', () => activate(t.dataset.page)));
+    // boot from hash
+    const initial = (location.hash || '#home').slice(1);
+    if (['home','listado','detalle','categoria','sobre'].includes(initial)) activate(initial);
+  })();
+</script>
+
+</body>
+</html>

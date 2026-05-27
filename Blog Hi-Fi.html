@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Blog · Edgar Martínez</title>
+  <meta name="description" content="Frontend, diseño y sistemas web desde la práctica. Aprendizajes, decisiones técnicas y experimentos." />
+
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,900;1,300;1,700;1,900&family=Source+Serif+4:ital,wght@0,400;1,400&family=JetBrains+Mono:wght@400;500;600&family=Caveat:wght@500;600&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="blog.css" />
+</head>
+<body data-bg="on" data-density="comfy" data-toc="always">
+
+  <!-- Particle background -->
+  <canvas id="bg"></canvas>
+
+  <!-- Dev tabs (top-left) to switch between mocked pages -->
+  <nav class="dev-tabs" aria-label="Páginas mock">
+    <span class="label">Mock</span>
+    <button data-page="home" aria-selected="true">Home</button>
+    <button data-page="articulos">Artículos</button>
+    <button data-page="detalle">Detalle</button>
+    <button data-page="sobre">Sobre</button>
+  </nav>
+
+  <!-- Floating pill nav -->
+  <header class="em-header">
+    <a class="brand" href="#home">
+      <span class="glyph">+</span>
+      Edgar Martínez
+      <span class="muted">/ Blog</span>
+    </a>
+    <nav>
+      <a class="active" data-nav="home">Inicio</a>
+      <a data-nav="articulos">Artículos</a>
+      <a data-nav="categorias">Categorías</a>
+      <a data-nav="sobre">Sobre</a>
+      <span class="sep" aria-hidden="true"></span>
+      <a class="ext" href="https://edgarmartinez.dev" target="_blank" rel="noopener">Portfolio ↗</a>
+    </nav>
+  </header>
+
+  <!-- ─────────────────────────── HOME ─────────────────────────── -->
+  <main id="page-home" class="page active" data-screen-label="Home">
+
+    <!-- HERO (1:1 con wireframe Home 01) -->
+    <section class="hero">
+      <div class="eyebrow">blog · edgarmartinez.dev</div>
+      <h1 class="hero-title">Blog de<br/>Edgar <em>Martínez</em></h1>
+      <p class="hero-sub">Frontend, diseño y sistemas web desde la práctica. Aprendizajes, decisiones técnicas y experimentos que voy documentando mientras construyo productos web.</p>
+      <div class="cta-row">
+        <a class="btn primary" href="#latest">Leer últimos artículos <span class="arr">→</span></a>
+        <a class="btn" href="https://edgarmartinez.dev" target="_blank" rel="noopener">Ver portfolio <span class="arr">↗</span></a>
+      </div>
+    </section>
+
+    <!-- FEATURED (1:1 con wireframe) -->
+    <section class="container" id="featured">
+      <div class="section-eyebrow">Artículo destacado</div>
+      <article class="em-glass hover featured" data-glass>
+        <span class="badge">★ Destacado</span>
+        <div class="cover"><img src="assets/portfolio.webp" alt="" /></div>
+        <div class="body">
+          <div class="meta">
+            <span class="cat">Design Systems</span>
+            <span class="dot"></span>
+            <span>27 may 2026</span>
+            <span class="dot"></span>
+            <span>6 min lectura</span>
+          </div>
+          <h2>Cómo plantearía un sistema de diseño para una web pequeña</h2>
+          <p class="desc">Una guía práctica para definir componentes, patrones y decisiones visuales sin sobredimensionar el proyecto.</p>
+          <div class="tags">
+            <span class="pill">Design Systems</span>
+            <span class="pill">Frontend</span>
+            <span class="pill">UI</span>
+          </div>
+          <div class="actions">
+            <a class="btn primary sm" href="#detalle">Leer artículo <span class="arr">→</span></a>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- CATEGORÍAS (1:1 con wireframe — pills planas, sin contadores) -->
+    <section class="container" style="margin-top:96px">
+      <div class="section-eyebrow">
+        Categorías
+        <span class="count">8 temas</span>
+      </div>
+      <div class="cats">
+        <a class="cat brand">Frontend</a>
+        <a class="cat">Design Systems</a>
+        <a class="cat">Astro</a>
+        <a class="cat">Next.js</a>
+        <a class="cat">WordPress</a>
+        <a class="cat">Shopify</a>
+        <a class="cat">Proyectos</a>
+        <a class="cat">Notas</a>
+      </div>
+    </section>
+
+    <!-- ÚLTIMOS ARTÍCULOS -->
+    <section class="container" style="margin-top:96px" id="latest">
+      <div class="section-eyebrow">
+        Últimos artículos
+        <a class="count linklike" href="#articulos">ver todos →</a>
+      </div>
+
+      <div class="cards-grid">
+        <a class="em-glass hover card" data-glass href="#detalle">
+          <div class="cover"><img src="assets/lachata.webp" alt="" /></div>
+          <div class="body">
+            <div class="meta"><span class="cat">Astro</span><span class="dot"></span><span>21 may 2026</span><span class="dot"></span><span>5 min</span></div>
+            <h3>Cómo organizo componentes reutilizables en Astro + Tailwind</h3>
+            <p class="desc">Patrones para componer interfaces sin acoplarte al CMS de turno, y cuándo extraer cada cosa a su propio archivo.</p>
+            <div class="footer">
+              <div class="tags"><span class="pill">Astro</span><span class="pill">Tailwind</span></div>
+              <span class="meta" style="color:var(--em-brand)">Leer →</span>
+            </div>
+          </div>
+        </a>
+
+        <a class="em-glass hover card" data-glass href="#detalle">
+          <div class="cover"><img src="assets/nekatur.webp" alt="" /></div>
+          <div class="body">
+            <div class="meta"><span class="cat">Design Systems</span><span class="dot"></span><span>14 may 2026</span><span class="dot"></span><span>7 min</span></div>
+            <h3>Lo que aprendí creando un design system pequeño</h3>
+            <p class="desc">Errores, atajos útiles y decisiones que rentaron a la hora de mantenerlo a lo largo del tiempo.</p>
+            <div class="footer">
+              <div class="tags"><span class="pill">DS</span><span class="pill">Tokens</span></div>
+              <span class="meta" style="color:var(--em-brand)">Leer →</span>
+            </div>
+          </div>
+        </a>
+
+        <a class="em-glass hover card" data-glass href="#detalle">
+          <div class="cover"><img src="assets/portfolio.webp" alt="" /></div>
+          <div class="body">
+            <div class="meta"><span class="cat">Frontend</span><span class="dot"></span><span>06 may 2026</span><span class="dot"></span><span>4 min</span></div>
+            <h3>Por qué no todo necesita ser una SPA</h3>
+            <p class="desc">Cuándo elegir HTML + un poco de JS y por qué importa para los usuarios y para tu cordura.</p>
+            <div class="footer">
+              <div class="tags"><span class="pill">SSR</span><span class="pill">Astro</span></div>
+              <span class="meta" style="color:var(--em-brand)">Leer →</span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- SOBRE ESTE BLOG (1:1 con wireframe — single CTA) -->
+    <section class="container" style="margin-top:96px" id="about-blog">
+      <div class="section-eyebrow">Sobre este blog</div>
+      <article class="em-glass hover about-block" data-glass>
+        <div class="body">
+          <span class="label hand">— notas, no documentación —</span>
+          <p>Este blog es mi espacio para documentar aprendizajes, decisiones técnicas y experimentos relacionados con <strong>frontend, diseño de interfaces y desarrollo web</strong>. No pretende ser una documentación perfecta, sino una colección de notas útiles desde la práctica.</p>
+          <div class="actions">
+            <a class="btn" href="#sobre">Conocer más sobre mí <span class="arr">→</span></a>
+          </div>
+        </div>
+        <div class="portrait"><img src="assets/profile.webp" alt="Edgar Martínez" /></div>
+      </article>
+    </section>
+  </main>
+
+  <!-- ─────────────────────────── ARTÍCULOS (stub) ─────────────────── -->
+  <main id="page-articulos" class="page" data-screen-label="Artículos">
+    <section class="stub">
+      <span class="eyebrow">— Próxima iteración —</span>
+      <h2>Grid de <em>artículos</em></h2>
+      <p>Llegará una vez aprobemos el sistema de la Home. Mantendrá la rejilla de 2 columnas con cover, filtros por categoría (funcionales, en JS) y paginación.</p>
+      <a class="btn primary" href="#home">Volver a la Home <span class="arr">←</span></a>
+    </section>
+  </main>
+
+  <!-- ─────────────────────────── DETALLE (stub) ───────────────────── -->
+  <main id="page-detalle" class="page" data-screen-label="Detalle">
+    <section class="stub">
+      <span class="eyebrow">— Próxima iteración —</span>
+      <h2>Detalle del <em>artículo</em></h2>
+      <p>Variante con cover 21:9 + título centrado + TOC sticky a la izquierda. Bloques de código, callouts, citas, tabla y artículos relacionados.</p>
+      <a class="btn primary" href="#home">Volver a la Home <span class="arr">←</span></a>
+    </section>
+  </main>
+
+  <!-- ─────────────────────────── SOBRE (stub) ─────────────────────── -->
+  <main id="page-sobre" class="page" data-screen-label="Sobre el blog">
+    <section class="stub">
+      <span class="eyebrow">— Próxima iteración —</span>
+      <h2>Sobre el <em>blog</em></h2>
+      <p>2 columnas: sidebar con tu perfil, enlaces y RSS; columna principal con manifesto + preguntas frecuentes + CTA.</p>
+      <a class="btn primary" href="#home">Volver a la Home <span class="arr">←</span></a>
+    </section>
+  </main>
+
+  <!-- ─────────────────────────── FOOTER ───────────────────────────── -->
+  <footer class="em-footer">
+    <div class="container">
+      <div class="row">
+        <div>
+          <div class="sig">Construyendo el futuro de la web,<br/>pixel a <em>pixel.</em></div>
+          <div class="loc">Vitoria-Gasteiz · ES · 2026</div>
+        </div>
+        <div>
+          <h6>Blog</h6>
+          <ul>
+            <li><a>Inicio</a></li>
+            <li><a>Artículos</a></li>
+            <li><a>Categorías</a></li>
+            <li><a>Sobre el blog</a></li>
+          </ul>
+        </div>
+        <div>
+          <h6>Edgar</h6>
+          <ul>
+            <li><a href="https://edgarmartinez.dev" target="_blank" rel="noopener">Portfolio <span class="ext">↗</span></a></li>
+            <li><a target="_blank" rel="noopener">GitHub <span class="ext">↗</span></a></li>
+            <li><a target="_blank" rel="noopener">LinkedIn <span class="ext">↗</span></a></li>
+            <li><a href="/cdn-cgi/l/email-protection#d6beb9bab796b3b2b1b7a4bbb7a4a2bfb8b3acf8b2b3a0">Email</a></li>
+          </ul>
+        </div>
+        <div>
+          <h6>RSS</h6>
+          <ul>
+            <li><a>Feed RSS</a></li>
+            <li><a>JSON Feed</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bottom">
+        <span>© 2026 · Edgar Martínez Palmero</span>
+        <span>Diseñado y desarrollado con <span class="heart">❤</span> desde Vitoria</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Tweaks root -->
+  <div id="tweaks-root"></div>
+
+  <!-- Scripts ─────────────────────────────────────────────────────── -->
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="blog-particles.js"></script>
+
+  <script>
+    // Dev tab + nav switcher
+    (function () {
+      const tabs = document.querySelectorAll('.dev-tabs button');
+      const headerLinks = document.querySelectorAll('.em-header nav a[data-nav]');
+      const pages = document.querySelectorAll('main.page');
+
+      // Mapping nav id → page id (categorías maps to artículos for now)
+      const navToPage = {
+        home: 'home',
+        articulos: 'articulos',
+        categorias: 'articulos',
+        sobre: 'sobre',
+      };
+
+      function activate(pageName, { fromNav } = {}) {
+        tabs.forEach(t => t.setAttribute('aria-selected', t.dataset.page === pageName ? 'true' : 'false'));
+        pages.forEach(p => p.classList.toggle('active', p.id === 'page-' + pageName));
+
+        // sync header nav highlight
+        headerLinks.forEach(a => {
+          const target = navToPage[a.dataset.nav];
+          a.classList.toggle('active', target === pageName);
+        });
+
+        // url hash
+        if (location.hash !== '#' + pageName) history.replaceState(null, '', '#' + pageName);
+        if (!fromNav) window.scrollTo({ top: 0, behavior: 'instant' });
+      }
+
+      tabs.forEach(t => t.addEventListener('click', () => activate(t.dataset.page)));
+      headerLinks.forEach(a => a.addEventListener('click', (e) => {
+        e.preventDefault();
+        activate(navToPage[a.dataset.nav]);
+      }));
+
+      // boot from hash
+      const initial = (location.hash || '#home').slice(1);
+      if (['home', 'articulos', 'detalle', 'sobre'].includes(initial)) activate(initial);
+
+      // Internal links to #detalle / #latest etc. — handle the page jumps
+      document.addEventListener('click', (e) => {
+        const a = e.target.closest('a[href^="#"]');
+        if (!a) return;
+        const href = a.getAttribute('href');
+        if (href === '#home' || href === '#articulos' || href === '#detalle' || href === '#sobre') {
+          e.preventDefault();
+          activate(href.slice(1));
+        }
+      });
+    })();
+
+    // Glass card mouse tracking
+    (function () {
+      const els = document.querySelectorAll('[data-glass]');
+      els.forEach(el => {
+        el.addEventListener('mousemove', (e) => {
+          const r = el.getBoundingClientRect();
+          el.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+          el.style.setProperty('--my', (e.clientY - r.top) + 'px');
+        });
+      });
+    })();
+  </script>
+
+  <!-- React + Babel for the Tweaks panel -->
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <script type="text/babel" src="tweaks-panel.jsx"></script>
+  <script type="text/babel" src="blog-tweaks.jsx"></script>
+</body>
+</html>
