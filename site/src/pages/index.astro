@@ -37,23 +37,24 @@ const featuredDate = featured?.data.date.toLocaleDateString('es-ES', {
 >
   <!-- HERO -->
   <main style="position:relative;z-index:1">
-    <section class="hero hero-medium">
-      <div class="hero-content">
-        <h1 class="hero-title">
-          Blog · Edgar <em>Martínez</em>
-        </h1>
-        <p class="hero-sub">
-          Aprendizajes y decisiones técnicas desde la práctica.
-        </p>
+    <section class="hero">
+      <div class="eyebrow">blog · edgarmartinez.dev</div>
+      <h1 class="hero-title">
+        Blog de<br/>
+        Edgar <em>Martínez</em>
+      </h1>
+      <p class="hero-sub">
+        Frontend, diseño y sistemas web desde la práctica. Aprendizajes, decisiones técnicas y experimentos
+        que voy documentando mientras construyo productos web.
+      </p>
         <div class="cta-row">
           <a class="btn btn-primary" href="#latest">
-            Leer artículos <span class="arr">→</span>
+            Leer últimos artículos <span class="arr">→</span>
           </a>
           <a class="btn" href="https://edgarmartinez.dev" target="_blank" rel="noopener noreferrer">
-            Portfolio <span class="arr">↗</span>
+            Ver portfolio <span class="arr">↗</span>
           </a>
         </div>
-      </div>
     </section>
 
     <!-- CATEGORÍAS (filtros, sin eyebrow) -->
@@ -149,31 +150,33 @@ const featuredDate = featured?.data.date.toLocaleDateString('es-ES', {
 </BaseLayout>
 
 <style>
-  /* ── Hero (A·Medio) ── */
+  /* ── Hero ── */
   .hero {
     max-width: var(--width-em-max);
     margin: 0 auto;
-    padding: 0 32px;
+    padding: 160px 32px 96px;
     position: relative;
   }
-  .hero-medium {
-    display: flex;
+  .hero .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--color-em-fg-4);
+    margin-bottom: 32px;
+    display: inline-flex;
     align-items: center;
-    min-height: auto;
-    padding-top: 140px;
-    padding-bottom: 72px;
+    gap: 14px;
   }
-  .hero-content {
-    max-width: 54ch;
-  }
+  .hero .eyebrow::before { content: ""; width: 32px; height: 1px; background: var(--color-em-fg-5); }
   .hero-title {
     font-family: var(--font-display);
     font-weight: 900;
-    text-transform: none;
-    line-height: 1.15;
-    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    line-height: 0.92;
+    letter-spacing: -0.045em;
     color: var(--color-em-fg-1);
-    font-size: clamp(28px, 4vw, 48px);
+    font-size: clamp(56px, 9vw, 132px);
     margin: 0;
     text-wrap: balance;
   }
@@ -181,17 +184,19 @@ const featuredDate = featured?.data.date.toLocaleDateString('es-ES', {
     font-style: italic;
     color: var(--color-em-brand);
     font-weight: 900;
+    text-shadow: 0 0 32px var(--color-em-brand-soft);
   }
   .hero-sub {
-    margin-top: 18px;
+    margin-top: 32px;
     font-family: var(--font-display);
     font-weight: 300;
-    font-size: clamp(15px, 1.1vw, 18px);
+    font-size: clamp(17px, 1.4vw, 20px);
     line-height: 1.55;
-    color: var(--color-em-fg-3);
-    max-width: 48ch;
+    color: var(--color-em-fg-2);
+    max-width: 62ch;
+    text-wrap: pretty;
   }
-  .cta-row { display: inline-flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
+  .cta-row { display: inline-flex; gap: 12px; margin-top: 36px; flex-wrap: wrap; }
 
   /* ── Categorías (filtros silenciosos) ── */
   .categories-section {
@@ -336,7 +341,7 @@ const featuredDate = featured?.data.date.toLocaleDateString('es-ES', {
     .categories-section { padding: 40px 32px; }
   }
   @media (max-width: 640px) {
-    .hero-medium { padding-top: 100px; padding-bottom: 56px; }
+    .hero { padding: 120px 20px 80px; }
     .categories-section { padding: 32px 20px; margin-bottom: 48px; }
     .featured .body, .about-block .body { padding: 28px 24px; }
   }
