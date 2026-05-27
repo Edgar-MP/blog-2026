@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Página no encontrada" description="Esta página no existe.">
+  <main style="position:relative;z-index:1;min-height:80vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:140px 32px 80px;gap:24px">
+    <div class="eyebrow">— Error 404 —</div>
+    <h1>Página no <em>encontrada</em></h1>
+    <p>Esta URL no existe o el artículo ha sido movido.</p>
+    <a class="btn btn-primary" href="/">Volver al inicio <span class="arr">→</span></a>
+  </main>
+</BaseLayout>
+
+<style>
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-em-brand);
+  }
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: clamp(40px, 5vw, 72px);
+    text-transform: uppercase;
+    letter-spacing: -0.04em;
+    color: var(--color-em-fg-1);
+    line-height: 1;
+  }
+  h1 em { font-style: italic; color: var(--color-em-brand); }
+  p { max-width: 40ch; color: var(--color-em-fg-3); font-size: 15px; }
+</style>
