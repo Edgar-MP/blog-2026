@@ -37,23 +37,22 @@ const featuredDate = featured?.data.date.toLocaleDateString('es-ES', {
 >
   <!-- HERO -->
   <main style="position:relative;z-index:1">
-    <section class="hero">
-      <div class="eyebrow">blog · edgarmartinez.dev</div>
-      <h1 class="hero-title">
-        Blog de<br/>
-        Edgar <em>Martínez</em>
-      </h1>
-      <p class="hero-sub">
-        Frontend, diseño y sistemas web desde la práctica. Aprendizajes, decisiones técnicas y experimentos
-        que voy documentando mientras construyo productos web.
-      </p>
-      <div class="cta-row">
-        <a class="btn btn-primary" href="#latest">
-          Leer últimos artículos <span class="arr">→</span>
-        </a>
-        <a class="btn" href="https://edgarmartinez.dev" target="_blank" rel="noopener noreferrer">
-          Ver portfolio <span class="arr">↗</span>
-        </a>
+    <section class="hero hero-medium">
+      <div class="hero-content">
+        <h1 class="hero-title">
+          Notas sobre <em>frontend, diseño</em> y sistemas web
+        </h1>
+        <p class="hero-sub">
+          Aprendizajes y decisiones técnicas desde la práctica.
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="#latest">
+            Leer artículos <span class="arr">→</span>
+          </a>
+          <a class="btn" href="https://edgarmartinez.dev" target="_blank" rel="noopener noreferrer">
+            Portfolio <span class="arr">↗</span>
+          </a>
+        </div>
       </div>
     </section>
 
@@ -154,53 +153,49 @@ const featuredDate = featured?.data.date.toLocaleDateString('es-ES', {
 </BaseLayout>
 
 <style>
-  /* ── Hero ── */
+  /* ── Hero (A·Medio) ── */
   .hero {
     max-width: var(--width-em-max);
     margin: 0 auto;
-    padding: 160px 32px 96px;
+    padding: 0 32px;
     position: relative;
   }
-  .hero .eyebrow {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--color-em-fg-4);
-    margin-bottom: 32px;
-    display: inline-flex;
+  .hero-medium {
+    display: flex;
     align-items: center;
-    gap: 14px;
+    min-height: 40vh;
+    padding-top: 80px;
+    padding-bottom: 80px;
   }
-  .hero .eyebrow::before { content: ""; width: 32px; height: 1px; background: var(--color-em-fg-5); }
+  .hero-content {
+    max-width: 54ch;
+  }
   .hero-title {
     font-family: var(--font-display);
     font-weight: 900;
-    text-transform: uppercase;
-    line-height: 0.92;
-    letter-spacing: -0.045em;
+    text-transform: none;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
     color: var(--color-em-fg-1);
-    font-size: clamp(56px, 9vw, 132px);
+    font-size: clamp(32px, 5vw, 56px);
     margin: 0;
-    text-wrap: balance;
+    text-wrap: pretty;
   }
   .hero-title em {
     font-style: italic;
     color: var(--color-em-brand);
     font-weight: 900;
-    text-shadow: 0 0 32px var(--color-em-brand-soft);
   }
   .hero-sub {
-    margin-top: 32px;
+    margin-top: 18px;
     font-family: var(--font-display);
     font-weight: 300;
-    font-size: clamp(17px, 1.4vw, 20px);
+    font-size: clamp(15px, 1.1vw, 18px);
     line-height: 1.55;
-    color: var(--color-em-fg-2);
-    max-width: 62ch;
-    text-wrap: pretty;
+    color: var(--color-em-fg-3);
+    max-width: 48ch;
   }
-  .cta-row { display: inline-flex; gap: 12px; margin-top: 36px; flex-wrap: wrap; }
+  .cta-row { display: inline-flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
 
   /* ── Featured card ── */
   .featured {
@@ -331,7 +326,7 @@ const featuredDate = featured?.data.date.toLocaleDateString('es-ES', {
     .about-block .portrait { border-left: 0; border-top: 1px solid var(--color-em-border-2); aspect-ratio: 16/10; }
   }
   @media (max-width: 640px) {
-    .hero { padding: 120px 20px 80px; }
+    .hero-medium { min-height: auto; padding-top: 60px; padding-bottom: 60px; }
     .featured .body, .about-block .body { padding: 28px 24px; }
   }
 </style>
