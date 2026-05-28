@@ -1,0 +1,112 @@
+---
+interface Props {
+  code: string;
+  lang?: string;
+  filename?: string;
+}
+
+const { code, lang = 'text', filename } = Astro.props;
+const lines = code.trim().split('\n');
+---
+
+<figure class="code-block">
+  {filename && (
+    <figcaption class="code-header">
+      <span class="code-filename">{filename}</span>
+      {lang && lang !== 'text' && (
+        <>
+          <span class="code-sep">·</span>
+          <span class="code-lang">{lang}</span>
+        </>
+      )}
+    </figcaption>
+  )}
+  <pre class:list={[{ 'has-header': filename }]}><code>
+{lines.map((line, i) => (
+  <div class="code-line" key={i}>
+    <span class="code-num">{i + 1}</span>
+    <span class="code-content">{line || ' '}</span>
+  </div>
+))}
+  </code></pre>
+</figure>
+
+<style>
+  .code-block {
+    margin: 0;
+    border: 1px solid var(--color-em-border-2);
+    border-radius: var(--radius-lg);
+    background: rgba(18, 18, 21, 0.5);
+    overflow: hidden;
+  }
+
+  .code-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--color-em-border-1);
+    background: rgba(255, 255, 255, 0.02);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-em-fg-4);
+  }
+
+  .code-filename {
+    color: var(--color-em-fg-3);
+    font-weight: 500;
+  }
+
+  .code-sep {
+    color: var(--color-em-fg-5);
+  }
+
+  .code-lang {
+    color: var(--color-em-brand);
+  }
+
+  pre {
+    padding: 16px;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--color-em-fg-2);
+    margin: 0;
+  }
+
+  pre.has-header {
+    padding-top: 12px;
+  }
+
+  code {
+    display: block;
+  }
+
+  .code-line {
+    display: flex;
+    gap: 16px;
+  }
+
+  .code-num {
+    flex-shrink: 0;
+    width: 32px;
+    text-align: right;
+    color: var(--color-em-fg-5);
+    user-select: none;
+  }
+
+  .code-content {
+    flex: 1;
+    word-break: break-word;
+  }
+
+  .code-content :global(mark) {
+    background: rgba(220, 240, 93, 0.2);
+    color: inherit;
+    padding: 0 2px;
+    border-radius: 2px;
+  }
+</style>

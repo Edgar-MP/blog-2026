@@ -1,0 +1,48 @@
+---
+interface Props {
+  author?: string;
+  children: any;
+}
+
+const { author } = Astro.props;
+---
+
+<blockquote class="quote">
+  <div class="quote-text">
+    <slot />
+  </div>
+  {author && <div class="quote-author">— {author}</div>}
+</blockquote>
+
+<style>
+  .quote {
+    margin: 28px 0;
+    padding: 24px;
+    border-left: 2px solid var(--color-em-brand);
+    background: rgba(220, 240, 93, 0.04);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  }
+
+  .quote-text {
+    font-style: italic;
+    font-size: 16px;
+    color: var(--color-em-fg-3);
+    line-height: 1.6;
+  }
+
+  .quote-text :global(p) {
+    margin: 0;
+  }
+
+  .quote-text :global(p + p) {
+    margin-top: 12px;
+  }
+
+  .quote-author {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-em-fg-4);
+    margin-top: 12px;
+    letter-spacing: 0.05em;
+  }
+</style>

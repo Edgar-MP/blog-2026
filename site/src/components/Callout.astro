@@ -1,0 +1,94 @@
+---
+type CalloutType = 'nota' | 'consejo' | 'error-común' | 'resumen';
+
+interface Props {
+  type: CalloutType;
+  children: any;
+}
+
+const { type } = Astro.props;
+
+const config = {
+  nota: { icon: '💭', color: 'sky', label: 'Nota' },
+  consejo: { icon: '✨', color: 'brand', label: 'Consejo' },
+  'error-común': { icon: '⚠️', color: 'orange', label: 'Error común' },
+  resumen: { icon: '📌', color: 'violet', label: 'Resumen' },
+};
+
+const { icon, color } = config[type];
+---
+
+<div class="callout" data-type={type} data-color={color}>
+  <div class="callout-icon">{icon}</div>
+  <div class="callout-body">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .callout {
+    display: flex;
+    gap: 16px;
+    padding: 20px 24px;
+    border: 1px solid var(--color-em-border-2);
+    border-left: 3px solid;
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .callout[data-color='sky'] {
+    border-left-color: #0ea5e9;
+    background: rgba(14, 165, 233, 0.04);
+  }
+  .callout[data-color='brand'] {
+    border-left-color: var(--color-em-brand);
+    background: rgba(220, 240, 93, 0.04);
+  }
+  .callout[data-color='orange'] {
+    border-left-color: #f97316;
+    background: rgba(249, 115, 22, 0.04);
+  }
+  .callout[data-color='violet'] {
+    border-left-color: #a78bfa;
+    background: rgba(167, 139, 250, 0.04);
+  }
+
+  .callout-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+    width: 32px;
+    text-align: center;
+    margin-top: 2px;
+  }
+
+  .callout-body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .callout-body :global(p) {
+    font-size: 14px;
+    color: var(--color-em-fg-3);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .callout-body :global(p + p) {
+    margin-top: 8px;
+  }
+
+  .callout-body :global(strong) {
+    color: var(--color-em-fg-1);
+    font-weight: 600;
+  }
+
+  .callout-body :global(a) {
+    color: var(--color-em-brand);
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+
+  .callout-body :global(a:hover) {
+    opacity: 0.7;
+  }
+</style>
