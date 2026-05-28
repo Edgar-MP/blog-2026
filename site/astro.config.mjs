@@ -23,4 +23,8 @@ export default defineConfig({
       wrap: true,
     },
   },
+  server: {
+    host: process.env.BUILD_HOST ?? '0.0.0.0',
+    port: Number(process.env.BUILD_PORT ?? 3000),
+  },
 });
