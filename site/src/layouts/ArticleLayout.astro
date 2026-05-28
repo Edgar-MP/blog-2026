@@ -248,31 +248,12 @@ const related = allPosts
     gap: 64px;
     align-items: start;
     padding-bottom: 80px;
-    position: relative;
   }
 
-  .article-body::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background: linear-gradient(
-      to bottom,
-      rgba(18, 18, 21, 0.3) 0%,
-      rgba(18, 18, 21, 0.5) 15%,
-      rgba(18, 18, 21, 0.6) 50%,
-      rgba(18, 18, 21, 0.5) 85%,
-      rgba(18, 18, 21, 0.3) 100%
-    );
-    z-index: 0;
+  .toc-col {
+    display: block; 
+    height: 100%;
   }
-
-  .article-body > * {
-    position: relative;
-    z-index: 1;
-  }
-
-  .toc-col { display: block; }
 
   /* ── Author CTA inline ────────────────────────────────────────────── */
   .author-cta {
@@ -340,6 +321,25 @@ const related = allPosts
     line-height: 1.7;
     color: var(--color-em-fg-2);
     max-width: 72ch;
+    position: relative;
+    padding: 48px;
+    padding-top: 0px;
+  }
+
+  .prose-em::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      to bottom,
+      rgba(18, 18, 21, 0.3) 0%,
+      rgba(18, 18, 21, 0.5) 15%,
+      rgba(18, 18, 21, 0.6) 50%,
+      rgba(18, 18, 21, 0.5) 85%,
+      rgba(18, 18, 21, 0.3) 100%
+    );
+    z-index: -1;
   }
 
   /* Headings */
