@@ -8,6 +8,10 @@ cover: ../../assets/cover-trabajo-reunion-ia.png
 coverAlt: "Foto generada por IA de una reunión de trabajo con avances de proyecto digital"
 ---
 
+import Callout from '../../components/Callout.astro';
+import CodeBlock from '../../components/CodeBlock.astro';
+import Quote from '../../components/Quote.astro';
+
 Una de las primeras preguntas cuando empiezas con Astro es: ¿cuándo creo un componente nuevo? ¿Y dónde lo pongo?
 
 Después de varios proyectos, he llegado a un sistema que funciona bien para mí. No es dogmático — es pragmático.
@@ -84,3 +88,29 @@ El objetivo es claridad, no cantidad de archivos.
 ## Conclusión
 
 La mejor arquitectura de componentes es la que tu equipo (o tú en el futuro) puede leer y entender sin buscar la definición. Empieza plano, extrae cuando notes la repetición, y no te preocupes por "hacerlo bien" antes de haber escrito el primer componente real.
+
+---
+
+<Callout type="nota">
+**Los componentes de contenido** como `Callout`, `CodeBlock` y `Quote` están disponibles en todos los artículos MDX. Los importas en la cabecera y los usas como etiquetas JSX dentro del contenido.
+</Callout>
+
+<CodeBlock 
+  filename="src/components/Callout.astro" 
+  lang="astro"
+  code={`---
+interface Props {
+  type: 'nota' | 'consejo' | 'error-común' | 'resumen';
+}
+---
+<div class="callout" data-type={Astro.props.type}>
+  <div class="callout-icon">...</div>
+  <div class="callout-body">
+    <slot />
+  </div>
+</div>`}
+/>
+
+<Callout type="consejo">
+Usa `<Quote>` para referencias importantes o citas que merecen énfasis. Incluye el `author` prop si quieres atribuir la cita.
+</Callout>
