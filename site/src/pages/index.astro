@@ -82,6 +82,7 @@ const featuredDate = featured?.data.date.toLocaleDateString("es-ES", {
 									alt={featured.data.coverAlt ?? ""}
 									width={700}
 									height={525}
+									transition:name={`article-cover-${featured.id}`}
 								/>
 							</div>
 						)}

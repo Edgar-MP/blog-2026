@@ -63,7 +63,14 @@ const related = allPosts
           <!-- Cover 21:9 dentro del container, radius xl, sin efectos -->
           {cover && (
             <div class="cover-wrap">
-              <Image src={cover} alt={coverAlt} width={1440} height={620} class="cover-img" />
+              <Image
+                src={cover}
+                alt={coverAlt}
+                width={1440}
+                height={620}
+                class="cover-img"
+                transition:name={`article-cover-${slug}`}
+              />
             </div>
           )}
 

@@ -1,51 +1,31 @@
-<script is:inline>
-  // Habilitar transiciones suaves entre páginas
-  document.addEventListener('click', (e) => {
-    const link = e.target?.closest('a');
-    if (link && link.href && !link.hasAttribute('data-astro-reload')) {
-      const url = new URL(link.href, location.origin);
-      if (url.origin === location.origin && url.pathname !== location.pathname) {
-        // Iniciar transición
-        if (document.startViewTransition) {
-          e.preventDefault();
-          document.startViewTransition(() => {
-            window.location.href = url.href;
-          });
-        }
-      }
-    }
-  });
-</script>
+---
+import { ClientRouter } from 'astro:transitions';
+---
 
-<style>
-  /* Transiciones suaves entre páginas */
+<ClientRouter />
+
+<style is:global>
+  /* Fade general entre paginas */
   @view-transition-group(*) {
-    animation-duration: 0.3s;
+    animation-duration: 0.35s;
+    animation-timing-function: var(--ease-smooth);
   }
 
   ::view-transition-old(root) {
-    animation: fade-out 0.3s ease-out forwards;
+    animation: page-fade-out 0.22s var(--ease-smooth) both;
   }
 
   ::view-transition-new(root) {
-    animation: fade-in 0.3s ease-in forwards;
+    animation: page-fade-in 0.35s var(--ease-smooth) both;
   }
 
-  @keyframes fade-out {
-    from {
-      opacity: 1;
-    }
-    to {
-      opacity: 0;
-    }
+  @keyframes page-fade-out {
+    from { opacity: 1; }
+    to { opacity: 0; }
   }
 
-  @keyframes fade-in {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
+  @keyframes page-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
 </style>

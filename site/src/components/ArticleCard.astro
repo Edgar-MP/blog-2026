@@ -11,9 +11,21 @@ interface Props {
   tags: string[];
   cover?: ImageMetadata;
   coverAlt?: string;
+  coverTransitionName?: string;
 }
 
-const { title, description, slug, category, date, minutesRead, tags, cover, coverAlt = '' } = Astro.props;
+const {
+  title,
+  description,
+  slug,
+  category,
+  date,
+  minutesRead,
+  tags,
+  cover,
+  coverAlt = '',
+  coverTransitionName = `article-cover-${slug}`,
+} = Astro.props;
 
 const formattedDate = date.toLocaleDateString('es-ES', {
   day: '2-digit', month: 'short', year: 'numeric',
@@ -23,7 +35,13 @@ const formattedDate = date.toLocaleDateString('es-ES', {
 <a class="em-glass em-glass-hover card" href={`/articulos/${slug}`} data-glass>
   {cover && (
     <div class="cover">
-      <Image src={cover} alt={coverAlt} width={600} height={375} />
+      <Image
+        src={cover}
+        alt={coverAlt}
+        width={600}
+        height={375}
+        transition:name={coverTransitionName}
+      />
     </div>
   )}
   <div class="body">
