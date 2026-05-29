@@ -1,0 +1,114 @@
+---
+title: "Construyendo mi blog con Astro, Tailwind y una arquitectura simple"
+description: "Cómo monté este blog desde cero: decisiones de stack, estructura de carpetas y por qué todo es tan directo."
+date: 2026-05-21
+category: Frontend
+tags: [Astro, Tailwind, Arquitectura]
+coverAlt: "Código en pantalla"
+cover: ../../assets/cover-construyendo-blog.png
+---
+
+Cuando decidí crear este blog, me planteé una regla: **sin sobreingenierizar**.
+
+Demasiados proyectos empiezan simples y terminan con 50 capas de abstracción innecesarias. Este no iba a ser uno de ellos.
+
+## Por qué Astro
+
+Astro es literalmente perfecto para esto:
+
+- **Zero JavaScript por defecto**. El HTML que generas es HTML limpio, sin hidratación, sin sorpresas.
+- **Content Collections**. Carpeta de markdown, frontmatter automático, sin base de datos.
+- **Layouts anidados**. Un ArticleLayout para los posts, componentes dentro del layout, todo composable.
+- **Assets optimizados**. Las imágenes se comprimen, se generan múltiples formatos, y tú solo haces `<Image />`.
+
+Podría haber usado Next.js, Remix, o incluso Hugo. Pero Astro elimina la complejidad que no necesito.
+
+## El stack
+
+```
+Frontend:
+- Astro (framework)
+- Tailwind (estilos)
+- TypeScript (tipado)
+- Shiki (syntax highlighting)
+
+Content:
+- Markdown + MDX (escribir posts)
+- YAML frontmatter (metadata)
+
+Deploy:
+- Vercel (porque integración con Astro es trivial)
+```
+
+Eso es todo. Nada de Redux, nada de APIs custom, nada de builds complejos.
+
+## Estructura de carpetas
+
+```
+src/
+├── components/        # Componentes reutilizables
+│   ├── Header.astro
+│   ├── Footer.astro
+│   └── TableOfContents.astro
+├── layouts/           # Layouts para diferentes tipos de página
+│   ├── BaseLayout.astro
+│   └── ArticleLayout.astro
+├── content/
+│   └── blog/          # Content Collections de posts
+│       ├── post-1.mdx
+│       └── post-2.mdx
+├── styles/
+│   └── global.css     # Variables CSS, reset mínimo
+└── pages/             # Rutas
+    ├── index.astro
+    ├── articulos.astro
+    └── articulos/[slug].astro
+```
+
+Las carpetas tienen una sola responsabilidad. Los componentes son componentes. Los layouts no mezclan lógica. Simple.
+
+## Cómo fluye un post
+
+1. Escribo en `src/content/blog/mi-post.mdx`
+2. Defino frontmatter: título, descripción, fecha, tags, cover.
+3. Astro lee la carpeta, valida el schema, y genera `/articulos/mi-post`.
+4. El layout `ArticleLayout.astro` envuelve el contenido y agrega tabla de contenidos, artículos relacionados y metadatos.
+5. El CSS toma todo ese HTML y lo estiliza.
+
+Cero plugins, cero configuración custom. Astro maneja todo.
+
+## El CSS: Tailwind + CSS variables
+
+Tailwind maneja la mayoría de estilos. Pero para cosas como la paleta de colores, bordes redondeados y tipografías, uso CSS variables:
+
+```css
+:root {
+	--color-em-brand: #dcf05d;
+	--color-em-fg-1: #ffffff;
+	--color-em-fg-2: #e0e0e0;
+	--radius-md: 8px;
+	--radius-lg: 12px;
+	--font-display: "Geist", sans-serif;
+}
+```
+
+De esa forma puedo cambiar la paleta en un lugar sin tocar HTML, y puedo animar valores si necesito.
+
+## Desplegando en Vercel
+
+Un `npm run build` genera carpeta `dist/` con HTML estático. Push a GitHub, y Vercel detecta que es un proyecto Astro, lo builds, y lo sirve.
+
+Deployment instantáneo, cero configuración.
+
+## Qué no hice
+
+- No agregué base de datos (markdown es suficiente).
+- No hice un sistema de comentarios (no lo necesito).
+- No pasé horas optimizando Lighthouse (Astro ya lo hace).
+- No creé componentes "para el futuro" que tal vez use algún día.
+
+## El resultado
+
+Un blog muy ligero, rápido, y donde puedo escribir posts en 2 minutos sin pelearme con el tooling.
+
+Si necesitara un dashboard, estaría usando Next.js. Si necesitara un backend, estaría escribiendo en Node. Pero para esto, Astro es exactamente lo que necesitaba.

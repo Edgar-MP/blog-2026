@@ -1,391 +1,549 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import { Image } from 'astro:assets';
-import { getCollection } from 'astro:content';
-import profileImg from '../assets/profile-generic-ia.png';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
+import profileImg from "../assets/profile.png";
 
-const allPosts = await getCollection('blog', ({ data }) => !data.draft);
-const categories = [...new Set(allPosts.map(p => p.data.category))];
-const sinceYear = allPosts.reduce((min, p) => Math.min(min, p.data.date.getFullYear()), new Date().getFullYear());
+const allPosts = await getCollection("blog", ({ data }) => !data.draft);
+const categories = [...new Set(allPosts.map((p) => p.data.category))];
+const sinceYear = allPosts.reduce(
+	(min, p) => Math.min(min, p.data.date.getFullYear()),
+	new Date().getFullYear(),
+);
 ---
 
 <BaseLayout
-  title="Sobre el blog"
-  description="Quién es Edgar Martínez y por qué existe este blog. Frontend, diseño y sistemas web desde la práctica."
+	title="Sobre el blog"
+	description="Quién es Edgar Martínez y por qué existe este blog. Frontend, diseño y sistemas web desde la práctica."
 >
-  <main style="position:relative;z-index:1;padding-top:100px;padding-bottom:80px">
-    <div class="em-container">
+	<main
+		style="position:relative;z-index:1;padding-top:100px;padding-bottom:80px"
+	>
+		<div class="em-container">
+			<!-- Page header -->
+			<div class="page-header">
+				<div class="section-eyebrow" style="margin-bottom:16px">
+					Sobre este blog
+				</div>
+				<h1>
+					Notas, no documentación.<br /><em>Aprendizajes desde la práctica.</em>
+				</h1>
+			</div>
 
-      <!-- Page header -->
-      <div class="page-header">
-        <div class="section-eyebrow" style="margin-bottom:16px">Sobre este blog</div>
-        <h1>Notas, no documentación.<br/><em>Aprendizajes desde la práctica.</em></h1>
-      </div>
+			<!-- 2-col layout: sidebar + main -->
+			<div class="sobre-grid">
+				<!-- SIDEBAR sticky -->
+				<aside class="sidebar">
+					<!-- Avatar + datos -->
+					<div class="profile-block em-glass">
+						<div class="avatar">
+							<Image
+								src={profileImg}
+								alt="Edgar Martínez"
+								width={192}
+								height={192}
+							/>
+						</div>
+						<span class="hola-text">hola 👋</span>
+						<div class="profile-info">
+							<strong>Edgar Martínez</strong>
+							<span class="profile-role">Frontend Developer & Designer</span>
+							<span class="profile-loc">📍 Vitoria-Gasteiz, ES</span>
+							<p class="profile-bio">
+								Construyo interfaces web cuidadas, con atención al detalle
+								visual y a la experiencia de usuario.
+							</p>
+						</div>
 
-      <!-- 2-col layout: sidebar + main -->
-      <div class="sobre-grid">
+						<div class="link-rows">
+							<a
+								href="https://edgarmartinez.dev"
+								target="_blank"
+								rel="noopener noreferrer"
+								class="link-row"
+							>
+								<span class="link-icon">🌐</span>
+								<span class="link-label">Portfolio</span>
+								<span class="link-arr">↗</span>
+							</a>
+							<a
+								href="https://github.com/edgarmartinez"
+								target="_blank"
+								rel="noopener noreferrer"
+								class="link-row"
+							>
+								<span class="link-icon">⌥</span>
+								<span class="link-label">GitHub</span>
+								<span class="link-arr">↗</span>
+							</a>
+							<a
+								href="https://linkedin.com/in/edgarmartinez"
+								target="_blank"
+								rel="noopener noreferrer"
+								class="link-row"
+							>
+								<span class="link-icon">◈</span>
+								<span class="link-label">LinkedIn</span>
+								<span class="link-arr">↗</span>
+							</a>
+							<a href="mailto:edgar@edgarmartinez.dev" class="link-row">
+								<span class="link-icon">✉</span>
+								<span class="link-label">Email</span>
+								<span class="link-arr">→</span>
+							</a>
+						</div>
+					</div>
 
-        <!-- SIDEBAR sticky -->
-        <aside class="sidebar">
+					<!-- RSS -->
+					<div class="rss-block em-glass">
+						<div class="rss-label">Suscribirse</div>
+						<div class="rss-pills">
+							<a href="/rss.xml" class="pill pill-rss">RSS Feed</a>
+							<a href="/rss.xml" class="pill">Atom</a>
+							<a href="/rss.xml" class="pill">JSON Feed</a>
+						</div>
+					</div>
 
-          <!-- Avatar + datos -->
-          <div class="profile-block em-glass">
-            <div class="avatar">
-              <Image src={profileImg} alt="Edgar Martínez" width={192} height={192} />
-            </div>
-            <span class="hola-text">hola 👋</span>
-            <div class="profile-info">
-              <strong>Edgar Martínez</strong>
-              <span class="profile-role">Frontend Developer & Designer</span>
-              <span class="profile-loc">📍 Vitoria-Gasteiz, ES</span>
-              <p class="profile-bio">
-                Construyo interfaces web cuidadas, con atención al detalle visual y a la experiencia de usuario.
-              </p>
-            </div>
+					<!-- Stats -->
+					<div class="stats-block em-glass">
+						<div class="stat">
+							<span class="stat-num">{allPosts.length}</span>
+							<span class="stat-label">Artículos</span>
+						</div>
+						<div class="stat-sep"></div>
+						<div class="stat">
+							<span class="stat-num">{categories.length}</span>
+							<span class="stat-label">Temas</span>
+						</div>
+						<div class="stat-sep"></div>
+						<div class="stat">
+							<span class="stat-num">{sinceYear}</span>
+							<span class="stat-label">Desde</span>
+						</div>
+					</div>
+				</aside>
 
-            <div class="link-rows">
-              <a href="https://edgarmartinez.dev" target="_blank" rel="noopener noreferrer" class="link-row">
-                <span class="link-icon">🌐</span>
-                <span class="link-label">Portfolio</span>
-                <span class="link-arr">↗</span>
-              </a>
-              <a href="https://github.com/edgarmartinez" target="_blank" rel="noopener noreferrer" class="link-row">
-                <span class="link-icon">⌥</span>
-                <span class="link-label">GitHub</span>
-                <span class="link-arr">↗</span>
-              </a>
-              <a href="https://linkedin.com/in/edgarmartinez" target="_blank" rel="noopener noreferrer" class="link-row">
-                <span class="link-icon">◈</span>
-                <span class="link-label">LinkedIn</span>
-                <span class="link-arr">↗</span>
-              </a>
-              <a href="mailto:edgar@edgarmartinez.dev" class="link-row">
-                <span class="link-icon">✉</span>
-                <span class="link-label">Email</span>
-                <span class="link-arr">→</span>
-              </a>
-            </div>
-          </div>
+				<!-- MAIN: manifesto + FAQ + CTA -->
+				<article class="main-content">
+					<!-- Manifesto -->
+					<div class="manifesto">
+						<p>
+							Soy <strong>frontend developer y diseñador</strong> con base en Vitoria-Gasteiz.
+							Me dedico a construir interfaces web cuidadas, con atención al detalle
+							visual y a la experiencia de usuario.
+						</p>
+						<p>
+							Este blog nació de una necesidad muy concreta: tenía demasiadas
+							notas dispersas sobre decisiones técnicas, experimentos y
+							aprendizajes, y quería un lugar donde ordenarlas. No pretende ser
+							una fuente de verdad absoluta ni un tutorial paso a paso.
+						</p>
+						<p>
+							Escribo sobre lo que uso en el día a día: Astro, Tailwind, design
+							systems, Next.js, WordPress, Shopify. También sobre errores que
+							cometí y cómo los resolví, y sobre decisiones de diseño que a
+							veces no tienen respuesta obvia.
+						</p>
 
-          <!-- RSS -->
-          <div class="rss-block em-glass">
-            <div class="rss-label">Suscribirse</div>
-            <div class="rss-pills">
-              <a href="/rss.xml" class="pill pill-rss">RSS Feed</a>
-              <a href="/rss.xml" class="pill">Atom</a>
-              <a href="/rss.xml" class="pill">JSON Feed</a>
-            </div>
-          </div>
+						<blockquote>
+							"No todo lo que aprendes merece ser un curso. A veces basta con
+							una nota bien escrita."
+						</blockquote>
+					</div>
 
-          <!-- Stats -->
-          <div class="stats-block em-glass">
-            <div class="stat">
-              <span class="stat-num">{allPosts.length}</span>
-              <span class="stat-label">Artículos</span>
-            </div>
-            <div class="stat-sep"></div>
-            <div class="stat">
-              <span class="stat-num">{categories.length}</span>
-              <span class="stat-label">Temas</span>
-            </div>
-            <div class="stat-sep"></div>
-            <div class="stat">
-              <span class="stat-num">{sinceYear}</span>
-              <span class="stat-label">Desde</span>
-            </div>
-          </div>
+					<!-- FAQ (S·04: 5 paneles con label marca) -->
+					<div class="faq-section">
+						<div class="section-eyebrow" style="margin-bottom:28px">
+							Preguntas frecuentes
+						</div>
 
-        </aside>
+						<div class="faq-panel">
+							<div class="faq-label">Frecuencia</div>
+							<p>
+								Sin calendario fijo. Publico cuando tengo algo que merece un
+								artículo — normalmente entre 2 y 4 veces al mes. Puedes
+								suscribirte al RSS para no perderte nada.
+							</p>
+						</div>
 
-        <!-- MAIN: manifesto + FAQ + CTA -->
-        <article class="main-content">
+						<div class="faq-panel">
+							<div class="faq-label">Contacto</div>
+							<p>
+								Puedes escribirme por email o LinkedIn. Si tienes una pregunta
+								sobre un artículo concreto, también puedes mencionarme en
+								Twitter/X. Respondo a todo.
+							</p>
+						</div>
 
-          <!-- Manifesto -->
-          <div class="manifesto">
-            <p>
-              Soy <strong>frontend developer y diseñador</strong> con base en Vitoria-Gasteiz. Me dedico a
-              construir interfaces web cuidadas, con atención al detalle visual y a la experiencia de usuario.
-            </p>
-            <p>
-              Este blog nació de una necesidad muy concreta: tenía demasiadas notas dispersas sobre decisiones
-              técnicas, experimentos y aprendizajes, y quería un lugar donde ordenarlas. No pretende ser una
-              fuente de verdad absoluta ni un tutorial paso a paso.
-            </p>
-            <p>
-              Escribo sobre lo que uso en el día a día: Astro, Tailwind, design systems, Next.js, WordPress,
-              Shopify. También sobre errores que cometí y cómo los resolví, y sobre decisiones de diseño que
-              a veces no tienen respuesta obvia.
-            </p>
+						<div class="faq-panel">
+							<div class="faq-label">Stack</div>
+							<p>
+								Este blog está construido con <strong>Astro 5</strong> (salida 100%
+								estática), <strong>Tailwind CSS v4</strong> y contenido en MDX. Los
+								artículos viven en el repositorio como archivos Markdown. La analítica
+								es Umami self-hosted, sin cookies.
+							</p>
+						</div>
 
-            <blockquote>
-              "No todo lo que aprendes merece ser un curso. A veces basta con una nota bien escrita."
-            </blockquote>
-          </div>
+						<div class="faq-panel">
+							<div class="faq-label">Revisión de proyectos</div>
+							<p>
+								Depende del tiempo y del proyecto. Si tienes algo interesante
+								entre manos, escríbeme con los detalles y lo vemos. No cobro por
+								echar un vistazo y dar feedback.
+							</p>
+						</div>
 
-          <!-- FAQ (S·04: 5 paneles con label marca) -->
-          <div class="faq-section">
-            <div class="section-eyebrow" style="margin-bottom:28px">Preguntas frecuentes</div>
+						<div class="faq-panel">
+							<div class="faq-label">Uso del contenido</div>
+							<p>
+								Todo el contenido es de libre uso con atribución. Si usas algo
+								de aquí en un proyecto, artículo o charla, agradezco una
+								mención. Nada formal.
+							</p>
+						</div>
+					</div>
 
-            <div class="faq-panel">
-              <div class="faq-label">Frecuencia</div>
-              <p>Sin calendario fijo. Publico cuando tengo algo que merece un artículo — normalmente entre 2 y 4 veces al mes. Puedes suscribirte al RSS para no perderte nada.</p>
-            </div>
-
-            <div class="faq-panel">
-              <div class="faq-label">Contacto</div>
-              <p>Puedes escribirme por email o LinkedIn. Si tienes una pregunta sobre un artículo concreto, también puedes mencionarme en Twitter/X. Respondo a todo.</p>
-            </div>
-
-            <div class="faq-panel">
-              <div class="faq-label">Stack</div>
-              <p>Este blog está construido con <strong>Astro 5</strong> (salida 100% estática), <strong>Tailwind CSS v4</strong> y contenido en MDX. Los artículos viven en el repositorio como archivos Markdown. La analítica es Umami self-hosted, sin cookies.</p>
-            </div>
-
-            <div class="faq-panel">
-              <div class="faq-label">Revisión de proyectos</div>
-              <p>Depende del tiempo y del proyecto. Si tienes algo interesante entre manos, escríbeme con los detalles y lo vemos. No cobro por echar un vistazo y dar feedback.</p>
-            </div>
-
-            <div class="faq-panel">
-              <div class="faq-label">Uso del contenido</div>
-              <p>Todo el contenido es de libre uso con atribución. Si usas algo de aquí en un proyecto, artículo o charla, agradezco una mención. Nada formal.</p>
-            </div>
-          </div>
-
-          <!-- CTA block -->
-          <div class="cta-block em-glass em-glass-hover" data-glass>
-            <span class="cta-hand">— ¡gracias por leer! —</span>
-            <p>Si algún artículo te resultó útil, la mejor forma de apoyar es compartirlo o suscribirte al RSS para seguir el blog.</p>
-            <div class="cta-row">
-              <a href="/articulos" class="btn btn-primary">Ver artículos <span class="arr">→</span></a>
-              <a href="/rss.xml" class="btn">RSS Feed</a>
-            </div>
-          </div>
-
-        </article>
-      </div>
-    </div>
-  </main>
+					<!-- CTA block -->
+					<div class="cta-block em-glass em-glass-hover" data-glass>
+						<span class="cta-hand">— ¡gracias por leer! —</span>
+						<p>
+							Si algún artículo te resultó útil, la mejor forma de apoyar es
+							compartirlo o suscribirte al RSS para seguir el blog.
+						</p>
+						<div class="cta-row">
+							<a href="/articulos" class="btn btn-primary"
+								>Ver artículos <span class="arr">→</span></a
+							>
+							<a href="/rss.xml" class="btn">RSS Feed</a>
+						</div>
+					</div>
+				</article>
+			</div>
+		</div>
+	</main>
 </BaseLayout>
 
 <style>
-  /* Page header */
-  .page-header { margin-bottom: 56px; }
-  h1 {
-    font-family: var(--font-display);
-    font-weight: 900;
-    font-size: clamp(28px, 3.5vw, 52px);
-    letter-spacing: -0.03em;
-    color: var(--color-em-fg-1);
-    line-height: 1.1;
-    max-width: 26ch;
-  }
-  h1 em { font-style: italic; color: var(--color-em-brand); font-weight: 900; }
+	/* Page header */
+	.page-header {
+		margin-bottom: 56px;
+	}
+	h1 {
+		font-family: var(--font-display);
+		font-weight: 900;
+		font-size: clamp(28px, 3.5vw, 52px);
+		letter-spacing: -0.03em;
+		color: var(--color-em-fg-1);
+		line-height: 1.1;
+		max-width: 26ch;
+	}
+	h1 em {
+		font-style: italic;
+		color: var(--color-em-brand);
+		font-weight: 900;
+	}
 
-  /* Grid */
-  .sobre-grid {
-    display: grid;
-    grid-template-columns: 280px 1fr;
-    gap: 56px;
-    align-items: start;
-  }
+	/* Grid */
+	.sobre-grid {
+		display: grid;
+		grid-template-columns: 280px 1fr;
+		gap: 56px;
+		align-items: start;
+	}
 
-  /* ── SIDEBAR ── */
-  .sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    position: sticky;
-    top: 92px;
-  }
+	/* ── SIDEBAR ── */
+	.sidebar {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+		position: sticky;
+		top: 92px;
+	}
 
-  .profile-block {
-    padding: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    border-radius: var(--radius-xl) !important;
-  }
-  .avatar {
-    width: 96px;
-    height: 96px;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 2px solid var(--color-em-border-2);
-    flex-shrink: 0;
-  }
-  .avatar :global(img) { width: 100%; height: 100%; object-fit: cover; }
+	.profile-block {
+		padding: 24px;
+		display: flex;
+		flex-direction: column;
+		gap: 14px;
+		border-radius: var(--radius-xl) !important;
+	}
+	.avatar {
+		width: 96px;
+		height: 96px;
+		border-radius: 50%;
+		overflow: hidden;
+		border: 2px solid var(--color-em-border-2);
+		flex-shrink: 0;
+	}
+	.avatar :global(img) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
 
-  .hola-text {
-    font-family: var(--font-hand);
-    font-size: 17px;
-    color: var(--color-em-brand);
-    font-weight: 500;
-    margin-top: -4px;
-  }
+	.hola-text {
+		font-family: var(--font-hand);
+		font-size: 17px;
+		color: var(--color-em-brand);
+		font-weight: 500;
+		margin-top: -4px;
+	}
 
-  .profile-info { display: flex; flex-direction: column; gap: 4px; }
-  .profile-info strong {
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 17px;
-    color: var(--color-em-fg-1);
-  }
-  .profile-role { font-size: 12px; color: var(--color-em-fg-3); }
-  .profile-loc { font-size: 11px; color: var(--color-em-fg-5); }
-  .profile-bio {
-    font-size: 13px;
-    color: var(--color-em-fg-4);
-    line-height: 1.55;
-    margin-top: 4px;
-  }
+	.profile-info {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+	}
+	.profile-info strong {
+		font-family: var(--font-display);
+		font-weight: 700;
+		font-size: 17px;
+		color: var(--color-em-fg-1);
+	}
+	.profile-role {
+		font-size: 12px;
+		color: var(--color-em-fg-3);
+	}
+	.profile-loc {
+		font-size: 11px;
+		color: var(--color-em-fg-5);
+	}
+	.profile-bio {
+		font-size: 13px;
+		color: var(--color-em-fg-4);
+		line-height: 1.55;
+		margin-top: 4px;
+	}
 
-  .link-rows { display: flex; flex-direction: column; border-top: 1px solid var(--color-em-border-1); padding-top: 12px; }
-  .link-row {
-    display: grid;
-    grid-template-columns: 20px 1fr auto;
-    align-items: center;
-    gap: 8px;
-    padding: 9px 0;
-    border-bottom: 1px solid var(--color-em-border-1);
-    text-decoration: none;
-    transition: color 0.2s;
-    color: var(--color-em-fg-3);
-    font-size: 13px;
-  }
-  .link-row:hover { color: var(--color-em-fg-1); }
-  .link-icon { font-size: 13px; opacity: 0.6; }
-  .link-label { flex: 1; }
-  .link-arr { color: var(--color-em-fg-5); font-size: 12px; transition: transform 0.2s; }
-  .link-row:hover .link-arr { transform: translateX(3px); color: var(--color-em-brand); }
+	.link-rows {
+		display: flex;
+		flex-direction: column;
+		border-top: 1px solid var(--color-em-border-1);
+		padding-top: 12px;
+	}
+	.link-row {
+		display: grid;
+		grid-template-columns: 20px 1fr auto;
+		align-items: center;
+		gap: 8px;
+		padding: 9px 0;
+		border-bottom: 1px solid var(--color-em-border-1);
+		text-decoration: none;
+		transition: color 0.2s;
+		color: var(--color-em-fg-3);
+		font-size: 13px;
+	}
+	.link-row:hover {
+		color: var(--color-em-fg-1);
+	}
+	.link-icon {
+		font-size: 13px;
+		opacity: 0.6;
+	}
+	.link-label {
+		flex: 1;
+	}
+	.link-arr {
+		color: var(--color-em-fg-5);
+		font-size: 12px;
+		transition: transform 0.2s;
+	}
+	.link-row:hover .link-arr {
+		transform: translateX(3px);
+		color: var(--color-em-brand);
+	}
 
-  .rss-block {
-    padding: 16px 20px;
-    border-radius: var(--radius-xl) !important;
-  }
-  .rss-label {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--color-em-fg-5);
-    margin-bottom: 10px;
-  }
-  .rss-pills { display: flex; flex-wrap: wrap; gap: 6px; }
-  .pill-rss { background: rgba(220,240,93,0.12) !important; color: var(--color-em-brand) !important; border-color: rgba(220,240,93,0.25) !important; }
+	.rss-block {
+		padding: 16px 20px;
+		border-radius: var(--radius-xl) !important;
+	}
+	.rss-label {
+		font-family: var(--font-mono);
+		font-size: 10px;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+		color: var(--color-em-fg-5);
+		margin-bottom: 10px;
+	}
+	.rss-pills {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 6px;
+	}
+	.pill-rss {
+		background: rgba(220, 240, 93, 0.12) !important;
+		color: var(--color-em-brand) !important;
+		border-color: rgba(220, 240, 93, 0.25) !important;
+	}
 
-  .stats-block {
-    padding: 16px 20px;
-    border-radius: var(--radius-xl) !important;
-    display: flex;
-    align-items: center;
-    gap: 0;
-  }
-  .stat { flex: 1; text-align: center; display: flex; flex-direction: column; gap: 4px; }
-  .stat-num {
-    font-family: var(--font-display);
-    font-weight: 900;
-    font-size: 22px;
-    color: var(--color-em-fg-1);
-    letter-spacing: -0.02em;
-  }
-  .stat-label {
-    font-family: var(--font-mono);
-    font-size: 9px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--color-em-fg-5);
-  }
-  .stat-sep { width: 1px; height: 36px; background: var(--color-em-border-1); flex-shrink: 0; }
+	.stats-block {
+		padding: 16px 20px;
+		border-radius: var(--radius-xl) !important;
+		display: flex;
+		align-items: center;
+		gap: 0;
+	}
+	.stat {
+		flex: 1;
+		text-align: center;
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+	}
+	.stat-num {
+		font-family: var(--font-display);
+		font-weight: 900;
+		font-size: 22px;
+		color: var(--color-em-fg-1);
+		letter-spacing: -0.02em;
+	}
+	.stat-label {
+		font-family: var(--font-mono);
+		font-size: 9px;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--color-em-fg-5);
+	}
+	.stat-sep {
+		width: 1px;
+		height: 36px;
+		background: var(--color-em-border-1);
+		flex-shrink: 0;
+	}
 
-  /* ── MAIN ── */
-  .main-content { min-width: 0; display: flex; flex-direction: column; gap: 56px; }
+	/* ── MAIN ── */
+	.main-content {
+		min-width: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 56px;
+	}
 
-  .manifesto { display: flex; flex-direction: column; gap: 20px; }
-  .manifesto p {
-    font-family: var(--font-display);
-    font-weight: 300;
-    font-size: clamp(16px, 1.3vw, 19px);
-    line-height: 1.6;
-    color: var(--color-em-fg-2);
-    max-width: 60ch;
-    text-wrap: pretty;
-  }
-  .manifesto p strong { color: var(--color-em-fg-1); font-weight: 600; }
-  .manifesto blockquote {
-    margin: 8px 0 0;
-    padding: 18px 24px;
-    border-left: 3px solid var(--color-em-brand);
-    background: rgba(220,240,93,0.04);
-    border-radius: 0 var(--radius-md) var(--radius-md) 0;
-  }
-  .manifesto blockquote p {
-    font-style: italic;
-    font-size: 16px;
-    color: var(--color-em-fg-3);
-    margin: 0;
-  }
+	.manifesto {
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+	}
+	.manifesto p {
+		font-family: var(--font-display);
+		font-weight: 300;
+		font-size: clamp(16px, 1.3vw, 19px);
+		line-height: 1.6;
+		color: var(--color-em-fg-2);
+		max-width: 60ch;
+		text-wrap: pretty;
+	}
+	.manifesto p strong {
+		color: var(--color-em-fg-1);
+		font-weight: 600;
+	}
+	.manifesto blockquote {
+		margin: 8px 0 0;
+		padding: 18px 24px;
+		border-left: 3px solid var(--color-em-brand);
+		background: rgba(220, 240, 93, 0.04);
+		border-radius: 0 var(--radius-md) var(--radius-md) 0;
+	}
+	.manifesto blockquote p {
+		font-style: italic;
+		font-size: 16px;
+		color: var(--color-em-fg-3);
+		margin: 0;
+	}
 
-  /* FAQ panels */
-  .faq-section { display: flex; flex-direction: column; gap: 0; }
-  .faq-panel {
-    padding: 20px 24px;
-    border: 1px solid var(--color-em-border-2);
-    border-bottom: none;
-    transition: border-color 0.2s, background 0.2s;
-  }
-  .faq-panel:first-of-type { border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
-  .faq-panel:last-of-type { border-bottom: 1px solid var(--color-em-border-2); border-radius: 0 0 var(--radius-lg) var(--radius-lg); }
-  .faq-panel:hover { background: rgba(255,255,255,0.02); border-color: var(--color-em-border-3); }
-  .faq-label {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--color-em-brand);
-    margin-bottom: 8px;
-  }
-  .faq-panel p {
-    font-size: 14px;
-    color: var(--color-em-fg-3);
-    line-height: 1.6;
-    max-width: 62ch;
-  }
-  .faq-panel p strong { color: var(--color-em-fg-1); }
+	/* FAQ panels */
+	.faq-section {
+		display: flex;
+		flex-direction: column;
+		gap: 0;
+	}
+	.faq-panel {
+		padding: 20px 24px;
+		border: 1px solid var(--color-em-border-2);
+		border-bottom: none;
+		transition:
+			border-color 0.2s,
+			background 0.2s;
+	}
+	.faq-panel:first-of-type {
+		border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+	}
+	.faq-panel:last-of-type {
+		border-bottom: 1px solid var(--color-em-border-2);
+		border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+	}
+	.faq-panel:hover {
+		background: rgba(255, 255, 255, 0.02);
+		border-color: var(--color-em-border-3);
+	}
+	.faq-label {
+		font-family: var(--font-mono);
+		font-size: 10px;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+		color: var(--color-em-brand);
+		margin-bottom: 8px;
+	}
+	.faq-panel p {
+		font-size: 14px;
+		color: var(--color-em-fg-3);
+		line-height: 1.6;
+		max-width: 62ch;
+	}
+	.faq-panel p strong {
+		color: var(--color-em-fg-1);
+	}
 
-  /* CTA */
-  .cta-block {
-    padding: 36px 40px;
-    border-radius: var(--radius-xl) !important;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-  .cta-hand {
-    font-family: var(--font-hand);
-    font-size: 18px;
-    color: var(--color-em-brand);
-    font-weight: 500;
-  }
-  .cta-block p { font-size: 15px; color: var(--color-em-fg-3); max-width: 50ch; line-height: 1.55; }
-  .cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 4px; }
+	/* CTA */
+	.cta-block {
+		padding: 36px 40px;
+		border-radius: var(--radius-xl) !important;
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+	}
+	.cta-hand {
+		font-family: var(--font-hand);
+		font-size: 18px;
+		color: var(--color-em-brand);
+		font-weight: 500;
+	}
+	.cta-block p {
+		font-size: 15px;
+		color: var(--color-em-fg-3);
+		max-width: 50ch;
+		line-height: 1.55;
+	}
+	.cta-row {
+		display: flex;
+		gap: 12px;
+		flex-wrap: wrap;
+		margin-top: 4px;
+	}
 
-  /* Responsive */
-  @media (max-width: 960px) {
-    .sobre-grid { grid-template-columns: 1fr; }
-    .sidebar { position: static; }
-  }
-  @media (max-width: 640px) {
-    .cta-block { padding: 24px; }
-  }
+	/* Responsive */
+	@media (max-width: 960px) {
+		.sobre-grid {
+			grid-template-columns: 1fr;
+		}
+		.sidebar {
+			position: static;
+		}
+	}
+	@media (max-width: 640px) {
+		.cta-block {
+			padding: 24px;
+		}
+	}
 </style>
 
 <script>
-  document.querySelectorAll<HTMLElement>('[data-glass]').forEach(el => {
-    el.addEventListener('mousemove', (e: MouseEvent) => {
-      const r = el.getBoundingClientRect();
-      el.style.setProperty('--mx', (e.clientX - r.left) + 'px');
-      el.style.setProperty('--my', (e.clientY - r.top) + 'px');
-    });
-  });
+	document.querySelectorAll<HTMLElement>("[data-glass]").forEach((el) => {
+		el.addEventListener("mousemove", (e: MouseEvent) => {
+			const r = el.getBoundingClientRect();
+			el.style.setProperty("--mx", e.clientX - r.left + "px");
+			el.style.setProperty("--my", e.clientY - r.top + "px");
+		});
+	});
 </script>

@@ -4,24 +4,25 @@ Blog personal sobre frontend, diseño y sistemas web. Construido con **Astro 5 +
 
 ## 📋 Stack
 
-| Tecnología | Uso |
-|---|---|
-| [Astro 5](https://astro.build) | Framework SSG (static site generation) |
-| [Tailwind CSS v4](https://tailwindcss.com) | Estilos con design system vía `@theme` |
-| MDX + Astro Content Collections | Artículos con componentes reutilizables |
-| [Shiki](https://shiki.matsuza.dev) | Resaltado de código sintáctico |
-| @astrojs/sitemap | Generación automática de sitemap |
-| @astrojs/rss | Feed RSS para suscriptores |
-| Fontsource | Fuentes self-hosted (sin Google Fonts) |
-| [Umami](https://umami.is) | Analítica sin cookies (self-hosted en Docker) |
-| nginx | Servidor web (en VPS) |
-| Docker + Docker Compose | Contenerización (Umami + base de datos) |
+| Tecnología                                 | Uso                                           |
+| ------------------------------------------ | --------------------------------------------- |
+| [Astro 5](https://astro.build)             | Framework SSG (static site generation)        |
+| [Tailwind CSS v4](https://tailwindcss.com) | Estilos con design system vía `@theme`        |
+| MDX + Astro Content Collections            | Artículos con componentes reutilizables       |
+| [Shiki](https://shiki.matsuza.dev)         | Resaltado de código sintáctico                |
+| @astrojs/sitemap                           | Generación automática de sitemap              |
+| @astrojs/rss                               | Feed RSS para suscriptores                    |
+| Fontsource                                 | Fuentes self-hosted (sin Google Fonts)        |
+| [Umami](https://umami.is)                  | Analítica sin cookies (self-hosted en Docker) |
+| nginx                                      | Servidor web (en VPS)                         |
+| Docker + Docker Compose                    | Contenerización (Umami + base de datos)       |
 
 ---
 
 ## 🚀 Inicio rápido (Desarrollo local)
 
 ### Requisitos
+
 - **Node.js** ≥ 22.12.0
 - **npm** ≥ 10.x
 
@@ -70,55 +71,47 @@ Tu contenido en Markdown aquí...
 
 ### 3. Propiedades del frontmatter
 
-| Propiedad | Tipo | Notas |
-|-----------|------|-------|
-| `title` | string | Título del artículo |
-| `description` | string | Resumen corto para meta tags y cards |
-| `date` | date | Formato: `YYYY-MM-DD` |
-| `category` | string | Una sola categoría (ej: Frontend, Astro, Design Systems) |
-| `tags` | string[] | Lista de etiquetas (ej: [Astro, Tailwind]) |
-| `cover` | image | Ruta relativa a imagen de portada (21:9) |
-| `coverAlt` | string | Texto alternativo para la imagen |
-| `featured` | boolean | `true` para destacar en Home (máximo uno) |
-| `draft` | boolean | `true` para guardar como borrador (no aparece en build) |
+| Propiedad     | Tipo     | Notas                                                    |
+| ------------- | -------- | -------------------------------------------------------- |
+| `title`       | string   | Título del artículo                                      |
+| `description` | string   | Resumen corto para meta tags y cards                     |
+| `date`        | date     | Formato: `YYYY-MM-DD`                                    |
+| `category`    | string   | Una sola categoría (ej: Frontend, Astro, Design Systems) |
+| `tags`        | string[] | Lista de etiquetas (ej: [Astro, Tailwind])               |
+| `cover`       | image    | Ruta relativa a imagen de portada (21:9)                 |
+| `coverAlt`    | string   | Texto alternativo para la imagen                         |
+| `featured`    | boolean  | `true` para destacar en Home (máximo uno)                |
+| `draft`       | boolean  | `true` para guardar como borrador (no aparece en build)  |
 
 ### 4. Componentes disponibles en MDX
 
 Importa al inicio del archivo:
 
 ```mdx
-import Callout from '../../components/Callout.astro';
-import CodeBlock from '../../components/CodeBlock.astro';
-import Quote from '../../components/Quote.astro';
+import Callout from "../../components/Callout.astro";
+import CodeBlock from "../../components/CodeBlock.astro";
+import Quote from "../../components/Quote.astro";
 ```
 
 **Callout** — Cajas destacadas (4 variantes):
 
 ```mdx
-<Callout type="nota">
-  Información adicional pero no crítica.
-</Callout>
+<Callout type="nota">Información adicional pero no crítica.</Callout>
 
-<Callout type="consejo">
-  Recomendación práctica.
-</Callout>
+<Callout type="consejo">Recomendación práctica.</Callout>
 
-<Callout type="error-común">
-  Trampa frecuente: ...
-</Callout>
+<Callout type="error-común">Trampa frecuente: ...</Callout>
 
-<Callout type="resumen">
-  Lo más importante de este artículo.
-</Callout>
+<Callout type="resumen">Lo más importante de este artículo.</Callout>
 ```
 
 **CodeBlock** — Bloques de código con encabezado:
 
 ```mdx
-<CodeBlock 
-  filename="src/components/Button.astro"
-  lang="astro"
-  code={`---
+<CodeBlock
+	filename="src/components/Button.astro"
+	lang="astro"
+	code={`---
 export interface Props {
   variant?: 'primary' | 'secondary';
 }
@@ -133,7 +126,7 @@ export interface Props {
 
 ```mdx
 <Quote author="Alguien famoso">
-  "Una cita memorable sobre desarrollo web."
+	"Una cita memorable sobre desarrollo web."
 </Quote>
 ```
 
@@ -170,6 +163,7 @@ PUBLIC_UMAMI_WEBSITE_ID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 ```
 
 **Notas:**
+
 - Sin estas variables, Umami no carga pero no hay errores.
 - Las variables con prefijo `PUBLIC_` se incluyen en el build.
 - Las sin prefijo solo existen en el servidor.
@@ -212,6 +206,7 @@ rsync -avz --delete dist/ root@vps:/var/www/blog/
 ```
 
 O si usas GitHub Actions (CI/CD automático), configura un workflow que:
+
 1. Hace checkout del repo
 2. Instala dependencias
 3. Hace build
@@ -283,7 +278,7 @@ systemctl reload nginx
 En el VPS, crea `/var/www/umami/docker-compose.yml`:
 
 ```yaml
-version: '3.8'
+version: "3.8"
 
 services:
   umami-db:
@@ -292,7 +287,7 @@ services:
     environment:
       POSTGRES_DB: umami
       POSTGRES_USER: umami
-      POSTGRES_PASSWORD: ${DB_PASSWORD}  # Genera una contraseña segura
+      POSTGRES_PASSWORD: ${DB_PASSWORD} # Genera una contraseña segura
     volumes:
       - ./db:/var/lib/postgresql/data
     restart: unless-stopped
@@ -307,10 +302,10 @@ services:
     environment:
       DATABASE_URL: postgresql://umami:${DB_PASSWORD}@umami-db:5432/umami
       DATABASE_TYPE: postgresql
-      HASH_SALT: ${HASH_SALT}  # Genera: openssl rand -base64 32
-      TRACKER_SCRIPT_NAME: script  # Cambia de "umami" a algo custom
+      HASH_SALT: ${HASH_SALT} # Genera: openssl rand -base64 32
+      TRACKER_SCRIPT_NAME: script # Cambia de "umami" a algo custom
     ports:
-      - "3001:3000"  # Expone localmente en :3001 (nginx lo proxea)
+      - "3001:3000" # Expone localmente en :3001 (nginx lo proxea)
     restart: unless-stopped
     networks:
       - umami-net
@@ -494,7 +489,7 @@ site/
 │   │   └── global.css               ← Design system (@theme tokens, clases base)
 │   │
 │   ├── assets/                      ← Imágenes (covers, avatars)
-│   │   ├── profile-generic-ia.png
+│   │   ├── profile.png
 │   │   ├── cover-*.png
 │   │   └── ...
 │   │
@@ -525,22 +520,22 @@ Los tokens del diseño viven en `src/styles/global.css`:
 
 ```css
 @theme {
-  /* Colores */
-  --color-em-brand: #dcf05d;          /* Verde lima */
-  --color-em-fg-1: #fafafa;           /* Texto principal */
-  --color-em-fg-2: #d0d0d0;           /* Texto secundario */
-  --color-em-border-1: #2a2a2f;       /* Border sutil */
-  
-  /* Radios */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
-  
-  /* Fonts */
-  --font-display: "Montserrat Variable", sans-serif;
-  --font-body: system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", monospace;
+	/* Colores */
+	--color-em-brand: #dcf05d; /* Verde lima */
+	--color-em-fg-1: #fafafa; /* Texto principal */
+	--color-em-fg-2: #d0d0d0; /* Texto secundario */
+	--color-em-border-1: #2a2a2f; /* Border sutil */
+
+	/* Radios */
+	--radius-sm: 4px;
+	--radius-md: 8px;
+	--radius-lg: 12px;
+	--radius-xl: 16px;
+
+	/* Fonts */
+	--font-display: "Montserrat Variable", sans-serif;
+	--font-body: system-ui, sans-serif;
+	--font-mono: "JetBrains Mono", monospace;
 }
 ```
 
