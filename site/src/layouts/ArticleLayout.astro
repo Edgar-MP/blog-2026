@@ -5,6 +5,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import ParticlesBg from '../components/ParticlesBg.astro';
 import TableOfContents from '../components/TableOfContents.astro';
+import ViewTransitions from '../components/ViewTransitions.astro';
 import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
 
@@ -41,6 +42,7 @@ const related = allPosts
 <html lang="es">
   <head>
     <BaseHead title={title} description={description} />
+    <ViewTransitions />
   </head>
   <body>
     <ParticlesBg />

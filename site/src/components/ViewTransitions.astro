@@ -1,0 +1,51 @@
+<script is:inline>
+  // Habilitar transiciones suaves entre páginas
+  document.addEventListener('click', (e) => {
+    const link = e.target?.closest('a');
+    if (link && link.href && !link.hasAttribute('data-astro-reload')) {
+      const url = new URL(link.href, location.origin);
+      if (url.origin === location.origin && url.pathname !== location.pathname) {
+        // Iniciar transición
+        if (document.startViewTransition) {
+          e.preventDefault();
+          document.startViewTransition(() => {
+            window.location.href = url.href;
+          });
+        }
+      }
+    }
+  });
+</script>
+
+<style>
+  /* Transiciones suaves entre páginas */
+  @view-transition-group(*) {
+    animation-duration: 0.3s;
+  }
+
+  ::view-transition-old(root) {
+    animation: fade-out 0.3s ease-out forwards;
+  }
+
+  ::view-transition-new(root) {
+    animation: fade-in 0.3s ease-in forwards;
+  }
+
+  @keyframes fade-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+</style>
