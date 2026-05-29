@@ -21,13 +21,6 @@ const h2and3 = headings.filter(h => h.depth <= 3);
         </li>
       ))}
     </ol>
-    <!-- Progreso de lectura -->
-    <div class="toc-progress">
-      <span class="progress-label">Progreso</span>
-      <div class="progress-bar">
-        <div class="progress-fill" id="progress-fill"></div>
-      </div>
-    </div>
   </nav>
 )}
 
@@ -37,12 +30,51 @@ const h2and3 = headings.filter(h => h.depth <= 3);
     top: 24px;
     max-height: calc(100vh - 120px);
     overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-em-border-3) transparent;
     padding: 20px;
     border: 1px solid var(--color-em-border-2);
     border-radius: var(--radius-lg);
     background: rgba(18, 18, 21, 0.4);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
+  }
+  .toc::before,
+  .toc::after {
+    content: "";
+    position: sticky;
+    left: 0;
+    display: block;
+    height: 18px;
+    margin: -20px -20px 0;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .toc::before {
+    top: -20px;
+    background: linear-gradient(to bottom, rgba(18, 18, 21, 0.92), rgba(18, 18, 21, 0));
+  }
+  .toc::after {
+    bottom: -20px;
+    margin: 0 -20px -20px;
+    background: linear-gradient(to top, rgba(18, 18, 21, 0.92), rgba(18, 18, 21, 0));
+  }
+  .toc::-webkit-scrollbar {
+    width: 8px;
+  }
+  .toc::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .toc::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.14);
+    border: 2px solid transparent;
+    border-radius: var(--radius-pill);
+    background-clip: content-box;
+  }
+  .toc::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.24);
   }
   .toc-label {
     font-family: var(--font-mono);
@@ -57,50 +89,82 @@ const h2and3 = headings.filter(h => h.depth <= 3);
   ol { list-style: none; display: flex; flex-direction: column; gap: 2px; margin-bottom: 14px; }
   li a {
     display: block;
+    position: relative;
+    overflow: hidden;
     font-size: 13px;
     color: var(--color-em-fg-4);
     padding: 5px 8px;
     border-radius: var(--radius-sm);
-    transition: color 0.2s, background 0.2s;
+    isolation: isolate;
+    transition: color 0.28s var(--ease-out-em), background 0.28s var(--ease-out-em);
     line-height: 1.4;
+  }
+  li a::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background:
+      radial-gradient(34px 22px at 18% 0%, rgba(220, 240, 93, 0.2), transparent 70%),
+      linear-gradient(100deg, rgba(220, 240, 93, 0.05), rgba(220, 240, 93, 0.14));
+    opacity: 0;
+    transform: translateY(-110%) scaleY(0.45);
+    transform-origin: top;
+    transition:
+      opacity 0.28s var(--ease-out-em),
+      transform 0.48s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  li a::after {
+    content: "";
+    position: absolute;
+    inset: -40% -20%;
+    z-index: -1;
+    border-radius: 45%;
+    background: rgba(220, 240, 93, 0.08);
+    opacity: 0;
+    transform: translateY(-80%) rotate(8deg);
   }
   li a:hover { color: var(--color-em-fg-1); background: rgba(255,255,255,0.04); }
   li.h3 a { padding-left: 20px; font-size: 12px; }
-  li a.active { color: var(--color-em-brand); }
+  li a.active {
+    color: var(--color-em-brand);
+    background: rgba(220, 240, 93, 0.04);
+  }
+  li a.active::before {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+  }
+  li a.active::after {
+    animation: toc-fill-wave 0.72s var(--ease-out-em) both;
+  }
 
-  .toc-progress {
-    margin-top: 14px;
-    padding-top: 14px;
-    border-top: 1px dashed var(--color-em-border-2);
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
+  @keyframes toc-fill-wave {
+    0% {
+      opacity: 0;
+      transform: translateY(-85%) rotate(8deg);
+    }
+    45% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(35%) rotate(0deg);
+    }
   }
-  .progress-label {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--color-em-fg-5);
-  }
-  .progress-bar {
-    height: 2px;
-    background: var(--color-em-border-2);
-    border-radius: 9999px;
-    overflow: hidden;
-  }
-  .progress-fill {
-    height: 100%;
-    background: var(--color-em-brand);
-    width: 0%;
-    transition: width 0.1s linear;
+
+  @media (prefers-reduced-motion: reduce) {
+    li a::before,
+    li a::after {
+      transition: none;
+      animation: none !important;
+    }
   }
 </style>
 
 <script>
-  // Highlight active heading on scroll + reading progress
+  // Highlight active heading on scroll
   const links = document.querySelectorAll<HTMLAnchorElement>('.toc a');
-  const progressFill = document.getElementById('progress-fill') as HTMLElement | null;
 
   if (links.length) {
     const headingEls = Array.from(links).map(a => document.getElementById(a.getAttribute('href')!.slice(1)));
@@ -115,17 +179,4 @@ const h2and3 = headings.filter(h => h.depth <= 3);
     }, { rootMargin: '-20% 0% -70% 0%' });
     headingEls.forEach(el => el && observer.observe(el));
   }
-
-  // Update reading progress
-  function updateProgress() {
-    const article = document.querySelector('.prose-em') as HTMLElement | null;
-    if (!article || !progressFill) return;
-    const rect = article.getBoundingClientRect();
-    const total = article.offsetHeight;
-    const scrolled = Math.max(0, -rect.top);
-    const pct = Math.min(100, (scrolled / total) * 100);
-    progressFill.style.width = pct + '%';
-  }
-  window.addEventListener('scroll', updateProgress, { passive: true });
-  updateProgress();
 </script>
