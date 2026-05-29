@@ -65,6 +65,15 @@ const related = allPosts
             <div class="cover-wrap">
               <Image
                 src={cover}
+                alt=""
+                width={1440}
+                height={620}
+                class="cover-ambient"
+                aria-hidden="true"
+                loading="eager"
+              />
+              <Image
+                src={cover}
                 alt={coverAlt}
                 width={1440}
                 height={620}
@@ -92,7 +101,7 @@ const related = allPosts
         </section>
 
         <!-- Divisor punteado -->
-        <div class="divider-dashed"></div>
+        <div class="divider-dashed" id="article-progress-start"></div>
 
         <!-- Grid: TOC + Prose -->
         <div class="article-body">
@@ -105,7 +114,7 @@ const related = allPosts
         </div>
 
         <!-- Author CTA inline (centrado, max-width 680px) -->
-        <div class="author-cta">
+        <div class="author-cta" id="article-progress-end">
           <div class="author-avatar"></div>
           <div class="author-info">
             <strong>Edgar Martínez Palmero</strong>
@@ -184,10 +193,30 @@ const related = allPosts
   .cover-wrap {
     width: 100%;
     aspect-ratio: 21 / 9;
-    overflow: hidden;
+    overflow: visible;
     border-radius: var(--radius-xl);
+    position: relative;
+    isolation: isolate;
+    box-shadow: 0 30px 90px -48px rgba(0, 0, 0, 0.85);
+  }
+  .cover-ambient {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: -1;
+    width: 128%;
+    height: 128%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: inherit;
+    opacity: 0.42;
+    filter: blur(36px) saturate(1.35) brightness(1.05);
+    transform: translate(-50%, -50%) scale(1.08);
+    pointer-events: none;
   }
   .cover-img {
+    position: relative;
+    z-index: 1;
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -583,13 +612,25 @@ const related = allPosts
     });
   });
 
-  // Progress bar top
+  // Progress bar top: cuenta solo desde el separador del articulo hasta el CTA del autor
   const bar = document.getElementById('reading-progress') as HTMLElement | null;
   if (bar) {
     function updateBar() {
-      const pct = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
-      bar!.style.width = Math.min(100, pct) + '%';
+      const startEl = document.getElementById('article-progress-start');
+      const endEl = document.getElementById('article-progress-end');
+      if (!startEl || !endEl) return;
+
+      const start = startEl.getBoundingClientRect().top + window.scrollY;
+      const end = endEl.getBoundingClientRect().top + window.scrollY;
+      const total = Math.max(1, end - start);
+      const scrolled = window.scrollY - start;
+      const pct = Math.min(100, Math.max(0, (scrolled / total) * 100));
+
+      bar!.style.width = pct + '%';
     }
     window.addEventListener('scroll', updateBar, { passive: true });
+    window.addEventListener('resize', updateBar);
+    window.addEventListener('astro:page-load', updateBar);
+    updateBar();
   }
 </script>
