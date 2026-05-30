@@ -1,0 +1,124 @@
+---
+interface Props {
+  locale?: 'es' | 'en';
+  pageType?: 'default' | 'article';
+  slug?: string;
+}
+
+const { locale = 'es', pageType = 'default', slug = '' } = Astro.props;
+---
+
+<script
+  is:inline
+  data-astro-rerun
+  define:vars={{ locale, pageType, slug }}
+>
+  (() => {
+    const stateKey = '__umamiEventsState';
+    const win = window;
+    const prevState = win[stateKey];
+
+    if (prevState) {
+      document.removeEventListener('click', prevState.onClick, true);
+      if (prevState.onScroll) {
+        window.removeEventListener('scroll', prevState.onScroll);
+        window.removeEventListener('resize', prevState.onScroll);
+      }
+    }
+
+    const track = (eventName, payload = {}) => {
+      if (win.umami && typeof win.umami.track === 'function') {
+        win.umami.track(eventName, payload);
+      }
+    };
+
+    const basePayload = () => ({
+      locale,
+      page_type: pageType,
+      slug,
+      path: location.pathname,
+    });
+
+    const onClick = (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+
+      const link = target.closest('a');
+      if (!link) return;
+
+      const href = link.getAttribute('href') ?? '';
+      const eventName = link.dataset.umamiEvent;
+      const linkLabel = (link.dataset.umamiLabel || link.textContent || '').trim().slice(0, 80);
+      const linkLocation = link.dataset.umamiLocation || '';
+
+      if (eventName) {
+        track(eventName, {
+          ...basePayload(),
+          href,
+          label: linkLabel,
+          location: linkLocation,
+        });
+        return;
+      }
+
+      if (!href || href.startsWith('#')) return;
+
+      try {
+        const url = new URL(href, location.origin);
+        if (url.origin !== location.origin) {
+          track('outbound_click', {
+            ...basePayload(),
+            href: url.toString(),
+            label: linkLabel,
+          });
+        }
+      } catch {
+        // Ignore malformed URLs.
+      }
+    };
+
+    document.addEventListener('click', onClick, true);
+
+    let onScroll;
+    if (pageType === 'article') {
+      const firedDepths = new Set();
+      let completed = false;
+      const thresholds = [25, 50, 75, 90];
+
+      onScroll = () => {
+        const startEl = document.getElementById('article-progress-start');
+        const endEl = document.getElementById('article-progress-end');
+        if (!startEl || !endEl) return;
+
+        const start = startEl.getBoundingClientRect().top + window.scrollY;
+        const end = endEl.getBoundingClientRect().top + window.scrollY;
+        const total = Math.max(1, end - start);
+        const scrolled = Math.min(total, Math.max(0, window.scrollY - start));
+        const percent = Math.round((scrolled / total) * 100);
+
+        for (const depth of thresholds) {
+          if (percent >= depth && !firedDepths.has(depth)) {
+            firedDepths.add(depth);
+            track('article_scroll_depth', {
+              ...basePayload(),
+              depth,
+            });
+          }
+        }
+
+        if (percent >= 98 && !completed) {
+          completed = true;
+          track('article_read_complete', {
+            ...basePayload(),
+          });
+        }
+      };
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll);
+      onScroll();
+    }
+
+    win[stateKey] = { onClick, onScroll };
+  })();
+</script>

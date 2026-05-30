@@ -5,6 +5,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import ParticlesBg from '../components/ParticlesBg.astro';
 import ViewTransitions from '../components/ViewTransitions.astro';
+import UmamiEvents from '../components/UmamiEvents.astro';
 import type { Locale } from '../lib/i18n';
 import {
   AUTHOR_GITHUB,
@@ -81,7 +82,7 @@ const pageSchemas = structuredData
     ))}
     <ViewTransitions />
   </head>
-  <body>
+  <body data-locale={locale} data-page-type="default">
     <a class="skip-link" href="#main-content">
       {locale === 'en' ? 'Skip to main content' : 'Saltar al contenido principal'}
     </a>
@@ -89,5 +90,6 @@ const pageSchemas = structuredData
     <Header locale={locale} />
     <slot />
     <Footer locale={locale} />
+    <UmamiEvents locale={locale} pageType="default" />
   </body>
 </html>

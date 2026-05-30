@@ -41,7 +41,14 @@ const { articles } = getLocalizedPaths(locale);
 const copy = locale === 'en' ? { min: 'min', read: 'Read' } : { min: 'min', read: 'Leer' };
 ---
 
-<a class="em-glass em-glass-hover card" href={`${articles}/${slug}`} data-glass>
+<a
+  class="em-glass em-glass-hover card"
+  href={`${articles}/${slug}`}
+  data-glass
+  data-umami-event="article_card_click"
+  data-umami-location="article_card"
+  data-umami-label={slug}
+>
   {cover && (
     <div class="cover">
       <Image

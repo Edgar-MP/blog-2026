@@ -65,7 +65,7 @@ const hrefEn = locale === 'en' ? currentHref : alternateHref;
 ---
 
 <header class="em-header" id="site-header">
-  <a class="brand" href={paths.home}>
+  <a class="brand" href={paths.home} data-umami-event="nav_click" data-umami-location="header_brand">
     <span class="glyph" aria-hidden="true">+</span>
     Edgar Martinez
     <span class="muted">/ Blog</span>
@@ -75,6 +75,8 @@ const hrefEn = locale === 'en' ? currentHref : alternateHref;
       href={paths.home}
       class:list={[{ active: isActive(paths.home) }]}
       aria-current={isActive(paths.home) ? 'page' : undefined}
+      data-umami-event="nav_click"
+      data-umami-location="header_home"
     >
       {copy.home}
     </a>
@@ -82,6 +84,8 @@ const hrefEn = locale === 'en' ? currentHref : alternateHref;
       href={paths.articles}
       class:list={[{ active: isActive(articlesRoot) || isActive(categoriesRoot) }]}
       aria-current={isActive(articlesRoot) || isActive(categoriesRoot) ? 'page' : undefined}
+      data-umami-event="nav_click"
+      data-umami-location="header_articles"
     >
       {copy.articles}
     </a>
@@ -89,6 +93,8 @@ const hrefEn = locale === 'en' ? currentHref : alternateHref;
       href={paths.about}
       class:list={[{ active: isActive(paths.about) }]}
       aria-current={isActive(paths.about) ? 'page' : undefined}
+      data-umami-event="nav_click"
+      data-umami-location="header_about"
     >
       {copy.about}
     </a>
@@ -99,6 +105,9 @@ const hrefEn = locale === 'en' ? currentHref : alternateHref;
         href={hrefEs}
         aria-current={locale === 'es' ? 'true' : undefined}
         data-astro-reload=""
+        data-umami-event="language_switch"
+        data-umami-location="header_lang"
+        data-umami-label="es"
       >
         {LANG_LABEL.es}
       </a>
@@ -108,11 +117,21 @@ const hrefEn = locale === 'en' ? currentHref : alternateHref;
         href={hrefEn}
         aria-current={locale === 'en' ? 'true' : undefined}
         data-astro-reload=""
+        data-umami-event="language_switch"
+        data-umami-location="header_lang"
+        data-umami-label="en"
       >
         {LANG_LABEL.en}
       </a>
     </div>
-    <a class="ext" href="https://edgarmartinez.dev" target="_blank" rel="noopener noreferrer">
+    <a
+      class="ext"
+      href="https://edgarmartinez.dev"
+      target="_blank"
+      rel="noopener noreferrer"
+      data-umami-event="cta_click"
+      data-umami-location="header_portfolio"
+    >
       {copy.portfolio} <span aria-hidden="true">↗</span>
     </a>
   </nav>

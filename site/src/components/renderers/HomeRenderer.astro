@@ -34,10 +34,10 @@ const featuredDate = featured?.data.date.toLocaleDateString(getLocaleDateFormat(
     </h1>
     <p class="hero-sub">{copy.heroSub}</p>
     <div class="cta-row">
-      <a class="btn btn-primary" href="#latest">
+      <a class="btn btn-primary" href="#latest" data-umami-event="cta_click" data-umami-location="home_hero_latest">
         {copy.latestCta} <span class="arr">→</span>
       </a>
-      <a class="btn" href="https://edgarmartinez.dev" target="_blank" rel="noopener noreferrer">
+      <a class="btn" href="https://edgarmartinez.dev" target="_blank" rel="noopener noreferrer" data-umami-event="cta_click" data-umami-location="home_hero_portfolio">
         {copy.portfolioCta} <span class="arr">↗</span>
       </a>
     </div>
@@ -45,7 +45,7 @@ const featuredDate = featured?.data.date.toLocaleDateString(getLocaleDateFormat(
 
   {featured && (
     <section class="em-container" id="featured">
-      <a class="em-glass em-glass-hover featured" href={`${paths.articles}/${featured.id}`} data-glass>
+      <a class="em-glass em-glass-hover featured" href={`${paths.articles}/${featured.id}`} data-glass data-umami-event="article_card_click" data-umami-location="home_featured" data-umami-label={featured.id}>
         <span class="badge">{copy.featuredBadge}</span>
         {featured.data.cover && (
           <div class="cover">
@@ -87,7 +87,7 @@ const featuredDate = featured?.data.date.toLocaleDateString(getLocaleDateFormat(
   <section class="em-container" style="margin-top:96px" id="latest">
     <div class="section-eyebrow">
       {copy.latestSection}
-      <a class="count-link" href={paths.articles}>{copy.viewAll} →</a>
+      <a class="count-link" href={paths.articles} data-umami-event="cta_click" data-umami-location="home_latest_view_all">{copy.viewAll} &rarr;</a>
     </div>
     {latestWithTime.length > 0 ? (
       <div class="cards-grid">
@@ -122,7 +122,7 @@ const featuredDate = featured?.data.date.toLocaleDateString(getLocaleDateFormat(
           {copy.aboutTextEnd}
         </p>
         <div class="actions">
-          <a class="btn" href={paths.about}>
+          <a class="btn" href={paths.about} data-umami-event="cta_click" data-umami-location="home_about_cta">
             {copy.aboutCta} <span class="arr">→</span>
           </a>
         </div>
@@ -386,3 +386,4 @@ const featuredDate = featured?.data.date.toLocaleDateString(getLocaleDateFormat(
     });
   });
 </script>
+

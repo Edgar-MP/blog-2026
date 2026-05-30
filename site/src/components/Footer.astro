@@ -25,12 +25,12 @@ const editorialPolicyPath = getEditorialPolicyPath(locale);
       <div>
         <h6>{copy.blog}</h6>
         <ul>
-          <li><a href={paths.home}>{copy.home}</a></li>
-          <li><a href={paths.articles}>{copy.articles}</a></li>
-          <li><a href={paths.categories}>{copy.categories}</a></li>
-          <li><a href={paths.about}>{copy.about}</a></li>
+          <li><a href={paths.home} data-umami-event="footer_nav_click" data-umami-location="footer_home">{copy.home}</a></li>
+          <li><a href={paths.articles} data-umami-event="footer_nav_click" data-umami-location="footer_articles">{copy.articles}</a></li>
+          <li><a href={paths.categories} data-umami-event="footer_nav_click" data-umami-location="footer_categories">{copy.categories}</a></li>
+          <li><a href={paths.about} data-umami-event="footer_nav_click" data-umami-location="footer_about">{copy.about}</a></li>
           <li>
-            <a href={editorialPolicyPath}>
+            <a href={editorialPolicyPath} data-umami-event="footer_nav_click" data-umami-location="footer_editorial_policy">
               {locale === 'en' ? 'Editorial policy' : 'Política editorial'}
             </a>
           </li>
@@ -41,28 +41,28 @@ const editorialPolicyPath = getEditorialPolicyPath(locale);
         <h6>Edgar</h6>
         <ul>
           <li>
-            <a href="https://edgarmartinez.dev" target="_blank" rel="noopener noreferrer">
+            <a href="https://edgarmartinez.dev" target="_blank" rel="noopener noreferrer" data-umami-event="social_click" data-umami-location="footer_portfolio">
               Portfolio <span class="ext">↗</span>
             </a>
           </li>
           <li>
-            <a href="https://github.com/edgarmartinez" target="_blank" rel="noopener noreferrer">
+            <a href="https://github.com/edgarmartinez" target="_blank" rel="noopener noreferrer" data-umami-event="social_click" data-umami-location="footer_github">
               GitHub <span class="ext">↗</span>
             </a>
           </li>
           <li>
-            <a href="https://linkedin.com/in/edgarmartinez" target="_blank" rel="noopener noreferrer">
+            <a href="https://linkedin.com/in/edgarmartinez" target="_blank" rel="noopener noreferrer" data-umami-event="social_click" data-umami-location="footer_linkedin">
               LinkedIn <span class="ext">↗</span>
             </a>
           </li>
-          <li><a href="mailto:edgar@edgarmartinez.dev">Email</a></li>
+          <li><a href="mailto:edgar@edgarmartinez.dev" data-umami-event="social_click" data-umami-location="footer_email">Email</a></li>
         </ul>
       </div>
 
       <div>
         <h6>{copy.rss}</h6>
         <ul>
-          <li><a href={paths.rss}>{copy.feed}</a></li>
+          <li><a href={paths.rss} data-umami-event="rss_click" data-umami-location="footer_rss">{copy.feed}</a></li>
         </ul>
       </div>
     </div>

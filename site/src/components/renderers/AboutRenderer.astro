@@ -44,22 +44,22 @@ const sinceYear = allPosts.reduce((min, post) => Math.min(min, post.data.date.ge
           </div>
 
           <div class="link-rows">
-            <a href="https://edgarmartinez.dev" target="_blank" rel="noopener noreferrer" class="link-row">
+            <a href="https://edgarmartinez.dev" target="_blank" rel="noopener noreferrer" class="link-row" data-umami-event="social_click" data-umami-location="about_portfolio">
               <span class="link-icon">🌐</span>
               <span class="link-label">{copy.portfolio}</span>
               <span class="link-arr">↗</span>
             </a>
-            <a href="https://github.com/edgarmartinez" target="_blank" rel="noopener noreferrer" class="link-row">
+            <a href="https://github.com/edgarmartinez" target="_blank" rel="noopener noreferrer" class="link-row" data-umami-event="social_click" data-umami-location="about_github">
               <span class="link-icon">⌥</span>
               <span class="link-label">{copy.github}</span>
               <span class="link-arr">↗</span>
             </a>
-            <a href="https://linkedin.com/in/edgarmartinez" target="_blank" rel="noopener noreferrer" class="link-row">
+            <a href="https://linkedin.com/in/edgarmartinez" target="_blank" rel="noopener noreferrer" class="link-row" data-umami-event="social_click" data-umami-location="about_linkedin">
               <span class="link-icon">◈</span>
               <span class="link-label">{copy.linkedin}</span>
               <span class="link-arr">↗</span>
             </a>
-            <a href="mailto:edgar@edgarmartinez.dev" class="link-row">
+            <a href="mailto:edgar@edgarmartinez.dev" class="link-row" data-umami-event="social_click" data-umami-location="about_email">
               <span class="link-icon">✉</span>
               <span class="link-label">{copy.email}</span>
               <span class="link-arr">→</span>
@@ -70,9 +70,9 @@ const sinceYear = allPosts.reduce((min, post) => Math.min(min, post.data.date.ge
         <div class="rss-block em-glass">
           <div class="rss-label">{copy.subscribe}</div>
           <div class="rss-pills">
-            <a href={paths.rss} class="pill pill-rss">RSS Feed</a>
-            <a href={paths.rss} class="pill">Atom</a>
-            <a href={paths.rss} class="pill">JSON Feed</a>
+            <a href={paths.rss} class="pill pill-rss" data-umami-event="rss_click" data-umami-location="about_rss">RSS Feed</a>
+            <a href={paths.rss} class="pill" data-umami-event="rss_click" data-umami-location="about_atom">Atom</a>
+            <a href={paths.rss} class="pill" data-umami-event="rss_click" data-umami-location="about_json_feed">JSON Feed</a>
           </div>
         </div>
 
@@ -114,10 +114,10 @@ const sinceYear = allPosts.reduce((min, post) => Math.min(min, post.data.date.ge
           <span class="cta-hand">{copy.ctaHand}</span>
           <p>{copy.ctaText}</p>
           <div class="cta-row">
-            <a href={paths.articles} class="btn btn-primary">
+            <a href={paths.articles} class="btn btn-primary" data-umami-event="cta_click" data-umami-location="about_articles_cta">
               {copy.ctaPrimary} <span class="arr">→</span>
             </a>
-            <a href={paths.rss} class="btn">{copy.ctaRss}</a>
+            <a href={paths.rss} class="btn" data-umami-event="rss_click" data-umami-location="about_rss_cta">{copy.ctaRss}</a>
           </div>
         </div>
       </article>

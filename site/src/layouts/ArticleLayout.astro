@@ -6,6 +6,7 @@ import Footer from '../components/Footer.astro';
 import ParticlesBg from '../components/ParticlesBg.astro';
 import TableOfContents from '../components/TableOfContents.astro';
 import ViewTransitions from '../components/ViewTransitions.astro';
+import UmamiEvents from '../components/UmamiEvents.astro';
 import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import type { Locale } from '../lib/i18n';
@@ -164,7 +165,7 @@ const breadcrumbSchema = {
     <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
     <ViewTransitions />
   </head>
-  <body>
+  <body data-locale={locale} data-page-type="article" data-article-slug={slug}>
     <a class="skip-link" href="#main-content">
       {locale === 'en' ? 'Skip to main content' : 'Saltar al contenido principal'}
     </a>
@@ -178,7 +179,7 @@ const breadcrumbSchema = {
       <div class="em-container">
 
         <!-- ← Volver a artículos -->
-        <a href={paths.articles} class="back-link">{copy.back}</a>
+        <a href={paths.articles} class="back-link" data-umami-event="cta_click" data-umami-location="article_back_to_list">{copy.back}</a>
 
         <!-- Hero section -->
         <section class="hero-section">
@@ -213,7 +214,7 @@ const breadcrumbSchema = {
           <!-- Meta + título + descripción + tags, centrados -->
           <div class={cover ? 'hero-content' : 'hero-content no-cover'}>
             <div class="hero-meta">
-              <a href={`${paths.articles}?cat=${catSlug}`} class="hero-cat">{category.toUpperCase()}</a>
+              <a href={`${paths.articles}?cat=${catSlug}`} class="hero-cat" data-umami-event="category_click" data-umami-location="article_category">{category.toUpperCase()}</a>
               <span class="hero-sep">·</span>
               <span>{formattedDate}</span>
               <span class="hero-sep">·</span>
@@ -246,11 +247,11 @@ const breadcrumbSchema = {
           <div class="author-info">
             <strong>Edgar Martínez Palmero</strong>
             <p>{copy.authorBio}</p>
-            <a class="author-policy" href={editorialPolicyPath}>
+            <a class="author-policy" href={editorialPolicyPath} data-umami-event="cta_click" data-umami-location="article_editorial_policy">
               {locale === 'en' ? 'Editorial policy and review criteria' : 'Política editorial y criterios de revisión'}
             </a>
           </div>
-          <a href={AUTHOR_PORTFOLIO} target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
+          <a href={AUTHOR_PORTFOLIO} target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm" data-umami-event="cta_click" data-umami-location="article_author_portfolio">
             {copy.portfolio} <span class="arr">↗</span>
           </a>
         </div>
@@ -261,7 +262,7 @@ const breadcrumbSchema = {
             <div class="section-eyebrow">{copy.keepReading}</div>
             <div class="related-grid" style={`grid-template-columns: repeat(${Math.min(related.length, 3)}, 1fr)`}>
               {related.map(post => (
-                <a class="em-glass em-glass-hover related-card" href={`${paths.articles}/${post.id}`} data-glass>
+                <a class="em-glass em-glass-hover related-card" href={`${paths.articles}/${post.id}`} data-glass data-umami-event="article_card_click" data-umami-location="article_related" data-umami-label={post.id}>
                   <div class="related-body">
                     <div class="em-meta">
                       <span class="cat">{post.data.category}</span>
@@ -293,7 +294,7 @@ const breadcrumbSchema = {
                         {index + 1}. {entry?.data.title}
                       </span>
                     ) : (
-                      <a href={`${paths.articles}/${entry?.id}`}>
+                      <a href={`${paths.articles}/${entry?.id}`} data-umami-event="article_card_click" data-umami-location="article_cluster" data-umami-label={entry?.id}>
                         {index + 1}. {entry?.data.title}
                       </a>
                     )}
@@ -308,6 +309,7 @@ const breadcrumbSchema = {
     </main>
 
     <Footer locale={locale} />
+    <UmamiEvents locale={locale} pageType="article" slug={slug} />
   </body>
 </html>
 
