@@ -1,12 +1,14 @@
 ﻿---
 import type { Locale } from '../lib/i18n';
-import { getLocalizedPaths } from '../lib/i18n';
+import { getAlternatePath, getLocalizedPaths } from '../lib/i18n';
 
 interface Props {
   title: string;
   description: string;
   image?: string;
   canonicalURL?: string;
+  alternateURL?: string;
+  noindex?: boolean;
   locale?: Locale;
 }
 
@@ -15,11 +17,19 @@ const {
   description,
   image = '/og-default.png',
   canonicalURL = Astro.url.href,
+  alternateURL,
+  noindex = false,
   locale = 'es',
 } = Astro.props;
 
 const isPrimaryBlogTitle = /^Blog\b/i.test(title) && /Edgar/i.test(title);
 const siteTitle = isPrimaryBlogTitle ? title : `${title} · Edgar Martinez`;
+const siteBase = Astro.site ?? new URL(Astro.url.origin);
+const canonical = new URL(canonicalURL, siteBase).toString();
+const inferredAlternate = getAlternatePath(Astro.url.pathname, '');
+const alternateHref = new URL(alternateURL ?? inferredAlternate, siteBase).toString();
+const ogLocale = locale === 'en' ? 'en_US' : 'es_ES';
+const ogLocaleAlternate = locale === 'en' ? 'es_ES' : 'en_US';
 
 const { rss } = getLocalizedPaths(locale);
 ---
@@ -29,21 +39,30 @@ const { rss } = getLocalizedPaths(locale);
 <title>{siteTitle}</title>
 <meta name="title" content={siteTitle} />
 <meta name="description" content={description} />
-<link rel="canonical" href={canonicalURL} />
+<meta name="author" content="Edgar Martinez Palmero" />
+<meta name="robots" content={noindex ? 'noindex,nofollow' : 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1'} />
+<meta name="theme-color" content="#0a081d" />
+<link rel="canonical" href={canonical} />
+<link rel="alternate" hrefLang={locale} href={canonical} />
+<link rel="alternate" hrefLang={locale === 'en' ? 'es' : 'en'} href={alternateHref} />
+<link rel="alternate" hrefLang="x-default" href={new URL('/', siteBase).toString()} />
 
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
 <meta property="og:type" content="website" />
-<meta property="og:url" content={canonicalURL} />
+<meta property="og:site_name" content="Blog · Edgar Martinez" />
+<meta property="og:url" content={canonical} />
 <meta property="og:title" content={siteTitle} />
 <meta property="og:description" content={description} />
-<meta property="og:image" content={new URL(image, Astro.site)} />
+<meta property="og:image" content={new URL(image, siteBase)} />
+<meta property="og:locale" content={ogLocale} />
+<meta property="og:locale:alternate" content={ogLocaleAlternate} />
 
 <meta property="twitter:card" content="summary_large_image" />
-<meta property="twitter:url" content={canonicalURL} />
+<meta property="twitter:url" content={canonical} />
 <meta property="twitter:title" content={siteTitle} />
 <meta property="twitter:description" content={description} />
-<meta property="twitter:image" content={new URL(image, Astro.site)} />
+<meta property="twitter:image" content={new URL(image, siteBase)} />
 
 <link rel="alternate" type="application/rss+xml" title="Blog · Edgar Martinez" href={rss} />
 

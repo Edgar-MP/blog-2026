@@ -20,7 +20,7 @@ const categories = [...new Set(allPosts.map(post => post.data.category))];
 const sinceYear = allPosts.reduce((min, post) => Math.min(min, post.data.date.getFullYear()), new Date().getFullYear());
 ---
 
-<main style="position:relative;z-index:1;padding-top:100px;padding-bottom:80px">
+<main id="main-content" style="position:relative;z-index:1;padding-top:100px;padding-bottom:80px">
   <div class="em-container">
     <div class="page-header">
       <div class="section-eyebrow" style="margin-bottom:16px">{copy.headerEyebrow}</div>

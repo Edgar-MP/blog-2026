@@ -71,9 +71,27 @@ const hrefEn = locale === 'en' ? currentHref : alternateHref;
     <span class="muted">/ Blog</span>
   </a>
   <nav aria-label={copy.navAriaLabel}>
-    <a href={paths.home} class:list={[{ active: isActive(paths.home) }]}>{copy.home}</a>
-    <a href={paths.articles} class:list={[{ active: isActive(articlesRoot) || isActive(categoriesRoot) }]}>{copy.articles}</a>
-    <a href={paths.about} class:list={[{ active: isActive(paths.about) }]}>{copy.about}</a>
+    <a
+      href={paths.home}
+      class:list={[{ active: isActive(paths.home) }]}
+      aria-current={isActive(paths.home) ? 'page' : undefined}
+    >
+      {copy.home}
+    </a>
+    <a
+      href={paths.articles}
+      class:list={[{ active: isActive(articlesRoot) || isActive(categoriesRoot) }]}
+      aria-current={isActive(articlesRoot) || isActive(categoriesRoot) ? 'page' : undefined}
+    >
+      {copy.articles}
+    </a>
+    <a
+      href={paths.about}
+      class:list={[{ active: isActive(paths.about) }]}
+      aria-current={isActive(paths.about) ? 'page' : undefined}
+    >
+      {copy.about}
+    </a>
     <span class="sep" aria-hidden="true"></span>
     <div class="lang-switch" role="group" aria-label={locale === 'en' ? 'Language selector' : 'Selector de idioma'}>
       <a

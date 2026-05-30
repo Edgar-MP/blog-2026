@@ -11,19 +11,47 @@ interface Props {
   title: string;
   description: string;
   image?: string;
+  noindex?: boolean;
   locale?: Locale;
 }
 
-const { title, description, image, locale = 'es' } = Astro.props;
+const { title, description, image, noindex = false, locale = 'es' } = Astro.props;
+const siteBase = Astro.site ?? new URL(Astro.url.origin);
+const homePath = locale === 'en' ? '/en' : '/';
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': new URL(`${homePath}#website`, siteBase).toString(),
+  url: new URL(homePath, siteBase).toString(),
+  name: 'Blog · Edgar Martinez',
+  description,
+  inLanguage: locale,
+};
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  '@id': new URL('/#edgar-martinez-palmero', siteBase).toString(),
+  name: 'Edgar Martinez Palmero',
+  url: 'https://edgarmartinez.dev',
+  jobTitle: 'Frontend Developer',
+  sameAs: [
+    'https://github.com/edgarmartinez',
+    'https://linkedin.com/in/edgarmartinez',
+  ],
+};
 ---
 
 <!doctype html>
 <html lang={locale}>
   <head>
-    <BaseHead title={title} description={description} image={image} locale={locale} />
+    <BaseHead title={title} description={description} image={image} noindex={noindex} locale={locale} />
+    <script type="application/ld+json" set:html={JSON.stringify([websiteSchema, personSchema])} />
     <ViewTransitions />
   </head>
   <body>
+    <a class="skip-link" href="#main-content">
+      {locale === 'en' ? 'Skip to main content' : 'Saltar al contenido principal'}
+    </a>
     <ParticlesBg />
     <Header locale={locale} />
     <slot />

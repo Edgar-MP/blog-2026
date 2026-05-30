@@ -2,8 +2,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="Página no encontrada" description="Esta página no existe.">
-  <main style="position:relative;z-index:1;min-height:80vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:140px 32px 80px;gap:24px">
+<BaseLayout title="Página no encontrada" description="Esta página no existe." noindex={true}>
+  <main id="main-content" style="position:relative;z-index:1;min-height:80vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:140px 32px 80px;gap:24px">
     <div class="eyebrow">— Error 404 —</div>
     <h1>Página no <em>encontrada</em></h1>
     <p>Esta URL no existe o el artículo ha sido movido.</p>
