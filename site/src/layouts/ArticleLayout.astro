@@ -105,6 +105,30 @@ const articleSchema = {
   keywords: tags.join(', '),
   ...(articleImage ? { image: [articleImage] } : {}),
 };
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: locale === 'en' ? 'Home' : 'Inicio',
+      item: new URL(paths.home, siteBase).toString(),
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: locale === 'en' ? 'Articles' : 'Artículos',
+      item: new URL(paths.articles, siteBase).toString(),
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: title,
+      item: canonical,
+    },
+  ],
+};
 ---
 
 <!doctype html>
@@ -113,10 +137,17 @@ const articleSchema = {
     <BaseHead
       title={title}
       description={description}
+      image={cover?.src}
+      type="article"
+      publishedTime={date.toISOString()}
+      modifiedTime={date.toISOString()}
+      section={category}
+      tags={tags}
       locale={locale}
       alternateURL={alternateURL}
     />
     <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
     <ViewTransitions />
   </head>
   <body>

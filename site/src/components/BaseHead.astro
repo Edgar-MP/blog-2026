@@ -9,6 +9,11 @@ interface Props {
   canonicalURL?: string;
   alternateURL?: string;
   noindex?: boolean;
+  type?: 'website' | 'article';
+  publishedTime?: string;
+  modifiedTime?: string;
+  section?: string;
+  tags?: string[];
   locale?: Locale;
 }
 
@@ -19,6 +24,11 @@ const {
   canonicalURL = Astro.url.href,
   alternateURL,
   noindex = false,
+  type = 'website',
+  publishedTime,
+  modifiedTime,
+  section,
+  tags = [],
   locale = 'es',
 } = Astro.props;
 
@@ -49,7 +59,7 @@ const { rss } = getLocalizedPaths(locale);
 
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-<meta property="og:type" content="website" />
+<meta property="og:type" content={type} />
 <meta property="og:site_name" content="Blog · Edgar Martinez" />
 <meta property="og:url" content={canonical} />
 <meta property="og:title" content={siteTitle} />
@@ -63,6 +73,20 @@ const { rss } = getLocalizedPaths(locale);
 <meta property="twitter:title" content={siteTitle} />
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={new URL(image, siteBase)} />
+<meta name="twitter:site" content="@edgarmartdev" />
+
+{type === 'article' && publishedTime && (
+  <meta property="article:published_time" content={publishedTime} />
+)}
+{type === 'article' && modifiedTime && (
+  <meta property="article:modified_time" content={modifiedTime} />
+)}
+{type === 'article' && section && (
+  <meta property="article:section" content={section} />
+)}
+{type === 'article' && tags.map(tag => (
+  <meta property="article:tag" content={tag} />
+))}
 
 <link rel="alternate" type="application/rss+xml" title="Blog · Edgar Martinez" href={rss} />
 
