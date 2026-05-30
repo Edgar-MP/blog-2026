@@ -6,6 +6,16 @@ import Footer from '../components/Footer.astro';
 import ParticlesBg from '../components/ParticlesBg.astro';
 import ViewTransitions from '../components/ViewTransitions.astro';
 import type { Locale } from '../lib/i18n';
+import {
+  AUTHOR_GITHUB,
+  AUTHOR_LINKEDIN,
+  AUTHOR_NAME,
+  AUTHOR_PORTFOLIO,
+  AUTHOR_TITLE,
+  ORGANIZATION_NAME,
+  SITE_DISPLAY_NAME,
+  SITE_FOUNDING_DATE,
+} from '../lib/site-identity';
 
 interface Props {
   title: string;
@@ -19,27 +29,43 @@ interface Props {
 const { title, description, image, noindex = false, structuredData, locale = 'es' } = Astro.props;
 const siteBase = Astro.site ?? new URL(Astro.url.origin);
 const homePath = locale === 'en' ? '/en' : '/';
+const organizationId = new URL('/#organization', siteBase).toString();
+const personId = new URL('/#edgar-martinez-palmero', siteBase).toString();
+const websiteId = new URL(`${homePath}#website`, siteBase).toString();
+
 const websiteSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
-  '@id': new URL(`${homePath}#website`, siteBase).toString(),
+  '@id': websiteId,
   url: new URL(homePath, siteBase).toString(),
-  name: 'Blog · Edgar Martinez',
+  name: SITE_DISPLAY_NAME,
   description,
   inLanguage: locale,
+  publisher: { '@id': organizationId },
 };
+
 const personSchema = {
   '@context': 'https://schema.org',
   '@type': 'Person',
-  '@id': new URL('/#edgar-martinez-palmero', siteBase).toString(),
-  name: 'Edgar Martinez Palmero',
-  url: 'https://edgarmartinez.dev',
-  jobTitle: 'Frontend Developer',
-  sameAs: [
-    'https://github.com/edgarmartinez',
-    'https://linkedin.com/in/edgarmartinez',
-  ],
+  '@id': personId,
+  name: AUTHOR_NAME,
+  url: AUTHOR_PORTFOLIO,
+  jobTitle: AUTHOR_TITLE,
+  sameAs: [AUTHOR_GITHUB, AUTHOR_LINKEDIN],
+  worksFor: { '@id': organizationId },
 };
+
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': organizationId,
+  name: ORGANIZATION_NAME,
+  url: AUTHOR_PORTFOLIO,
+  founder: { '@id': personId },
+  foundingDate: SITE_FOUNDING_DATE,
+  sameAs: [AUTHOR_GITHUB, AUTHOR_LINKEDIN],
+};
+
 const pageSchemas = structuredData
   ? (Array.isArray(structuredData) ? structuredData : [structuredData])
   : [];
@@ -49,7 +75,7 @@ const pageSchemas = structuredData
 <html lang={locale}>
   <head>
     <BaseHead title={title} description={description} image={image} noindex={noindex} locale={locale} />
-    <script type="application/ld+json" set:html={JSON.stringify([websiteSchema, personSchema])} />
+    <script type="application/ld+json" set:html={JSON.stringify([websiteSchema, personSchema, organizationSchema])} />
     {pageSchemas.map(schema => (
       <script type="application/ld+json" set:html={JSON.stringify(schema)} />
     ))}

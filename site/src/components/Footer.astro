@@ -2,6 +2,7 @@
 import type { Locale } from '../lib/i18n';
 import { getLocalizedPaths } from '../lib/i18n';
 import { footerCopy } from '../lib/ui-copy';
+import { getEditorialPolicyPath } from '../lib/site-identity';
 
 interface Props {
   locale?: Locale;
@@ -10,6 +11,7 @@ interface Props {
 const { locale = 'es' } = Astro.props;
 const paths = getLocalizedPaths(locale);
 const copy = footerCopy[locale];
+const editorialPolicyPath = getEditorialPolicyPath(locale);
 ---
 
 <footer class="em-footer">
@@ -27,6 +29,11 @@ const copy = footerCopy[locale];
           <li><a href={paths.articles}>{copy.articles}</a></li>
           <li><a href={paths.categories}>{copy.categories}</a></li>
           <li><a href={paths.about}>{copy.about}</a></li>
+          <li>
+            <a href={editorialPolicyPath}>
+              {locale === 'en' ? 'Editorial policy' : 'Política editorial'}
+            </a>
+          </li>
         </ul>
       </div>
 

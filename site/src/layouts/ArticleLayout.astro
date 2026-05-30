@@ -13,6 +13,12 @@ import { getLocaleDateFormat, getLocalizedPaths } from '../lib/i18n';
 import { getLocalePosts } from '../lib/content';
 import { findClusterForPost } from '../lib/topic-clusters';
 import { articleUiCopy } from '../lib/ui-copy';
+import {
+  AUTHOR_NAME,
+  AUTHOR_PORTFOLIO,
+  ORGANIZATION_NAME,
+  getEditorialPolicyPath,
+} from '../lib/site-identity';
 
 interface Props {
   title: string;
@@ -47,6 +53,7 @@ const {
 const copy = articleUiCopy[locale];
 
 const paths = getLocalizedPaths(locale);
+const editorialPolicyPath = getEditorialPolicyPath(locale);
 const formattedDate = date
   .toLocaleDateString(getLocaleDateFormat(locale), {
     day: '2-digit',
@@ -83,10 +90,14 @@ const alternateURL = alternatePost
 
 const siteBase = Astro.site ?? new URL(Astro.url.origin);
 const canonical = new URL(Astro.url.href, siteBase).toString();
+const personId = new URL('/#edgar-martinez-palmero', siteBase).toString();
+const organizationId = new URL('/#organization', siteBase).toString();
+const websiteId = new URL(`${paths.home}#website`, siteBase).toString();
 const articleImage = cover ? new URL(cover.src, siteBase).toString() : undefined;
 const articleSchema = {
   '@context': 'https://schema.org',
   '@type': 'BlogPosting',
+  '@id': `${canonical}#article`,
   headline: title,
   description,
   datePublished: date.toISOString(),
@@ -95,20 +106,16 @@ const articleSchema = {
   mainEntityOfPage: canonical,
   url: canonical,
   author: {
-    '@type': 'Person',
-    name: 'Edgar Martinez Palmero',
-    url: 'https://edgarmartinez.dev',
+    '@id': personId,
+    name: AUTHOR_NAME,
+    url: AUTHOR_PORTFOLIO,
   },
-  publisher: {
-    '@type': 'Organization',
-    name: 'Edgar Martinez',
-    logo: {
-      '@type': 'ImageObject',
-      url: new URL('/favicon.svg', siteBase).toString(),
-    },
-  },
+  publisher: { '@id': organizationId, name: ORGANIZATION_NAME },
+  copyrightHolder: { '@id': personId },
+  isPartOf: { '@id': websiteId },
   articleSection: category,
   keywords: tags.join(', '),
+  about: tags.map(tag => ({ '@type': 'Thing', name: tag })),
   ...(articleImage ? { image: [articleImage] } : {}),
 };
 const breadcrumbSchema = {
@@ -239,8 +246,11 @@ const breadcrumbSchema = {
           <div class="author-info">
             <strong>Edgar Martínez Palmero</strong>
             <p>{copy.authorBio}</p>
+            <a class="author-policy" href={editorialPolicyPath}>
+              {locale === 'en' ? 'Editorial policy and review criteria' : 'Política editorial y criterios de revisión'}
+            </a>
           </div>
-          <a href="https://edgarmartinez.dev" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
+          <a href={AUTHOR_PORTFOLIO} target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
             {copy.portfolio} <span class="arr">↗</span>
           </a>
         </div>
@@ -476,6 +486,20 @@ const breadcrumbSchema = {
     color: var(--color-em-fg-3);
     margin: 0;
     line-height: 1.5;
+  }
+
+  .author-policy {
+    width: fit-content;
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--color-em-brand);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s;
+  }
+
+  .author-policy:hover {
+    border-bottom-color: var(--color-em-brand);
   }
 
   /* ── Seguir leyendo ───────────────────────────────────────────────── */

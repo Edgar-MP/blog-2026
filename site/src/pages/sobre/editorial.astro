@@ -1,0 +1,123 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const locale = 'es';
+const title = 'Política editorial';
+const description =
+  'Cómo se investigan, redactan y revisan los artículos del blog: experiencia práctica, transparencia y criterios de calidad.';
+const siteBase = Astro.site ?? new URL(Astro.url.origin);
+const canonical = new URL(Astro.url.pathname, siteBase).toString();
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  '@id': `${canonical}#webpage`,
+  url: canonical,
+  name: title,
+  description,
+  inLanguage: 'es',
+  isPartOf: {
+    '@id': new URL('/#website', siteBase).toString(),
+  },
+  about: {
+    '@id': new URL('/#edgar-martinez-palmero', siteBase).toString(),
+  },
+};
+---
+
+<BaseLayout title={title} description={description} locale={locale} structuredData={structuredData}>
+  <main id="main-content" class="policy-page">
+    <div class="em-container prose">
+      <h1>Política editorial</h1>
+      <p>
+        Esta página define cómo se publica el contenido de este blog para mantener una línea clara de
+        experiencia práctica, precisión técnica y transparencia.
+      </p>
+
+      <h2>1. Enfoque del contenido</h2>
+      <ul>
+        <li>Los artículos se basan en experiencia real desarrollando productos frontend.</li>
+        <li>El objetivo es compartir decisiones, trade-offs y aprendizajes aplicables.</li>
+        <li>No se publican piezas generadas en masa ni resúmenes sin validación técnica.</li>
+      </ul>
+
+      <h2>2. Proceso de redacción</h2>
+      <ol>
+        <li>Definir una intención de búsqueda concreta y una audiencia objetivo.</li>
+        <li>Preparar un esquema con problema, contexto, solución, límites y conclusiones.</li>
+        <li>Añadir ejemplos, snippets y capturas que respalden los puntos clave.</li>
+        <li>Revisar legibilidad, precisión y estructura semántica antes de publicar.</li>
+      </ol>
+
+      <h2>3. Verificación técnica</h2>
+      <ul>
+        <li>Se priorizan fuentes primarias: documentación oficial y especificaciones.</li>
+        <li>Si una herramienta cambia, se actualiza el artículo y su fecha de revisión.</li>
+        <li>Se evita recomendar prácticas no probadas o no verificadas en producción.</li>
+      </ul>
+
+      <h2>4. Transparencia</h2>
+      <ul>
+        <li>Si un artículo incluye enlaces externos, se prioriza utilidad sobre afiliación.</li>
+        <li>Cuando existan conflictos de interés, se indicarán explícitamente.</li>
+        <li>La analítica del blog es privacy-first (Umami, sin cookies de tracking invasivo).</li>
+      </ul>
+
+      <h2>5. Correcciones y mejoras</h2>
+      <ul>
+        <li>Si detectas un error técnico, puedes reportarlo por email o LinkedIn.</li>
+        <li>Las correcciones relevantes se aplican tan pronto como se validan.</li>
+        <li>Los artículos priorizan calidad y utilidad sobre frecuencia de publicación.</li>
+      </ul>
+
+      <h2>6. Contacto editorial</h2>
+      <p>
+        Para sugerencias, correcciones o propuestas de tema:
+        <a href="mailto:edgar@edgarmartinez.dev">edgar@edgarmartinez.dev</a>.
+      </p>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .policy-page {
+    position: relative;
+    z-index: 1;
+    padding-top: 112px;
+  }
+
+  .prose {
+    max-width: 760px;
+    padding-bottom: 84px;
+  }
+
+  .prose h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    letter-spacing: -0.02em;
+    margin-bottom: 1rem;
+  }
+
+  .prose h2 {
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    font-size: clamp(1.2rem, 2.3vw, 1.5rem);
+    color: var(--color-em-fg-1);
+  }
+
+  .prose p,
+  .prose li {
+    color: var(--color-em-fg-2);
+    line-height: 1.7;
+  }
+
+  .prose ul,
+  .prose ol {
+    padding-left: 1.25rem;
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .prose a {
+    color: var(--color-em-brand);
+  }
+  </style>

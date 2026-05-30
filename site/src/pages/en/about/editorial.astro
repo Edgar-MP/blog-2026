@@ -1,0 +1,123 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const locale = 'en';
+const title = 'Editorial policy';
+const description =
+  'How articles are researched, written, and reviewed in this blog: practical experience, transparency, and quality criteria.';
+const siteBase = Astro.site ?? new URL(Astro.url.origin);
+const canonical = new URL(Astro.url.pathname, siteBase).toString();
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  '@id': `${canonical}#webpage`,
+  url: canonical,
+  name: title,
+  description,
+  inLanguage: 'en',
+  isPartOf: {
+    '@id': new URL('/en#website', siteBase).toString(),
+  },
+  about: {
+    '@id': new URL('/#edgar-martinez-palmero', siteBase).toString(),
+  },
+};
+---
+
+<BaseLayout title={title} description={description} locale={locale} structuredData={structuredData}>
+  <main id="main-content" class="policy-page">
+    <div class="em-container prose">
+      <h1>Editorial policy</h1>
+      <p>
+        This page explains how content is published in this blog to keep a clear standard of practical
+        experience, technical accuracy, and transparency.
+      </p>
+
+      <h2>1. Content scope</h2>
+      <ul>
+        <li>Articles are based on real experience building frontend products.</li>
+        <li>The goal is to share decisions, trade-offs, and practical lessons.</li>
+        <li>No mass-generated content or unverified summaries are published.</li>
+      </ul>
+
+      <h2>2. Writing workflow</h2>
+      <ol>
+        <li>Define a clear search intent and target audience.</li>
+        <li>Prepare an outline with problem, context, solution, limits, and conclusions.</li>
+        <li>Add examples, code snippets, and visuals that support key claims.</li>
+        <li>Review readability, accuracy, and semantic structure before publishing.</li>
+      </ol>
+
+      <h2>3. Technical verification</h2>
+      <ul>
+        <li>Primary sources are preferred: official docs and specifications.</li>
+        <li>When tools change, articles are updated and reviewed again.</li>
+        <li>Practices that are not tested or validated in production are avoided.</li>
+      </ul>
+
+      <h2>4. Transparency</h2>
+      <ul>
+        <li>External links are selected for usefulness, not for monetization first.</li>
+        <li>Potential conflicts of interest are disclosed explicitly when relevant.</li>
+        <li>Analytics are privacy-first (self-hosted Umami, no invasive tracking cookies).</li>
+      </ul>
+
+      <h2>5. Corrections and updates</h2>
+      <ul>
+        <li>If you find an issue, you can report it by email or LinkedIn.</li>
+        <li>Relevant corrections are applied as soon as they are validated.</li>
+        <li>Quality and usefulness are prioritized over publishing frequency.</li>
+      </ul>
+
+      <h2>6. Editorial contact</h2>
+      <p>
+        For suggestions, corrections, or topic proposals:
+        <a href="mailto:edgar@edgarmartinez.dev">edgar@edgarmartinez.dev</a>.
+      </p>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .policy-page {
+    position: relative;
+    z-index: 1;
+    padding-top: 112px;
+  }
+
+  .prose {
+    max-width: 760px;
+    padding-bottom: 84px;
+  }
+
+  .prose h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    letter-spacing: -0.02em;
+    margin-bottom: 1rem;
+  }
+
+  .prose h2 {
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    font-size: clamp(1.2rem, 2.3vw, 1.5rem);
+    color: var(--color-em-fg-1);
+  }
+
+  .prose p,
+  .prose li {
+    color: var(--color-em-fg-2);
+    line-height: 1.7;
+  }
+
+  .prose ul,
+  .prose ol {
+    padding-left: 1.25rem;
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .prose a {
+    color: var(--color-em-brand);
+  }
+</style>

@@ -1,6 +1,13 @@
 ﻿---
 import type { Locale } from '../lib/i18n';
 import { getAlternatePath, getLocalizedPaths } from '../lib/i18n';
+import {
+  AUTHOR_GITHUB,
+  AUTHOR_LINKEDIN,
+  AUTHOR_NAME,
+  AUTHOR_PORTFOLIO,
+  AUTHOR_X,
+} from '../lib/site-identity';
 
 interface Props {
   title: string;
@@ -53,12 +60,16 @@ const { rss } = getLocalizedPaths(locale);
 <title>{siteTitle}</title>
 <meta name="title" content={siteTitle} />
 <meta name="description" content={description} />
-<meta name="author" content="Edgar Martinez Palmero" />
+<meta name="author" content={AUTHOR_NAME} />
 <meta name="robots" content={noindex ? 'noindex,nofollow' : 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1'} />
 <meta name="theme-color" content="#0a081d" />
 <link rel="canonical" href={canonical} />
 <link rel="preconnect" href={siteBase.origin} />
 <link rel="dns-prefetch" href={siteBase.origin} />
+<link rel="author" href={AUTHOR_PORTFOLIO} />
+<link rel="me" href={AUTHOR_GITHUB} />
+<link rel="me" href={AUTHOR_LINKEDIN} />
+<link rel="me" href={AUTHOR_X} />
 {umamiOrigin && <link rel="preconnect" href={umamiOrigin} crossorigin />}
 {umamiOrigin && <link rel="dns-prefetch" href={umamiOrigin} />}
 <link rel="alternate" hrefLang={locale} href={canonical} />
