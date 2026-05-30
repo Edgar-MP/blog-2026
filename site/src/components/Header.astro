@@ -1,5 +1,6 @@
 ﻿---
 import type { Locale } from '../lib/i18n';
+import { getCollection } from 'astro:content';
 import {
   LANG_LABEL,
   getAlternatePath,
@@ -26,8 +27,41 @@ const isActive = (path: string) => {
   return pathname.startsWith(path);
 };
 
-const altHref = getAlternatePath(pathname, search);
-const altLocale: Locale = locale === 'en' ? 'es' : 'en';
+const currentHref = `${pathname}${search}`;
+let alternateHref = getAlternatePath(pathname, search);
+
+const articlePrefix = locale === 'en' ? '/en/articles/' : '/articulos/';
+const isArticleDetail =
+  pathname.startsWith(articlePrefix) &&
+  pathname.length > articlePrefix.length &&
+  pathname.slice(articlePrefix.length).split('/').filter(Boolean).length === 1;
+
+if (isArticleDetail) {
+  const slug = pathname.slice(articlePrefix.length).replace(/\/$/, '');
+  const entries = await getCollection('blog', ({ data }) => !data.draft);
+  const currentPost = entries.find(post =>
+    post.id === slug && (locale === 'en' ? post.data.locale === 'en' : post.data.locale !== 'en')
+  );
+
+  if (currentPost?.data.translationKey) {
+    const translatedPost = entries.find(post =>
+      post.data.translationKey === currentPost.data.translationKey &&
+      (locale === 'en' ? post.data.locale !== 'en' : post.data.locale === 'en')
+    );
+
+    if (translatedPost) {
+      alternateHref =
+        locale === 'en'
+          ? `/articulos/${translatedPost.id}${search}`
+          : `/en/articles/${translatedPost.id}${search}`;
+    } else {
+      alternateHref = locale === 'en' ? '/articulos' : '/en/articles';
+    }
+  }
+}
+
+const hrefEs = locale === 'es' ? currentHref : alternateHref;
+const hrefEn = locale === 'en' ? currentHref : alternateHref;
 ---
 
 <header class="em-header" id="site-header">
@@ -41,7 +75,25 @@ const altLocale: Locale = locale === 'en' ? 'es' : 'en';
     <a href={paths.articles} class:list={[{ active: isActive(articlesRoot) || isActive(categoriesRoot) }]}>{copy.articles}</a>
     <a href={paths.about} class:list={[{ active: isActive(paths.about) }]}>{copy.about}</a>
     <span class="sep" aria-hidden="true"></span>
-    <a class="lang" href={altHref}>{LANG_LABEL[altLocale]}</a>
+    <div class="lang-switch" role="group" aria-label={locale === 'en' ? 'Language selector' : 'Selector de idioma'}>
+      <a
+        class:list={['lang-link', { 'lang-active': locale === 'es' }]}
+        href={hrefEs}
+        aria-current={locale === 'es' ? 'true' : undefined}
+        data-astro-reload=""
+      >
+        {LANG_LABEL.es}
+      </a>
+      <span class="lang-sep" aria-hidden="true">/</span>
+      <a
+        class:list={['lang-link', { 'lang-active': locale === 'en' }]}
+        href={hrefEn}
+        aria-current={locale === 'en' ? 'true' : undefined}
+        data-astro-reload=""
+      >
+        {LANG_LABEL.en}
+      </a>
+    </div>
     <a class="ext" href="https://edgarmartinez.dev" target="_blank" rel="noopener noreferrer">
       {copy.portfolio} <span aria-hidden="true">↗</span>
     </a>
@@ -152,14 +204,35 @@ const altLocale: Locale = locale === 'en' ? 'es' : 'en';
     display: none;
   }
 
-  nav a.lang {
-    color: var(--color-em-brand);
-    border: 1px solid var(--color-em-border-2);
-    padding: 6px 10px;
+  .lang-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
   }
 
-  nav a.lang::after {
+  .lang-switch .lang-link {
+    color: var(--color-em-fg-4);
+    padding: 8px 4px;
+  }
+
+  .lang-switch .lang-link:hover {
+    color: var(--color-em-fg-1);
+  }
+
+  .lang-switch .lang-link.lang-active {
+    color: var(--color-em-brand);
+  }
+
+  .lang-switch .lang-link::after {
     display: none;
+  }
+
+  .lang-switch .lang-sep {
+    color: var(--color-em-fg-5);
+    font-size: 10px;
+    line-height: 1;
+    padding: 0 1px;
+    user-select: none;
   }
 
   @media (max-width: 960px) {
@@ -176,8 +249,12 @@ const altLocale: Locale = locale === 'en' ? 'es' : 'en';
       padding: 6px 8px;
     }
 
-    nav a.lang {
-      padding: 5px 8px;
+    .lang-switch {
+      gap: 0;
+    }
+
+    .lang-switch .lang-link {
+      padding: 6px 3px;
     }
   }
 </style>
