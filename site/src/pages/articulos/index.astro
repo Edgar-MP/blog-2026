@@ -524,12 +524,23 @@ const itemListSchema = {
     pageTitle.innerHTML = `<em>${label}</em>`;
   }
 
-  function syncUrlCategory() {
+  function syncUrlState() {
     const url = new URL(window.location.href);
+    const sortValue = sortOrder?.value ?? 'recent';
     if (current.category) {
       url.searchParams.set('cat', current.category);
     } else {
       url.searchParams.delete('cat');
+    }
+    if (current.query.trim()) {
+      url.searchParams.set('q', current.query.trim());
+    } else {
+      url.searchParams.delete('q');
+    }
+    if (sortValue !== 'recent') {
+      url.searchParams.set('sort', sortValue);
+    } else {
+      url.searchParams.delete('sort');
     }
     window.history.replaceState({}, '', url.toString());
   }
@@ -546,7 +557,7 @@ const itemListSchema = {
     sortItems(grid);
     sortItems(list);
     syncPills();
-    syncUrlCategory();
+    syncUrlState();
     applyVisibility();
   }
 
@@ -569,7 +580,7 @@ const itemListSchema = {
   if (searchInput) {
     searchInput.addEventListener('input', () => {
       current.query = searchInput.value;
-      applyVisibility();
+      render();
     });
   }
 
@@ -581,9 +592,19 @@ const itemListSchema = {
     }
   });
 
-  const initCat = new URL(window.location.href).searchParams.get('cat') ?? '';
+  const initUrl = new URL(window.location.href);
+  const initCat = initUrl.searchParams.get('cat') ?? '';
+  const initQuery = initUrl.searchParams.get('q') ?? '';
+  const initSort = initUrl.searchParams.get('sort') ?? '';
   if (initCat) {
     current.category = initCat;
+  }
+  if (searchInput && initQuery) {
+    current.query = initQuery;
+    searchInput.value = initQuery;
+  }
+  if (sortOrder && ['recent', 'oldest', 'title'].includes(initSort)) {
+    sortOrder.value = initSort;
   }
 
   render();

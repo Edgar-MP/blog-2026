@@ -325,10 +325,15 @@ const itemListSchema = {
 
     const query = current.query.trim().toLowerCase();
     const cat = current.category;
+    const sortValue = sortOrder?.value ?? 'recent';
 
     const url = new URL(window.location.href);
     if (cat) url.searchParams.set('cat', cat);
     else url.searchParams.delete('cat');
+    if (current.query.trim()) url.searchParams.set('q', current.query.trim());
+    else url.searchParams.delete('q');
+    if (sortValue !== 'recent') url.searchParams.set('sort', sortValue);
+    else url.searchParams.delete('sort');
     window.history.replaceState({}, '', url.toString());
 
     pills.forEach(p => {
@@ -378,9 +383,19 @@ const itemListSchema = {
     }
   });
 
-  const initialCat = new URL(window.location.href).searchParams.get('cat') ?? '';
+  const initialUrl = new URL(window.location.href);
+  const initialCat = initialUrl.searchParams.get('cat') ?? '';
+  const initialQuery = initialUrl.searchParams.get('q') ?? '';
+  const initialSort = initialUrl.searchParams.get('sort') ?? '';
   if (initialCat) {
     current.category = initialCat;
+  }
+  if (searchInput && initialQuery) {
+    current.query = initialQuery;
+    searchInput.value = initialQuery;
+  }
+  if (sortOrder && ['recent', 'oldest', 'title'].includes(initialSort)) {
+    sortOrder.value = initialSort;
   }
 
   render();
