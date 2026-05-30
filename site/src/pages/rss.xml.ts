@@ -1,10 +1,9 @@
 import rss from '@astrojs/rss';
-import { getCollection } from 'astro:content';
 import type { APIContext } from 'astro';
+import { getPublishedPosts } from '../lib/blog';
 
 export async function GET(context: APIContext) {
-  const posts = await getCollection('blog', ({ data }) => !data.draft);
-  posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+  const posts = await getPublishedPosts('es');
 
   return rss({
     title: 'Blog · Edgar Martínez',
@@ -14,7 +13,7 @@ export async function GET(context: APIContext) {
       title: post.data.title,
       description: post.data.description,
       pubDate: post.data.date,
-      link: `/articulos/${post.slug}/`,
+      link: `/articulos/${post.id}/`,
       categories: [post.data.category, ...post.data.tags],
     })),
     customData: `<language>es</language>`,

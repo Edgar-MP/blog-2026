@@ -1,5 +1,7 @@
----
+﻿---
 import { Image } from 'astro:assets';
+import type { Locale } from '../lib/i18n';
+import { getLocaleDateFormat, getLocalizedPaths } from '../lib/i18n';
 
 interface Props {
   title: string;
@@ -12,6 +14,7 @@ interface Props {
   cover?: ImageMetadata;
   coverAlt?: string;
   coverTransitionName?: string;
+  locale?: Locale;
 }
 
 const {
@@ -25,14 +28,20 @@ const {
   cover,
   coverAlt = '',
   coverTransitionName = `article-cover-${slug}`,
+  locale = 'es',
 } = Astro.props;
 
-const formattedDate = date.toLocaleDateString('es-ES', {
-  day: '2-digit', month: 'short', year: 'numeric',
+const formattedDate = date.toLocaleDateString(getLocaleDateFormat(locale), {
+  day: '2-digit',
+  month: 'short',
+  year: 'numeric',
 });
+
+const { articles } = getLocalizedPaths(locale);
+const copy = locale === 'en' ? { min: 'min', read: 'Read' } : { min: 'min', read: 'Leer' };
 ---
 
-<a class="em-glass em-glass-hover card" href={`/articulos/${slug}`} data-glass>
+<a class="em-glass em-glass-hover card" href={`${articles}/${slug}`} data-glass>
   {cover && (
     <div class="cover">
       <Image
@@ -50,7 +59,7 @@ const formattedDate = date.toLocaleDateString('es-ES', {
       <span class="dot"></span>
       <span>{formattedDate}</span>
       <span class="dot"></span>
-      <span>{minutesRead} min</span>
+      <span>{minutesRead} {copy.min}</span>
     </div>
     <h3>{title}</h3>
     <p class="desc">{description}</p>
@@ -58,7 +67,7 @@ const formattedDate = date.toLocaleDateString('es-ES', {
       <div class="tags">
         {tags.slice(0, 2).map(tag => <span class="pill">{tag}</span>)}
       </div>
-      <span class="read-link">Leer →</span>
+      <span class="read-link">{copy.read} →</span>
     </div>
   </div>
 </a>
@@ -71,12 +80,14 @@ const formattedDate = date.toLocaleDateString('es-ES', {
     overflow: hidden;
     position: relative;
   }
+
   .cover {
     aspect-ratio: 16/10;
     overflow: hidden;
     position: relative;
     border-bottom: 1px solid var(--color-em-border-2);
   }
+
   .cover :global(img) {
     width: 100%;
     height: 100%;
@@ -84,7 +95,11 @@ const formattedDate = date.toLocaleDateString('es-ES', {
     transition: transform 0.9s var(--ease-out-em), filter 0.5s;
     filter: saturate(0.9);
   }
-  .card:hover .cover :global(img) { transform: scale(1.06); filter: saturate(1.05); }
+
+  .card:hover .cover :global(img) {
+    transform: scale(1.06);
+    filter: saturate(1.05);
+  }
 
   .body {
     padding: 24px;
@@ -93,6 +108,7 @@ const formattedDate = date.toLocaleDateString('es-ES', {
     gap: 12px;
     flex: 1;
   }
+
   h3 {
     font-family: var(--font-display);
     font-weight: 700;
@@ -102,7 +118,13 @@ const formattedDate = date.toLocaleDateString('es-ES', {
     color: var(--color-em-fg-1);
     text-wrap: balance;
   }
-  .desc { font-size: 13px; line-height: 1.55; color: var(--color-em-fg-3); }
+
+  .desc {
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--color-em-fg-3);
+  }
+
   .footer {
     display: flex;
     justify-content: space-between;
@@ -110,7 +132,12 @@ const formattedDate = date.toLocaleDateString('es-ES', {
     margin-top: auto;
     padding-top: 8px;
   }
-  .tags { display: flex; gap: 6px; }
+
+  .tags {
+    display: flex;
+    gap: 6px;
+  }
+
   .read-link {
     font-family: var(--font-mono);
     font-size: 11px;
@@ -120,12 +147,11 @@ const formattedDate = date.toLocaleDateString('es-ES', {
 </style>
 
 <script>
-  // Glass border effect — sigue el cursor
   document.querySelectorAll<HTMLElement>('[data-glass]').forEach(el => {
     el.addEventListener('mousemove', (e: MouseEvent) => {
       const r = el.getBoundingClientRect();
-      el.style.setProperty('--mx', (e.clientX - r.left) + 'px');
-      el.style.setProperty('--my', (e.clientY - r.top) + 'px');
+      el.style.setProperty('--mx', e.clientX - r.left + 'px');
+      el.style.setProperty('--my', e.clientY - r.top + 'px');
     });
   });
 </script>

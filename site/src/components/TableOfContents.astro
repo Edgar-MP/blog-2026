@@ -1,22 +1,29 @@
----
+﻿---
+import type { Locale } from '../lib/i18n';
+import { articleUiCopy } from '../lib/ui-copy';
+
 interface Heading {
   depth: number;
   slug: string;
   text: string;
 }
+
 interface Props {
   headings: Heading[];
+  locale?: Locale;
 }
-const { headings } = Astro.props;
+
+const { headings, locale = 'es' } = Astro.props;
 const h2and3 = headings.filter(h => h.depth <= 3);
+const label = articleUiCopy[locale].tocLabel;
 ---
 
 {h2and3.length > 0 && (
-  <nav class="toc" aria-label="Tabla de contenidos">
-    <div class="toc-label">En este artículo</div>
+  <nav class="toc" aria-label={label}>
+    <div class="toc-label">{label}</div>
     <ol>
       {h2and3.map(h => (
-        <li class:list={[{ 'h3': h.depth === 3 }]}>
+        <li class:list={[{ h3: h.depth === 3 }]}>
           <a href={`#${h.slug}`}>{h.text}</a>
         </li>
       ))}
@@ -41,41 +48,7 @@ const h2and3 = headings.filter(h => h.depth <= 3);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
   }
-  .toc::before,
-  .toc::after {
-    content: "";
-    position: sticky;
-    left: 0;
-    display: block;
-    height: 18px;
-    margin: -20px -20px 0;
-    pointer-events: none;
-    z-index: 2;
-  }
-  .toc::before {
-    top: -20px;
-    background: linear-gradient(to bottom, rgba(18, 18, 21, 0.92), rgba(18, 18, 21, 0));
-  }
-  .toc::after {
-    bottom: -20px;
-    margin: 0 -20px -20px;
-    background: linear-gradient(to top, rgba(18, 18, 21, 0.92), rgba(18, 18, 21, 0));
-  }
-  .toc::-webkit-scrollbar {
-    width: 8px;
-  }
-  .toc::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  .toc::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.14);
-    border: 2px solid transparent;
-    border-radius: var(--radius-pill);
-    background-clip: content-box;
-  }
-  .toc::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(255, 255, 255, 0.24);
-  }
+
   .toc-label {
     font-family: var(--font-mono);
     font-size: 10px;
@@ -86,97 +59,59 @@ const h2and3 = headings.filter(h => h.depth <= 3);
     padding-bottom: 10px;
     border-bottom: 1px solid var(--color-em-border-1);
   }
-  ol { list-style: none; display: flex; flex-direction: column; gap: 2px; margin-bottom: 14px; }
+
+  ol {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-bottom: 14px;
+  }
+
   li a {
     display: block;
-    position: relative;
-    overflow: hidden;
     font-size: 13px;
     color: var(--color-em-fg-4);
     padding: 5px 8px;
     border-radius: var(--radius-sm);
-    isolation: isolate;
     transition: color 0.28s var(--ease-out-em), background 0.28s var(--ease-out-em);
     line-height: 1.4;
   }
-  li a::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    border-radius: inherit;
-    background:
-      radial-gradient(34px 22px at 18% 0%, rgba(220, 240, 93, 0.2), transparent 70%),
-      linear-gradient(100deg, rgba(220, 240, 93, 0.05), rgba(220, 240, 93, 0.14));
-    opacity: 0;
-    transform: translateY(-110%) scaleY(0.45);
-    transform-origin: top;
-    transition:
-      opacity 0.28s var(--ease-out-em),
-      transform 0.48s cubic-bezier(0.16, 1, 0.3, 1);
+
+  li a:hover {
+    color: var(--color-em-fg-1);
+    background: rgba(255, 255, 255, 0.04);
   }
-  li a::after {
-    content: "";
-    position: absolute;
-    inset: -40% -20%;
-    z-index: -1;
-    border-radius: 45%;
-    background: rgba(220, 240, 93, 0.08);
-    opacity: 0;
-    transform: translateY(-80%) rotate(8deg);
+
+  li.h3 a {
+    padding-left: 20px;
+    font-size: 12px;
   }
-  li a:hover { color: var(--color-em-fg-1); background: rgba(255,255,255,0.04); }
-  li.h3 a { padding-left: 20px; font-size: 12px; }
+
   li a.active {
     color: var(--color-em-brand);
     background: rgba(220, 240, 93, 0.04);
   }
-  li a.active::before {
-    opacity: 1;
-    transform: translateY(0) scaleY(1);
-  }
-  li a.active::after {
-    animation: toc-fill-wave 0.72s var(--ease-out-em) both;
-  }
-
-  @keyframes toc-fill-wave {
-    0% {
-      opacity: 0;
-      transform: translateY(-85%) rotate(8deg);
-    }
-    45% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 0;
-      transform: translateY(35%) rotate(0deg);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    li a::before,
-    li a::after {
-      transition: none;
-      animation: none !important;
-    }
-  }
 </style>
 
 <script>
-  // Highlight active heading on scroll
   const links = document.querySelectorAll<HTMLAnchorElement>('.toc a');
 
   if (links.length) {
     const headingEls = Array.from(links).map(a => document.getElementById(a.getAttribute('href')!.slice(1)));
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          links.forEach(a => a.classList.remove('active'));
-          const link = document.querySelector<HTMLAnchorElement>(`.toc a[href="#${entry.target.id}"]`);
-          link?.classList.add('active');
-        }
-      });
-    }, { rootMargin: '-20% 0% -70% 0%' });
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            links.forEach(a => a.classList.remove('active'));
+            const link = document.querySelector<HTMLAnchorElement>(`.toc a[href="#${entry.target.id}"]`);
+            link?.classList.add('active');
+          }
+        });
+      },
+      { rootMargin: '-20% 0% -70% 0%' }
+    );
+
     headingEls.forEach(el => el && observer.observe(el));
   }
 </script>

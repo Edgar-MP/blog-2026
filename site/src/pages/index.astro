@@ -1,41 +1,35 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ArticleCard from "../components/ArticleCard.astro";
-import { getCollection, render } from "astro:content";
 import { Image } from "astro:assets";
 import profileImg from "../assets/profile.png";
+import { getLocaleDateFormat, getLocalizedPaths } from "../lib/i18n";
+import {
+  getFeaturedAndLatest,
+  getPublishedPosts,
+  getReadingMinutes,
+  withReadingMinutes,
+} from "../lib/blog";
 
-// Obtener artículos publicados
-const allPosts = await getCollection("blog", ({ data }) => !data.draft);
-allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const locale = "es";
+const paths = getLocalizedPaths(locale);
 
-const featured = allPosts.find((p) => p.data.featured) ?? allPosts[0];
-const latest = allPosts.filter((p) => p.id !== featured?.id).slice(0, 3);
+const allPosts = await getPublishedPosts(locale);
+const { featured, latest } = getFeaturedAndLatest(allPosts, 3);
+const featuredMinutes = featured ? await getReadingMinutes(featured) : 5;
+const latestWithTime = await withReadingMinutes(latest);
 
-// Categorías únicas
-const categories = [...new Set(allPosts.map((p) => p.data.category))];
-
-// Reading time de cada post
-async function getMinutes(post: (typeof allPosts)[0]) {
-	const { remarkPluginFrontmatter } = await render(post);
-	return (remarkPluginFrontmatter?.minutesRead as number | undefined) ?? 5;
-}
-
-const featuredMinutes = featured ? await getMinutes(featured) : 5;
-const latestWithTime = await Promise.all(
-	latest.map(async (p) => ({ post: p, minutes: await getMinutes(p) })),
-);
-
-const featuredDate = featured?.data.date.toLocaleDateString("es-ES", {
-	day: "2-digit",
-	month: "short",
-	year: "numeric",
+const featuredDate = featured?.data.date.toLocaleDateString(getLocaleDateFormat(locale), {
+  day: "2-digit",
+  month: "short",
+  year: "numeric",
 });
 ---
 
 <BaseLayout
 	title="Blog · Edgar Martínez"
 	description="Frontend, diseño y sistemas web desde la práctica. Aprendizajes, decisiones técnicas y experimentos."
+	locale={locale}
 >
 	<!-- HERO -->
 	<main style="position:relative;z-index:1">
@@ -71,7 +65,7 @@ const featuredDate = featured?.data.date.toLocaleDateString("es-ES", {
 				<section class="em-container" id="featured">
 					<a
 						class="em-glass em-glass-hover featured"
-						href={`/articulos/${featured.id}`}
+						href={`${paths.articles}/${featured.id}`}
 						data-glass
 					>
 						<span class="badge">★ Destacado</span>
@@ -116,7 +110,7 @@ const featuredDate = featured?.data.date.toLocaleDateString("es-ES", {
 		<section class="em-container" style="margin-top:96px" id="latest">
 			<div class="section-eyebrow">
 				Más artículos
-				<a class="count-link" href="/articulos">ver todos →</a>
+					<a class="count-link" href={paths.articles}>ver todos →</a>
 			</div>
 			<div class="cards-grid">
 				{
@@ -131,6 +125,7 @@ const featuredDate = featured?.data.date.toLocaleDateString("es-ES", {
 							tags={post.data.tags}
 							cover={post.data.cover}
 							coverAlt={post.data.coverAlt}
+							locale={locale}
 						/>
 					))
 				}
@@ -151,7 +146,7 @@ const featuredDate = featured?.data.date.toLocaleDateString("es-ES", {
 						notas útiles desde la práctica.
 					</p>
 					<div class="actions">
-						<a class="btn" href="/sobre"
+						<a class="btn" href={paths.about}
 							>Conocer más sobre mí <span class="arr">→</span></a
 						>
 					</div>

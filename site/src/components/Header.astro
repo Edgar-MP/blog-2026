@@ -1,25 +1,49 @@
----
+﻿---
+import type { Locale } from '../lib/i18n';
+import {
+  LANG_LABEL,
+  getAlternatePath,
+  getLocaleFromPathname,
+  getLocalizedPaths,
+} from '../lib/i18n';
+import { headerCopy } from '../lib/ui-copy';
+
+interface Props {
+  locale?: Locale;
+}
+
 const pathname = Astro.url.pathname;
+const search = Astro.url.search;
+const { locale = getLocaleFromPathname(pathname) } = Astro.props;
+const paths = getLocalizedPaths(locale);
+const copy = headerCopy[locale];
+
+const articlesRoot = paths.articles;
+const categoriesRoot = paths.categories;
 
 const isActive = (path: string) => {
-  if (path === '/' ) return pathname === '/';
+  if (path === paths.home) return pathname === path;
   return pathname.startsWith(path);
 };
+
+const altHref = getAlternatePath(pathname, search);
+const altLocale: Locale = locale === 'en' ? 'es' : 'en';
 ---
 
 <header class="em-header" id="site-header">
-  <a class="brand" href="/">
+  <a class="brand" href={paths.home}>
     <span class="glyph" aria-hidden="true">+</span>
-    Edgar Martínez
+    Edgar Martinez
     <span class="muted">/ Blog</span>
   </a>
-  <nav aria-label="Navegación principal">
-    <a href="/" class:list={[{ active: isActive('/') && pathname === '/' }]}>Inicio</a>
-    <a href="/articulos" class:list={[{ active: isActive('/articulos') || isActive('/categorias') }]}>Artículos</a>
-    <a href="/sobre" class:list={[{ active: isActive('/sobre') }]}>Sobre</a>
+  <nav aria-label={copy.navAriaLabel}>
+    <a href={paths.home} class:list={[{ active: isActive(paths.home) }]}>{copy.home}</a>
+    <a href={paths.articles} class:list={[{ active: isActive(articlesRoot) || isActive(categoriesRoot) }]}>{copy.articles}</a>
+    <a href={paths.about} class:list={[{ active: isActive(paths.about) }]}>{copy.about}</a>
     <span class="sep" aria-hidden="true"></span>
+    <a class="lang" href={altHref}>{LANG_LABEL[altLocale]}</a>
     <a class="ext" href="https://edgarmartinez.dev" target="_blank" rel="noopener noreferrer">
-      Portfolio <span aria-hidden="true">↗</span>
+      {copy.portfolio} <span aria-hidden="true">↗</span>
     </a>
   </nav>
 </header>
@@ -35,7 +59,7 @@ const isActive = (path: string) => {
     align-items: center;
     gap: 8px;
     padding: 8px 8px 8px 18px;
-    background: rgba(26, 26, 30, 0.80);
+    background: rgba(26, 26, 30, 0.8);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--color-em-border-2);
@@ -55,6 +79,7 @@ const isActive = (path: string) => {
     color: var(--color-em-fg-1);
     padding-right: 6px;
   }
+
   .brand .glyph {
     display: inline-grid;
     place-items: center;
@@ -67,9 +92,19 @@ const isActive = (path: string) => {
     font-weight: 900;
     font-size: 11px;
   }
-  .brand .muted { color: var(--color-em-fg-4); font-weight: 400; letter-spacing: 0; }
 
-  nav { display: inline-flex; align-items: center; gap: 2px; }
+  .brand .muted {
+    color: var(--color-em-fg-4);
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+
+  nav {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+  }
+
   nav a {
     position: relative;
     padding: 8px 12px;
@@ -81,10 +116,17 @@ const isActive = (path: string) => {
     transition: color 0.3s;
     border-radius: var(--radius-pill);
   }
-  nav a:hover { color: var(--color-em-fg-1); }
-  nav a.active { color: var(--color-em-fg-1); }
+
+  nav a:hover {
+    color: var(--color-em-fg-1);
+  }
+
+  nav a.active {
+    color: var(--color-em-fg-1);
+  }
+
   nav a.active::after {
-    content: "";
+    content: '';
     position: absolute;
     left: 12px;
     right: 12px;
@@ -94,13 +136,48 @@ const isActive = (path: string) => {
     border-radius: 1px;
     box-shadow: 0 0 12px 2px var(--color-em-brand-soft);
   }
-  .sep { width: 1px; height: 14px; background: var(--color-em-border-3); margin: 0 4px; }
-  nav a.ext { color: var(--color-em-fg-3); }
-  nav a.ext::after { display: none; }
+
+  .sep {
+    width: 1px;
+    height: 14px;
+    background: var(--color-em-border-3);
+    margin: 0 4px;
+  }
+
+  nav a.ext {
+    color: var(--color-em-fg-3);
+  }
+
+  nav a.ext::after {
+    display: none;
+  }
+
+  nav a.lang {
+    color: var(--color-em-brand);
+    border: 1px solid var(--color-em-border-2);
+    padding: 6px 10px;
+  }
+
+  nav a.lang::after {
+    display: none;
+  }
 
   @media (max-width: 960px) {
-    .em-header { font-size: 9px; padding: 6px 4px 6px 12px; }
-    .brand .muted { display: none; }
-    nav a { padding: 6px 8px; }
+    .em-header {
+      font-size: 9px;
+      padding: 6px 4px 6px 12px;
+    }
+
+    .brand .muted {
+      display: none;
+    }
+
+    nav a {
+      padding: 6px 8px;
+    }
+
+    nav a.lang {
+      padding: 5px 8px;
+    }
   }
 </style>

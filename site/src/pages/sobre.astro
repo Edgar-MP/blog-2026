@@ -3,18 +3,25 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
 import profileImg from "../assets/profile.png";
+import { getLocalizedPaths } from "../lib/i18n";
+import { getLocalePosts } from "../lib/content";
 
-const allPosts = await getCollection("blog", ({ data }) => !data.draft);
+const locale = "es";
+const paths = getLocalizedPaths(locale);
+
+const allEntries = await getCollection("blog", ({ data }) => !data.draft);
+const allPosts = getLocalePosts(allEntries, locale);
 const categories = [...new Set(allPosts.map((p) => p.data.category))];
 const sinceYear = allPosts.reduce(
-	(min, p) => Math.min(min, p.data.date.getFullYear()),
-	new Date().getFullYear(),
+  (min, p) => Math.min(min, p.data.date.getFullYear()),
+  new Date().getFullYear(),
 );
 ---
 
 <BaseLayout
 	title="Sobre el blog"
 	description="Quién es Edgar Martínez y por qué existe este blog. Frontend, diseño y sistemas web desde la práctica."
+	locale={locale}
 >
 	<main
 		style="position:relative;z-index:1;padding-top:100px;padding-bottom:80px"
@@ -98,9 +105,9 @@ const sinceYear = allPosts.reduce(
 					<div class="rss-block em-glass">
 						<div class="rss-label">Suscribirse</div>
 						<div class="rss-pills">
-							<a href="/rss.xml" class="pill pill-rss">RSS Feed</a>
-							<a href="/rss.xml" class="pill">Atom</a>
-							<a href="/rss.xml" class="pill">JSON Feed</a>
+							<a href={paths.rss} class="pill pill-rss">RSS Feed</a>
+							<a href={paths.rss} class="pill">Atom</a>
+							<a href={paths.rss} class="pill">JSON Feed</a>
 						</div>
 					</div>
 
@@ -212,10 +219,10 @@ const sinceYear = allPosts.reduce(
 							compartirlo o suscribirte al RSS para seguir el blog.
 						</p>
 						<div class="cta-row">
-							<a href="/articulos" class="btn btn-primary"
+							<a href={paths.articles} class="btn btn-primary"
 								>Ver artículos <span class="arr">→</span></a
 							>
-							<a href="/rss.xml" class="btn">RSS Feed</a>
+							<a href={paths.rss} class="btn">RSS Feed</a>
 						</div>
 					</div>
 				</article>

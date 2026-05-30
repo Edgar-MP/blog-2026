@@ -1,9 +1,13 @@
----
+﻿---
+import type { Locale } from '../lib/i18n';
+import { getLocalizedPaths } from '../lib/i18n';
+
 interface Props {
   title: string;
   description: string;
   image?: string;
   canonicalURL?: string;
+  locale?: Locale;
 }
 
 const {
@@ -11,14 +15,15 @@ const {
   description,
   image = '/og-default.png',
   canonicalURL = Astro.url.href,
+  locale = 'es',
 } = Astro.props;
 
-const siteTitle = title === 'Blog · Edgar Martínez'
-  ? title
-  : `${title} · Edgar Martínez`;
+const isPrimaryBlogTitle = /^Blog\b/i.test(title) && /Edgar/i.test(title);
+const siteTitle = isPrimaryBlogTitle ? title : `${title} · Edgar Martinez`;
+
+const { rss } = getLocalizedPaths(locale);
 ---
 
-<!-- Primary Meta Tags -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>{siteTitle}</title>
@@ -26,27 +31,22 @@ const siteTitle = title === 'Blog · Edgar Martínez'
 <meta name="description" content={description} />
 <link rel="canonical" href={canonicalURL} />
 
-<!-- Favicon -->
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-<!-- Open Graph -->
 <meta property="og:type" content="website" />
 <meta property="og:url" content={canonicalURL} />
 <meta property="og:title" content={siteTitle} />
 <meta property="og:description" content={description} />
 <meta property="og:image" content={new URL(image, Astro.site)} />
 
-<!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image" />
 <meta property="twitter:url" content={canonicalURL} />
 <meta property="twitter:title" content={siteTitle} />
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={new URL(image, Astro.site)} />
 
-<!-- RSS -->
-<link rel="alternate" type="application/rss+xml" title="Blog · Edgar Martínez" href="/rss.xml" />
+<link rel="alternate" type="application/rss+xml" title="Blog · Edgar Martinez" href={rss} />
 
-<!-- Umami Analytics (self-hosted, sin cookies) -->
 {import.meta.env.PUBLIC_UMAMI_URL && import.meta.env.PUBLIC_UMAMI_WEBSITE_ID && (
   <script
     is:inline
@@ -55,3 +55,4 @@ const siteTitle = title === 'Blog · Edgar Martínez'
     data-website-id={import.meta.env.PUBLIC_UMAMI_WEBSITE_ID}
   />
 )}
+

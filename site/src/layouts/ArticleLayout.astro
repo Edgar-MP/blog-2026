@@ -8,6 +8,10 @@ import TableOfContents from '../components/TableOfContents.astro';
 import ViewTransitions from '../components/ViewTransitions.astro';
 import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
+import type { Locale } from '../lib/i18n';
+import { getLocaleDateFormat, getLocalizedPaths } from '../lib/i18n';
+import { getLocalePosts } from '../lib/content';
+import { articleUiCopy } from '../lib/ui-copy';
 
 interface Props {
   title: string;
@@ -20,33 +24,52 @@ interface Props {
   coverAlt?: string;
   headings: { depth: number; slug: string; text: string }[];
   slug: string;
+  locale?: Locale;
 }
 
-const { title, description, date, category, tags, minutesRead, cover, coverAlt = '', headings, slug } = Astro.props;
+const {
+  title,
+  description,
+  date,
+  category,
+  tags,
+  minutesRead,
+  cover,
+  coverAlt = '',
+  headings,
+  slug,
+  locale = 'es',
+} = Astro.props;
 
-const formattedDate = date.toLocaleDateString('es-ES', {
-  day: '2-digit', month: 'short', year: 'numeric',
-}).toUpperCase();
+const copy = articleUiCopy[locale];
+
+const paths = getLocalizedPaths(locale);
+const formattedDate = date
+  .toLocaleDateString(getLocaleDateFormat(locale), {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  })
+  .toUpperCase();
 
 const catSlug = category.toLowerCase().replace(/\s+/g, '-');
 
-// Artículos relacionados por categoría o tags
 const allPosts = await getCollection('blog', p => !p.data.draft && p.id !== slug);
-const related = allPosts
+const related = getLocalePosts(allPosts, locale)
   .filter(p => p.data.category === category || p.data.tags.some(t => tags.includes(t)))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 3);
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang={locale}>
   <head>
-    <BaseHead title={title} description={description} />
+    <BaseHead title={title} description={description} locale={locale} />
     <ViewTransitions />
   </head>
   <body>
     <ParticlesBg />
-    <Header />
+    <Header locale={locale} />
 
     <!-- Barra de progreso de lectura (top fixed) -->
     <div class="reading-progress-bar" id="reading-progress" aria-hidden="true"></div>
@@ -55,7 +78,7 @@ const related = allPosts
       <div class="em-container">
 
         <!-- ← Volver a artículos -->
-        <a href="/articulos" class="back-link">← Volver a artículos</a>
+        <a href={paths.articles} class="back-link">{copy.back}</a>
 
         <!-- Hero section -->
         <section class="hero-section">
@@ -86,11 +109,11 @@ const related = allPosts
           <!-- Meta + título + descripción + tags, centrados -->
           <div class={cover ? 'hero-content' : 'hero-content no-cover'}>
             <div class="hero-meta">
-              <a href={`/articulos?cat=${catSlug}`} class="hero-cat">{category.toUpperCase()}</a>
+              <a href={`${paths.articles}?cat=${catSlug}`} class="hero-cat">{category.toUpperCase()}</a>
               <span class="hero-sep">·</span>
               <span>{formattedDate}</span>
               <span class="hero-sep">·</span>
-              <span>{minutesRead} MIN</span>
+              <span>{minutesRead} {copy.min}</span>
             </div>
             <h1>{title}</h1>
             <p class="hero-desc">{description}</p>
@@ -106,7 +129,7 @@ const related = allPosts
         <!-- Grid: TOC + Prose -->
         <div class="article-body">
           <aside class="toc-col">
-            <TableOfContents headings={headings} />
+            <TableOfContents headings={headings} locale={locale} />
           </aside>
           <article class="prose-em">
             <slot />
@@ -118,25 +141,25 @@ const related = allPosts
           <div class="author-avatar"></div>
           <div class="author-info">
             <strong>Edgar Martínez Palmero</strong>
-            <p>Frontend developer en Vitoria-Gasteiz. Diseño y construyo interfaces.</p>
+            <p>{copy.authorBio}</p>
           </div>
           <a href="https://edgarmartinez.dev" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
-            Ver portfolio <span class="arr">↗</span>
+            {copy.portfolio} <span class="arr">↗</span>
           </a>
         </div>
 
         <!-- Seguir leyendo -->
         {related.length > 0 && (
           <section class="related-section">
-            <div class="section-eyebrow">Seguir leyendo</div>
+            <div class="section-eyebrow">{copy.keepReading}</div>
             <div class="related-grid" style={`grid-template-columns: repeat(${Math.min(related.length, 3)}, 1fr)`}>
               {related.map(post => (
-                <a class="em-glass em-glass-hover related-card" href={`/articulos/${post.id}`} data-glass>
+                <a class="em-glass em-glass-hover related-card" href={`${paths.articles}/${post.id}`} data-glass>
                   <div class="related-body">
                     <div class="em-meta">
                       <span class="cat">{post.data.category}</span>
                       <span class="dot"></span>
-                      <span>{post.data.date.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+                      <span>{post.data.date.toLocaleDateString(getLocaleDateFormat(locale), { day: '2-digit', month: 'short', year: 'numeric' })}</span>
                     </div>
                     <h4>{post.data.title}</h4>
                     <p>{post.data.description}</p>
@@ -150,7 +173,7 @@ const related = allPosts
       </div>
     </main>
 
-    <Footer />
+    <Footer locale={locale} />
   </body>
 </html>
 

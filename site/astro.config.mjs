@@ -9,6 +9,13 @@ import { remarkReadingTime } from './src/plugins/remark-reading-time.mjs';
 export default defineConfig({
   site: 'https://blog.edgarmartinez.dev',
   output: 'static',
+  i18n: {
+    defaultLocale: 'es',
+    locales: ['es', 'en'],
+    routing: {
+      prefixDefaultLocale: false,
+    },
+  },
   integrations: [
     mdx(),
     sitemap(),

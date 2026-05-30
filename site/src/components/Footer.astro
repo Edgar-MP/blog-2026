@@ -1,21 +1,32 @@
----
+﻿---
+import type { Locale } from '../lib/i18n';
+import { getLocalizedPaths } from '../lib/i18n';
+import { footerCopy } from '../lib/ui-copy';
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = 'es' } = Astro.props;
+const paths = getLocalizedPaths(locale);
+const copy = footerCopy[locale];
 ---
 
 <footer class="em-footer">
   <div class="em-container">
     <div class="row">
       <div>
-        <div class="sig">Construyendo el futuro de la web,<br/>pixel a <em>pixel.</em></div>
-        <div class="loc">Vitoria-Gasteiz · ES · 2026</div>
+        <div class="sig">{copy.signature}<br /><em>{copy.signatureEm}</em></div>
+        <div class="loc">{copy.location}</div>
       </div>
 
       <div>
-        <h6>Blog</h6>
+        <h6>{copy.blog}</h6>
         <ul>
-          <li><a href="/">Inicio</a></li>
-          <li><a href="/articulos">Artículos</a></li>
-          <li><a href="/articulos">Categorías</a></li>
-          <li><a href="/sobre">Sobre el blog</a></li>
+          <li><a href={paths.home}>{copy.home}</a></li>
+          <li><a href={paths.articles}>{copy.articles}</a></li>
+          <li><a href={paths.articles}>{copy.categories}</a></li>
+          <li><a href={paths.about}>{copy.about}</a></li>
         </ul>
       </div>
 
@@ -42,16 +53,16 @@
       </div>
 
       <div>
-        <h6>RSS</h6>
+        <h6>{copy.rss}</h6>
         <ul>
-          <li><a href="/rss.xml">Feed RSS</a></li>
+          <li><a href={paths.rss}>{copy.feed}</a></li>
         </ul>
       </div>
     </div>
 
     <div class="bottom">
-      <span>© 2026 · Edgar Martínez Palmero</span>
-      <span>Diseñado y desarrollado con <span class="heart">❤</span> desde Vitoria</span>
+      <span>{copy.bottomLeft}</span>
+      <span>{copy.bottomRight}</span>
     </div>
   </div>
 </footer>
@@ -67,11 +78,13 @@
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
   }
+
   .row {
     display: grid;
     grid-template-columns: 1.4fr 1fr 1fr 1fr;
     gap: 48px;
   }
+
   .sig {
     font-family: var(--font-display);
     font-weight: 700;
@@ -80,8 +93,17 @@
     line-height: 1.4;
     letter-spacing: -0.01em;
   }
-  .sig em { color: var(--color-em-brand); font-style: normal; }
-  .loc { margin-top: 10px; font-size: 12px; color: var(--color-em-fg-4); }
+
+  .sig em {
+    color: var(--color-em-brand);
+    font-style: normal;
+  }
+
+  .loc {
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--color-em-fg-4);
+  }
 
   h6 {
     font-family: var(--font-mono);
@@ -92,7 +114,14 @@
     margin-bottom: 14px;
     font-weight: 500;
   }
-  ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+
+  ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
   ul a {
     font-size: 13px;
     color: var(--color-em-fg-3);
@@ -101,8 +130,15 @@
     gap: 6px;
     transition: color 0.25s;
   }
-  ul a:hover { color: var(--color-em-fg-1); }
-  .ext { color: var(--color-em-fg-5); font-size: 11px; }
+
+  ul a:hover {
+    color: var(--color-em-fg-1);
+  }
+
+  .ext {
+    color: var(--color-em-fg-5);
+    font-size: 11px;
+  }
 
   .bottom {
     margin-top: 48px;
@@ -117,13 +153,23 @@
     text-transform: uppercase;
     color: var(--color-em-fg-5);
   }
-  .heart { color: var(--color-em-brand); }
 
   @media (max-width: 960px) {
-    .row { grid-template-columns: 1fr 1fr; gap: 32px; }
+    .row {
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
   }
+
   @media (max-width: 640px) {
-    .row { grid-template-columns: 1fr; }
-    .bottom { flex-direction: column; gap: 8px; text-align: center; }
+    .row {
+      grid-template-columns: 1fr;
+    }
+
+    .bottom {
+      flex-direction: column;
+      gap: 8px;
+      text-align: center;
+    }
   }
 </style>

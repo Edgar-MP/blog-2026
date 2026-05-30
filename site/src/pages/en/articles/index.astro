@@ -1,0 +1,198 @@
+﻿---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ArticleCard from '../../../components/ArticleCard.astro';
+import { getPublishedPosts, withReadingMinutes } from '../../../lib/blog';
+
+const locale = 'en';
+
+const allPosts = await getPublishedPosts(locale);
+
+const categories = [...new Set(allPosts.map(post => post.data.category))];
+
+const postsWithTime = await withReadingMinutes(allPosts);
+---
+
+<BaseLayout
+  title="Articles"
+  description="All articles in English about frontend, design systems, and web development."
+  locale={locale}
+>
+  <main style="position:relative;z-index:1;padding-top:120px;padding-bottom:80px">
+    <div class="em-container">
+      <div class="page-header">
+        <div class="section-eyebrow" style="margin-bottom:16px">Articles</div>
+        <h1 id="page-title">All <em>articles</em></h1>
+        <p class="sub" id="post-count">{allPosts.length} posts · sorted by date</p>
+      </div>
+
+      <div class="filter-wrap">
+        <div class="filter-line"></div>
+        <nav class="filter-bar" aria-label="Filter by category">
+          <div class="filter-pills">
+            <button class="cat cat-all cat-active" data-cat="" aria-pressed="true">All</button>
+            {categories.map(cat => (
+              <button
+                class="cat"
+                data-cat={cat.toLowerCase().replace(/\s+/g, '-')}
+                data-label={cat}
+                aria-pressed="false"
+              >{cat}</button>
+            ))}
+          </div>
+        </nav>
+        <div class="filter-line"></div>
+      </div>
+
+      {postsWithTime.length > 0 ? (
+        <div class="articles-grid" id="articles-grid">
+          {postsWithTime.map(({ post, minutes }) => (
+            <div data-cat-item={post.data.category.toLowerCase().replace(/\s+/g, '-')}>
+              <ArticleCard
+                title={post.data.title}
+                description={post.data.description}
+                slug={post.id}
+                category={post.data.category}
+                date={post.data.date}
+                minutesRead={minutes}
+                tags={post.data.tags}
+                cover={post.data.cover}
+                coverAlt={post.data.coverAlt}
+                locale={locale}
+              />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p class="empty">No English posts yet. Add <code>locale: en</code> in post frontmatter.</p>
+      )}
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .page-header {
+    margin-bottom: 40px;
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: clamp(40px, 5vw, 72px);
+    text-transform: uppercase;
+    letter-spacing: -0.04em;
+    color: var(--color-em-fg-1);
+    line-height: 1;
+    margin-bottom: 12px;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--color-em-brand);
+  }
+
+  .sub {
+    font-size: 13px;
+    color: var(--color-em-fg-4);
+    font-family: var(--font-mono);
+    letter-spacing: 0.1em;
+  }
+
+  .filter-wrap {
+    margin-bottom: 32px;
+  }
+
+  .filter-line {
+    height: 1px;
+    background: var(--color-em-border-1);
+  }
+
+  .filter-bar {
+    padding: 14px 0;
+  }
+
+  .filter-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .filter-bar .cat {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 14px;
+    border: 1px solid var(--color-em-border-2);
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: var(--radius-pill);
+    font-family: var(--font-body);
+    font-size: 12px;
+    color: var(--color-em-fg-3);
+    cursor: pointer;
+  }
+
+  .filter-bar .cat.cat-active {
+    color: var(--color-em-bg);
+    background: var(--color-em-brand);
+    border-color: var(--color-em-brand);
+  }
+
+  .articles-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+
+  .empty {
+    color: var(--color-em-fg-3);
+  }
+
+  @media (max-width: 720px) {
+    .articles-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  const grid = document.getElementById('articles-grid');
+  const postCount = document.getElementById('post-count');
+  const pills = document.querySelectorAll('.filter-bar .cat');
+
+  function applyFilter(catSlug) {
+    if (!grid || !postCount) return;
+
+    const url = new URL(window.location.href);
+    if (catSlug) {
+      url.searchParams.set('cat', catSlug);
+    } else {
+      url.searchParams.delete('cat');
+    }
+    window.history.replaceState({}, '', url.toString());
+
+    pills.forEach(p => {
+      const active = p.dataset.cat === catSlug;
+      p.classList.toggle('cat-active', active);
+      p.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+
+    const rows = grid.querySelectorAll('[data-cat-item]');
+    let count = 0;
+
+    rows.forEach(row => {
+      const match = !catSlug || row.dataset.catItem === catSlug;
+      row.hidden = !match;
+      if (match) count++;
+    });
+
+    postCount.textContent = `${count} post${count === 1 ? '' : 's'} · sorted by date`;
+  }
+
+  pills.forEach(btn => {
+    btn.addEventListener('click', () => applyFilter(btn.dataset.cat ?? ''));
+  });
+
+  const initialCat = new URL(window.location.href).searchParams.get('cat') ?? '';
+  if (initialCat) {
+    applyFilter(initialCat);
+  }
+</script>
+

@@ -1,13 +1,12 @@
----
-// C·03 — Categorías como estado de filtro en /artículos.
-// Genera páginas de redirección para no romper enlaces existentes.
+﻿---
 import { getCollection } from 'astro:content';
-import { getLocalePosts } from '../../lib/content';
+import { getLocalePosts } from '../../../lib/content';
 
 export async function getStaticPaths() {
   const entries = await getCollection('blog', ({ data }) => !data.draft);
-  const posts = getLocalePosts(entries, 'es');
+  const posts = getLocalePosts(entries, 'en');
   const categories = [...new Set(posts.map(p => p.data.category))];
+
   return categories.map(category => ({
     params: { cat: category.toLowerCase().replace(/\s+/g, '-') },
     props: { catSlug: category.toLowerCase().replace(/\s+/g, '-') },
@@ -15,19 +14,20 @@ export async function getStaticPaths() {
 }
 
 const { catSlug } = Astro.props;
-const target = `/articulos?cat=${catSlug}`;
+const target = `/en/articles?cat=${catSlug}`;
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="refresh" content={`0;url=${target}`} />
     <link rel="canonical" href={target} />
-    <title>Redirigiendo…</title>
+    <title>Redirecting...</title>
     <script define:vars={{ target }}>window.location.replace(target);</script>
   </head>
   <body>
-    <p>Redirigiendo a <a href={target}>artículos</a>…</p>
+    <p>Redirecting to <a href={target}>articles</a>...</p>
   </body>
 </html>
+

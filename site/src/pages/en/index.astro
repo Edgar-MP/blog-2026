@@ -1,0 +1,154 @@
+﻿---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import { getLocaleDateFormat, getLocalizedPaths } from '../../lib/i18n';
+import {
+  getFeaturedAndLatest,
+  getPublishedPosts,
+  getReadingMinutes,
+  withReadingMinutes,
+} from '../../lib/blog';
+
+const locale = 'en';
+const paths = getLocalizedPaths(locale);
+
+const allPosts = await getPublishedPosts(locale);
+const { featured, latest } = getFeaturedAndLatest(allPosts, 6);
+const featuredMinutes = featured ? await getReadingMinutes(featured) : 5;
+const latestWithTime = await withReadingMinutes(latest);
+
+const featuredDate = featured?.data.date.toLocaleDateString(getLocaleDateFormat(locale), {
+  day: '2-digit',
+  month: 'short',
+  year: 'numeric',
+});
+---
+
+<BaseLayout
+  title="Blog · Edgar Martinez"
+  description="Frontend, design systems, and web engineering notes in English."
+  locale={locale}
+>
+  <main style="position:relative;z-index:1;padding-top:120px;padding-bottom:80px">
+    <div class="em-container">
+      <div class="page-header">
+        <div class="section-eyebrow">English Edition</div>
+        <h1>Frontend notes in <em>English</em></h1>
+        <p class="sub">Practical writeups, architecture decisions, and experiments.</p>
+      </div>
+
+      {featured && (
+        <a class="em-glass em-glass-hover featured" href={`${paths.articles}/${featured.id}`} data-glass>
+          <div class="body">
+            <div class="em-meta">
+              <span class="cat">{featured.data.category}</span>
+              <span class="dot"></span>
+              <span>{featuredDate}</span>
+              <span class="dot"></span>
+              <span>{featuredMinutes} min</span>
+            </div>
+            <h2>{featured.data.title}</h2>
+            <p class="desc">{featured.data.description}</p>
+          </div>
+        </a>
+      )}
+
+      <section style="margin-top:42px">
+        <div class="section-eyebrow">
+          Latest articles <a class="count-link" href={paths.articles}>view all →</a>
+        </div>
+
+        {latestWithTime.length > 0 ? (
+          <div class="cards-grid">
+            {latestWithTime.map(({ post, minutes }) => (
+              <ArticleCard
+                title={post.data.title}
+                description={post.data.description}
+                slug={post.id}
+                category={post.data.category}
+                date={post.data.date}
+                minutesRead={minutes}
+                tags={post.data.tags}
+                cover={post.data.cover}
+                coverAlt={post.data.coverAlt}
+                locale={locale}
+              />
+            ))}
+          </div>
+        ) : (
+          <p class="empty">No English posts yet. Add `locale: en` to a post frontmatter to publish it here.</p>
+        )}
+      </section>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .page-header {
+    margin-bottom: 30px;
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: clamp(40px, 5vw, 72px);
+    text-transform: uppercase;
+    letter-spacing: -0.04em;
+    color: var(--color-em-fg-1);
+    line-height: 1;
+    margin-bottom: 12px;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--color-em-brand);
+  }
+
+  .sub {
+    max-width: 60ch;
+    font-size: 15px;
+    color: var(--color-em-fg-3);
+  }
+
+  .featured {
+    display: block;
+    border-radius: var(--radius-xl);
+  }
+
+  .featured .body {
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .featured h2 {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 3vw, 40px);
+    line-height: 1.1;
+    color: var(--color-em-fg-1);
+  }
+
+  .featured .desc {
+    color: var(--color-em-fg-3);
+    max-width: 58ch;
+  }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    margin-top: 20px;
+  }
+
+  .empty {
+    margin-top: 20px;
+    color: var(--color-em-fg-3);
+  }
+
+  @media (max-width: 820px) {
+    .cards-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
