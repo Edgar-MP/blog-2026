@@ -18,7 +18,12 @@ export default defineConfig({
   },
   integrations: [
     mdx(),
-    sitemap(),
+    sitemap({
+      filter: page =>
+        !page.endsWith('/404.html') &&
+        !page.endsWith('/rss.xml') &&
+        !page.endsWith('/en/rss.xml'),
+    }),
   ],
   vite: {
     plugins: [tailwindcss()],
