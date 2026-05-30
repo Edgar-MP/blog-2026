@@ -5,8 +5,34 @@ import { homePageCopy } from '../lib/ui-copy';
 
 const locale = 'es';
 const copy = homePageCopy[locale];
+const siteBase = Astro.site ?? new URL(Astro.url.origin);
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Inicio',
+      item: new URL('/', siteBase).toString(),
+    },
+  ],
+};
+const collectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: copy.metaTitle,
+  description: copy.metaDescription,
+  url: new URL('/', siteBase).toString(),
+  inLanguage: locale,
+};
 ---
 
-<BaseLayout title={copy.metaTitle} description={copy.metaDescription} locale={locale}>
+<BaseLayout
+  title={copy.metaTitle}
+  description={copy.metaDescription}
+  locale={locale}
+  structuredData={[breadcrumbSchema, collectionSchema]}
+>
   <HomeRenderer locale={locale} />
 </BaseLayout>

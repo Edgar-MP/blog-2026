@@ -12,10 +12,11 @@ interface Props {
   description: string;
   image?: string;
   noindex?: boolean;
+  structuredData?: unknown | unknown[];
   locale?: Locale;
 }
 
-const { title, description, image, noindex = false, locale = 'es' } = Astro.props;
+const { title, description, image, noindex = false, structuredData, locale = 'es' } = Astro.props;
 const siteBase = Astro.site ?? new URL(Astro.url.origin);
 const homePath = locale === 'en' ? '/en' : '/';
 const websiteSchema = {
@@ -39,6 +40,9 @@ const personSchema = {
     'https://linkedin.com/in/edgarmartinez',
   ],
 };
+const pageSchemas = structuredData
+  ? (Array.isArray(structuredData) ? structuredData : [structuredData])
+  : [];
 ---
 
 <!doctype html>
@@ -46,6 +50,9 @@ const personSchema = {
   <head>
     <BaseHead title={title} description={description} image={image} noindex={noindex} locale={locale} />
     <script type="application/ld+json" set:html={JSON.stringify([websiteSchema, personSchema])} />
+    {pageSchemas.map(schema => (
+      <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+    ))}
     <ViewTransitions />
   </head>
   <body>
