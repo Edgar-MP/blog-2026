@@ -11,6 +11,7 @@ import { getCollection } from 'astro:content';
 import type { Locale } from '../lib/i18n';
 import { getLocaleDateFormat, getLocalizedPaths } from '../lib/i18n';
 import { getLocalePosts } from '../lib/content';
+import { findClusterForPost } from '../lib/topic-clusters';
 import { articleUiCopy } from '../lib/ui-copy';
 
 interface Props {
@@ -62,6 +63,11 @@ const related = getLocalePosts(allPosts, locale)
   .filter(p => p.data.category === category || p.data.tags.some(t => tags.includes(t)))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 3);
+const cluster = findClusterForPost(slug, locale);
+const clusterSlugs = cluster?.slugs[locale] ?? [];
+const clusterEntries = clusterSlugs
+  .map(clusterSlug => allEntries.find(post => post.id === clusterSlug))
+  .filter(Boolean);
 
 const alternatePost = translationKey
   ? allEntries.find(post =>
@@ -252,6 +258,33 @@ const breadcrumbSchema = {
                   </div>
                 </a>
               ))}
+            </div>
+          </section>
+        )}
+
+        {clusterEntries.length > 1 && (
+          <section class="cluster-section">
+            <div class="section-eyebrow">
+              {locale === 'en' ? 'Topic cluster' : 'Cluster temático'}
+            </div>
+            <div class="cluster-box">
+              <h3>{cluster?.title[locale]}</h3>
+              <p>{cluster?.intro[locale]}</p>
+              <ol>
+                {clusterEntries.map((entry, index) => (
+                  <li class:list={[{ current: entry?.id === slug }]}>
+                    {entry?.id === slug ? (
+                      <span>
+                        {index + 1}. {entry?.data.title}
+                      </span>
+                    ) : (
+                      <a href={`${paths.articles}/${entry?.id}`}>
+                        {index + 1}. {entry?.data.title}
+                      </a>
+                    )}
+                  </li>
+                ))}
+              </ol>
             </div>
           </section>
         )}
@@ -459,6 +492,62 @@ const breadcrumbSchema = {
   }
   .related-card:hover h4 { color: var(--color-em-brand); }
   .related-card p { font-size: 13px; color: var(--color-em-fg-3); line-height: 1.5; }
+
+  .cluster-section {
+    padding-bottom: 80px;
+  }
+
+  .cluster-box {
+    border: 1px solid var(--color-em-border-2);
+    border-radius: var(--radius-xl);
+    padding: 24px 28px;
+    background: rgba(18, 18, 21, 0.45);
+  }
+
+  .cluster-box h3 {
+    font-family: var(--font-display);
+    font-size: 22px;
+    color: var(--color-em-fg-1);
+    margin-bottom: 8px;
+  }
+
+  .cluster-box p {
+    font-size: 14px;
+    color: var(--color-em-fg-3);
+    max-width: 62ch;
+    margin-bottom: 16px;
+  }
+
+  .cluster-box ol {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 0;
+    margin: 0;
+  }
+
+  .cluster-box li {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .cluster-box li a {
+    color: var(--color-em-fg-2);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .cluster-box li a:hover {
+    color: var(--color-em-brand);
+    border-bottom-color: var(--color-em-brand);
+  }
+
+  .cluster-box li.current span {
+    color: var(--color-em-brand);
+    font-weight: 600;
+  }
 
   /* ── Prose typography ────────────────────────────────────────────── */
   .prose-em {
