@@ -78,8 +78,18 @@ const itemListSchema = {
             ))}
           </div>
           <div class="filter-actions">
-            <span class="search-hint">Buscar <kbd>⌘ K</kbd></span>
-            <span class="sort-hint">Reciente <span class="arr-sort">↓</span></span>
+            <label class="search-control" for="article-search">
+              <span class="search-hint">Buscar <kbd id="search-shortcut">Ctrl K</kbd></span>
+              <input id="article-search" type="search" placeholder="Titulo, descripcion o tag" autocomplete="off" />
+            </label>
+            <label class="sort-control" for="sort-order">
+              <span class="sort-hint">Ordenar por</span>
+              <select id="sort-order">
+                <option value="recent">Mas reciente</option>
+                <option value="oldest">Mas antiguo</option>
+                <option value="title">Titulo A-Z</option>
+              </select>
+            </label>
           </div>
         </nav>
         <div class="filter-line"></div>
@@ -98,7 +108,12 @@ const itemListSchema = {
       <!-- Grid (modo todos) -->
       <div class="articles-grid" id="articles-grid">
         {postsWithTime.map(({ post, minutes }) => (
-          <div data-cat-item={post.data.category.toLowerCase().replace(/\s+/g, '-')}>
+          <div
+            data-cat-item={post.data.category.toLowerCase().replace(/\s+/g, '-')}
+            data-date={post.data.date.getTime().toString()}
+            data-title={post.data.title.toLowerCase()}
+            data-search={`${post.data.title} ${post.data.description} ${post.data.tags.join(' ')} ${post.data.category}`.toLowerCase()}
+          >
             <ArticleCard
               title={post.data.title}
               description={post.data.description}
@@ -122,6 +137,9 @@ const itemListSchema = {
             class="list-row"
             href={`${paths.articles}/${post.id}`}
             data-cat-item={post.data.category.toLowerCase().replace(/\s+/g, '-')}
+            data-date={post.data.date.getTime().toString()}
+            data-title={post.data.title.toLowerCase()}
+            data-search={`${post.data.title} ${post.data.description} ${post.data.tags.join(' ')} ${post.data.category}`.toLowerCase()}
             hidden
           >
             <time class="list-date" datetime={post.data.date.toISOString()}>
@@ -208,6 +226,36 @@ const itemListSchema = {
     gap: 16px;
     flex-shrink: 0;
   }
+  .search-control,
+  .sort-control {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .search-control input,
+  .sort-control select {
+    height: 30px;
+    border: 1px solid var(--color-em-border-2);
+    border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--color-em-fg-2);
+    font-family: var(--font-body);
+    font-size: 12px;
+    padding: 0 12px;
+  }
+  .search-control input {
+    width: 220px;
+  }
+  .sort-control select {
+    min-width: 140px;
+    cursor: pointer;
+  }
+  .search-control input:focus,
+  .sort-control select:focus {
+    outline: none;
+    border-color: var(--color-em-brand);
+    box-shadow: 0 0 0 2px rgba(220, 240, 93, 0.2);
+  }
   .search-hint {
     font-size: 12px;
     color: var(--color-em-fg-5);
@@ -233,7 +281,6 @@ const itemListSchema = {
     font-family: var(--font-mono);
     letter-spacing: 0.05em;
   }
-  .arr-sort { color: var(--color-em-brand); }
 
   /* Category blurb (C·03) */
   .cat-blurb {
@@ -387,7 +434,6 @@ const itemListSchema = {
 </style>
 
 <script>
-  // ── Filtrado por categoría (C·03) ──────────────────────────────────────
   const grid = document.getElementById('articles-grid') as HTMLElement;
   const list = document.getElementById('articles-list') as HTMLElement;
   const blurb = document.getElementById('cat-blurb') as HTMLElement;
@@ -398,76 +444,147 @@ const itemListSchema = {
   const postCount = document.getElementById('post-count') as HTMLElement;
   const pageTitle = document.getElementById('page-title') as HTMLElement;
   const pills = document.querySelectorAll<HTMLButtonElement>('.filter-bar .cat');
+  const sortOrder = document.getElementById('sort-order') as HTMLSelectElement;
+  const searchInput = document.getElementById('article-search') as HTMLInputElement;
+  const searchShortcut = document.getElementById('search-shortcut') as HTMLElement;
 
-  function slugify(s: string) {
-    return s.toLowerCase().replace(/\s+/g, '-');
+  const current = {
+    category: '',
+    query: '',
+  };
+
+  if (searchShortcut) {
+    const isMac = /Mac|iPhone|iPad|iPod/.test(navigator.platform);
+    searchShortcut.textContent = isMac ? 'Cmd K' : 'Ctrl K';
   }
 
-  function applyFilter(catSlug: string) {
-    // Update URL without reload
+  function sortItems(container: HTMLElement) {
+    const items = Array.from(container.querySelectorAll<HTMLElement>('[data-cat-item]'));
+    const order = sortOrder?.value ?? 'recent';
+
+    items.sort((a, b) => {
+      const aDate = Number(a.dataset.date ?? '0');
+      const bDate = Number(b.dataset.date ?? '0');
+      const aTitle = a.dataset.title ?? '';
+      const bTitle = b.dataset.title ?? '';
+
+      if (order === 'oldest') return aDate - bDate;
+      if (order === 'title') return aTitle.localeCompare(bTitle, 'es');
+      return bDate - aDate;
+    });
+
+    items.forEach(item => container.appendChild(item));
+  }
+
+  function countVisibleItems(container: HTMLElement): number {
+    return Array.from(container.querySelectorAll<HTMLElement>('[data-cat-item]')).filter(item => !item.hidden).length;
+  }
+
+  function applyVisibility() {
+    const query = current.query.trim().toLowerCase();
+    const category = current.category;
+
+    const updateItems = (items: NodeListOf<HTMLElement>, allowCategory: boolean) => {
+      items.forEach(item => {
+        const matchesCategory = !category || item.dataset.catItem === category;
+        const haystack = item.dataset.search ?? '';
+        const matchesQuery = !query || haystack.includes(query);
+        const matches = (allowCategory ? matchesCategory : !category) && matchesQuery;
+        item.hidden = !matches;
+      });
+    };
+
+    if (!category) {
+      grid.hidden = false;
+      list.hidden = true;
+      blurb.hidden = true;
+
+      updateItems(grid.querySelectorAll<HTMLElement>('[data-cat-item]'), false);
+      const visible = countVisibleItems(grid);
+      postCount.textContent = `${visible} publicaciones · ordenadas por fecha`;
+      pageTitle.innerHTML = 'Todos los <em>articulos</em>';
+      return;
+    }
+
+    const activeBtn = document.querySelector<HTMLButtonElement>(`.filter-bar .cat[data-cat="${category}"]`);
+    const label = activeBtn?.dataset.label ?? category;
+
+    grid.hidden = true;
+    list.hidden = false;
+
+    updateItems(list.querySelectorAll<HTMLElement>('[data-cat-item]'), true);
+    const visible = countVisibleItems(list);
+
+    blurbName.textContent = label;
+    blurbLabel.textContent = label;
+    blurbCount.textContent = `${visible} articulo${visible === 1 ? '' : 's'}`;
+    blurb.hidden = false;
+
+    postCount.textContent = `${visible} articulo${visible === 1 ? '' : 's'} en ${label}`;
+    pageTitle.innerHTML = `<em>${label}</em>`;
+  }
+
+  function syncUrlCategory() {
     const url = new URL(window.location.href);
-    if (catSlug) {
-      url.searchParams.set('cat', catSlug);
+    if (current.category) {
+      url.searchParams.set('cat', current.category);
     } else {
       url.searchParams.delete('cat');
     }
     window.history.replaceState({}, '', url.toString());
+  }
 
-    // Update pill active states
+  function syncPills() {
     pills.forEach(p => {
-      const isActive = p.dataset.cat === catSlug;
+      const isActive = p.dataset.cat === current.category;
       p.classList.toggle('cat-active', isActive);
       p.setAttribute('aria-pressed', isActive ? 'true' : 'false');
     });
-
-    if (!catSlug) {
-      // Show grid, hide blurb + list
-      grid.hidden = false;
-      list.hidden = true;
-      blurb.hidden = true;
-      const total = document.querySelectorAll('.articles-grid [data-cat-item]').length;
-      postCount.textContent = `${total} publicaciones · ordenadas por fecha`;
-      pageTitle.innerHTML = 'Todos los <em>artículos</em>';
-    } else {
-      // Find active category label
-      const activeBtn = document.querySelector<HTMLButtonElement>(`.filter-bar .cat[data-cat="${catSlug}"]`);
-      const label = activeBtn?.dataset.label ?? catSlug;
-
-      // Show matching rows in list
-      const rows = list.querySelectorAll<HTMLElement>('[data-cat-item]');
-      let count = 0;
-      rows.forEach(row => {
-        const match = row.dataset.catItem === catSlug;
-        row.hidden = !match;
-        if (match) count++;
-      });
-
-      // Update blurb
-      blurbName.textContent = label;
-      blurbLabel.textContent = label;
-      blurbCount.textContent = `${count} artículo${count !== 1 ? 's' : ''}`;
-      blurb.hidden = false;
-
-      // Switch to list view
-      grid.hidden = true;
-      list.hidden = false;
-
-      postCount.textContent = `${count} artículo${count !== 1 ? 's' : ''} en ${label}`;
-      pageTitle.innerHTML = `<em>${label}</em>`;
-    }
   }
 
-  // Pill click handlers
+  function render() {
+    sortItems(grid);
+    sortItems(list);
+    syncPills();
+    syncUrlCategory();
+    applyVisibility();
+  }
+
   pills.forEach(btn => {
-    btn.addEventListener('click', () => applyFilter(btn.dataset.cat ?? ''));
+    btn.addEventListener('click', () => {
+      current.category = btn.dataset.cat ?? '';
+      render();
+    });
   });
 
-  // Clear button
-  catClear.addEventListener('click', () => applyFilter(''));
+  catClear.addEventListener('click', () => {
+    current.category = '';
+    render();
+  });
 
-  // On load: check URL param
+  if (sortOrder) {
+    sortOrder.addEventListener('change', () => render());
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener('input', () => {
+      current.query = searchInput.value;
+      applyVisibility();
+    });
+  }
+
+  document.addEventListener('keydown', event => {
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+      event.preventDefault();
+      searchInput?.focus();
+      searchInput?.select();
+    }
+  });
+
   const initCat = new URL(window.location.href).searchParams.get('cat') ?? '';
   if (initCat) {
-    applyFilter(initCat);
+    current.category = initCat;
   }
+
+  render();
 </script>

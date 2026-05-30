@@ -73,6 +73,20 @@ const itemListSchema = {
               >{cat}</button>
             ))}
           </div>
+          <div class="filter-actions">
+            <label class="search-control" for="article-search-en">
+              <span class="search-hint">Search <kbd id="search-shortcut-en">Ctrl K</kbd></span>
+              <input id="article-search-en" type="search" placeholder="Title, description or tag" autocomplete="off" />
+            </label>
+            <label class="sort-control" for="sort-order-en">
+              <span class="sort-hint">Sort by</span>
+              <select id="sort-order-en">
+                <option value="recent">Most recent</option>
+                <option value="oldest">Oldest</option>
+                <option value="title">Title A-Z</option>
+              </select>
+            </label>
+          </div>
         </nav>
         <div class="filter-line"></div>
       </div>
@@ -80,7 +94,12 @@ const itemListSchema = {
       {postsWithTime.length > 0 ? (
         <div class="articles-grid" id="articles-grid">
           {postsWithTime.map(({ post, minutes }) => (
-            <div data-cat-item={post.data.category.toLowerCase().replace(/\s+/g, '-')}>
+            <div
+              data-cat-item={post.data.category.toLowerCase().replace(/\s+/g, '-')}
+              data-date={post.data.date.getTime().toString()}
+              data-title={post.data.title.toLowerCase()}
+              data-search={`${post.data.title} ${post.data.description} ${post.data.tags.join(' ')} ${post.data.category}`.toLowerCase()}
+            >
               <ArticleCard
                 title={post.data.title}
                 description={post.data.description}
@@ -141,6 +160,11 @@ const itemListSchema = {
   }
 
   .filter-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
     padding: 14px 0;
   }
 
@@ -169,6 +193,76 @@ const itemListSchema = {
     border-color: var(--color-em-brand);
   }
 
+  .filter-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-shrink: 0;
+  }
+
+  .search-control,
+  .sort-control {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .search-control input,
+  .sort-control select {
+    height: 30px;
+    border: 1px solid var(--color-em-border-2);
+    border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--color-em-fg-2);
+    font-family: var(--font-body);
+    font-size: 12px;
+    padding: 0 12px;
+  }
+
+  .search-control input {
+    width: 220px;
+  }
+
+  .sort-control select {
+    min-width: 140px;
+    cursor: pointer;
+  }
+
+  .search-control input:focus,
+  .sort-control select:focus {
+    outline: none;
+    border-color: var(--color-em-brand);
+    box-shadow: 0 0 0 2px rgba(220, 240, 93, 0.2);
+  }
+
+  .search-hint {
+    font-size: 12px;
+    color: var(--color-em-fg-5);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+  }
+
+  .search-hint kbd {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 6px;
+    border: 1px solid var(--color-em-border-2);
+    border-radius: var(--radius-sm);
+    font-size: 10px;
+    font-family: var(--font-mono);
+    color: var(--color-em-fg-4);
+    background: rgba(255,255,255,0.03);
+  }
+
+  .sort-hint {
+    font-size: 12px;
+    color: var(--color-em-fg-5);
+    font-family: var(--font-mono);
+    letter-spacing: 0.05em;
+  }
+
   .articles-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -183,50 +277,112 @@ const itemListSchema = {
     .articles-grid {
       grid-template-columns: 1fr;
     }
+    .filter-actions {
+      display: none;
+    }
   }
 </style>
 
 <script>
-  const grid = document.getElementById('articles-grid');
-  const postCount = document.getElementById('post-count');
-  const pills = document.querySelectorAll('.filter-bar .cat');
+  const grid = document.getElementById('articles-grid') as HTMLElement | null;
+  const postCount = document.getElementById('post-count') as HTMLElement | null;
+  const pills = document.querySelectorAll<HTMLButtonElement>('.filter-bar .cat');
+  const sortOrder = document.getElementById('sort-order-en') as HTMLSelectElement | null;
+  const searchInput = document.getElementById('article-search-en') as HTMLInputElement | null;
+  const searchShortcut = document.getElementById('search-shortcut-en') as HTMLElement | null;
 
-  function applyFilter(catSlug) {
+  const current = {
+    category: '',
+    query: '',
+  };
+
+  if (searchShortcut) {
+    const isMac = /Mac|iPhone|iPad|iPod/.test(navigator.platform);
+    searchShortcut.textContent = isMac ? 'Cmd K' : 'Ctrl K';
+  }
+
+  function sortItems() {
+    if (!grid) return;
+    const order = sortOrder?.value ?? 'recent';
+    const items = Array.from(grid.querySelectorAll<HTMLElement>('[data-cat-item]'));
+
+    items.sort((a, b) => {
+      const aDate = Number(a.dataset.date ?? '0');
+      const bDate = Number(b.dataset.date ?? '0');
+      const aTitle = a.dataset.title ?? '';
+      const bTitle = b.dataset.title ?? '';
+
+      if (order === 'oldest') return aDate - bDate;
+      if (order === 'title') return aTitle.localeCompare(bTitle, 'en');
+      return bDate - aDate;
+    });
+
+    items.forEach(item => grid.appendChild(item));
+  }
+
+  function render() {
     if (!grid || !postCount) return;
 
+    const query = current.query.trim().toLowerCase();
+    const cat = current.category;
+
     const url = new URL(window.location.href);
-    if (catSlug) {
-      url.searchParams.set('cat', catSlug);
-    } else {
-      url.searchParams.delete('cat');
-    }
+    if (cat) url.searchParams.set('cat', cat);
+    else url.searchParams.delete('cat');
     window.history.replaceState({}, '', url.toString());
 
     pills.forEach(p => {
-      const active = p.dataset.cat === catSlug;
+      const active = p.dataset.cat === cat;
       p.classList.toggle('cat-active', active);
       p.setAttribute('aria-pressed', active ? 'true' : 'false');
     });
 
-    const rows = grid.querySelectorAll('[data-cat-item]');
-    let count = 0;
+    sortItems();
 
+    const rows = grid.querySelectorAll<HTMLElement>('[data-cat-item]');
+    let count = 0;
     rows.forEach(row => {
-      const match = !catSlug || row.dataset.catItem === catSlug;
-      row.hidden = !match;
-      if (match) count++;
+      const matchesCat = !cat || row.dataset.catItem === cat;
+      const matchesSearch = !query || (row.dataset.search ?? '').includes(query);
+      const visible = matchesCat && matchesSearch;
+      row.hidden = !visible;
+      if (visible) count++;
     });
 
     postCount.textContent = `${count} post${count === 1 ? '' : 's'} · sorted by date`;
   }
 
   pills.forEach(btn => {
-    btn.addEventListener('click', () => applyFilter(btn.dataset.cat ?? ''));
+    btn.addEventListener('click', () => {
+      current.category = btn.dataset.cat ?? '';
+      render();
+    });
+  });
+
+  if (sortOrder) {
+    sortOrder.addEventListener('change', () => render());
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener('input', () => {
+      current.query = searchInput.value;
+      render();
+    });
+  }
+
+  document.addEventListener('keydown', event => {
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+      event.preventDefault();
+      searchInput?.focus();
+      searchInput?.select();
+    }
   });
 
   const initialCat = new URL(window.location.href).searchParams.get('cat') ?? '';
   if (initialCat) {
-    applyFilter(initialCat);
+    current.category = initialCat;
   }
+
+  render();
 </script>
 
