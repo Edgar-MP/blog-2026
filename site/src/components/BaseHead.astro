@@ -35,6 +35,10 @@ const {
 const isPrimaryBlogTitle = /^Blog\b/i.test(title) && /Edgar/i.test(title);
 const siteTitle = isPrimaryBlogTitle ? title : `${title} · Edgar Martinez`;
 const siteBase = Astro.site ?? new URL(Astro.url.origin);
+const umamiURL = import.meta.env.PUBLIC_UMAMI_URL
+  ? new URL(import.meta.env.PUBLIC_UMAMI_URL, siteBase)
+  : null;
+const umamiOrigin = umamiURL?.origin;
 const canonical = new URL(canonicalURL, siteBase).toString();
 const inferredAlternate = getAlternatePath(Astro.url.pathname, '');
 const alternateHref = new URL(alternateURL ?? inferredAlternate, siteBase).toString();
@@ -53,6 +57,10 @@ const { rss } = getLocalizedPaths(locale);
 <meta name="robots" content={noindex ? 'noindex,nofollow' : 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1'} />
 <meta name="theme-color" content="#0a081d" />
 <link rel="canonical" href={canonical} />
+<link rel="preconnect" href={siteBase.origin} />
+<link rel="dns-prefetch" href={siteBase.origin} />
+{umamiOrigin && <link rel="preconnect" href={umamiOrigin} crossorigin />}
+{umamiOrigin && <link rel="dns-prefetch" href={umamiOrigin} />}
 <link rel="alternate" hrefLang={locale} href={canonical} />
 <link rel="alternate" hrefLang={locale === 'en' ? 'es' : 'en'} href={alternateHref} />
 <link rel="alternate" hrefLang="x-default" href={new URL('/', siteBase).toString()} />

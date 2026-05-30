@@ -55,6 +55,9 @@ const featuredDate = featured?.data.date.toLocaleDateString(getLocaleDateFormat(
               width={700}
               height={525}
               transition:name={`article-cover-${featured.id}`}
+              loading="eager"
+              fetchpriority="high"
+              decoding="async"
             />
           </div>
         )}

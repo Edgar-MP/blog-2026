@@ -152,6 +152,7 @@ const breadcrumbSchema = {
       locale={locale}
       alternateURL={alternateURL}
     />
+    {cover && <link rel="preload" as="image" href={cover.src} fetchpriority="high" />}
     <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
     <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
     <ViewTransitions />
@@ -185,7 +186,8 @@ const breadcrumbSchema = {
                 height={620}
                 class="cover-ambient"
                 aria-hidden="true"
-                loading="eager"
+                loading="lazy"
+                decoding="async"
               />
               <Image
                 src={cover}
@@ -194,6 +196,9 @@ const breadcrumbSchema = {
                 height={620}
                 class="cover-img"
                 transition:name={`article-cover-${slug}`}
+                loading="eager"
+                fetchpriority="high"
+                decoding="async"
               />
             </div>
           )}
