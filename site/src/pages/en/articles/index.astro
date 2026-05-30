@@ -1,6 +1,7 @@
 ﻿---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import ArticleCard from '../../../components/ArticleCard.astro';
+import articlesOgImage from '../../../assets/design-systems.png';
 import { getPublishedPosts, withReadingMinutes } from '../../../lib/blog';
 import { getLocalizedPaths } from '../../../lib/i18n';
 
@@ -46,6 +47,7 @@ const itemListSchema = {
 <BaseLayout
   title="Articles"
   description="All articles in English about frontend, design systems, and web development."
+  image={articlesOgImage.src}
   locale={locale}
   structuredData={[breadcrumbSchema, itemListSchema]}
 >

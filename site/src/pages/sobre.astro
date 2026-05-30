@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import AboutRenderer from '../components/renderers/AboutRenderer.astro';
 import { aboutPageCopy } from '../lib/ui-copy';
+import aboutOgImage from '../assets/profile.png';
 
 const locale = 'es';
 const copy = aboutPageCopy[locale];
@@ -37,6 +38,7 @@ const aboutSchema = {
 <BaseLayout
   title={copy.metaTitle}
   description={copy.metaDescription}
+  image={aboutOgImage.src}
   locale={locale}
   structuredData={[breadcrumbSchema, aboutSchema]}
 >

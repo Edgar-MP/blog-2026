@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import HomeRenderer from '../components/renderers/HomeRenderer.astro';
 import { homePageCopy } from '../lib/ui-copy';
+import homeOgImage from '../assets/cover-construyendo-blog.png';
 
 const locale = 'es';
 const copy = homePageCopy[locale];
@@ -31,6 +32,7 @@ const collectionSchema = {
 <BaseLayout
   title={copy.metaTitle}
   description={copy.metaDescription}
+  image={homeOgImage.src}
   locale={locale}
   structuredData={[breadcrumbSchema, collectionSchema]}
 >
